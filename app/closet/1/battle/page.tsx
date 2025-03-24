@@ -167,17 +167,17 @@ export default function Stage1BattlePage() {
                 className={`relative overflow-hidden rounded-lg border-2 ${
                   problems === "リバウンドラゴン"
                     ? "border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.5)]"
-                    : "border-pink-400 hover:border-pink-300"
-                } bg-gradient-to-b from-pink-900 to-pink-800 p-4 transition-all duration-300 h-52 md:h-56 flex flex-col items-center justify-between`}
+                    : "border-blue-400 hover:border-blue-300"
+                } bg-gradient-to-b from-blue-900 to-blue-800 p-4 transition-all duration-300 h-52 md:h-56 flex flex-col items-center justify-between`}
               >
-                <div className="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-10 rounded-lg"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-blue-500 opacity-10 rounded-lg"></div>
                 <div
                   className={`text-center ${
                     problems === "リバウンドラゴン" ? "scale-110" : ""
                   } transition-transform duration-300`}
                 >
                   <div className="flex justify-center mb-2">
-                    <div className="w-16 h-16 bg-pink-800 rounded-full flex items-center justify-center">
+                    <div className="w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="32"
@@ -227,17 +227,17 @@ export default function Stage1BattlePage() {
                 className={`relative overflow-hidden rounded-lg border-2 ${
                   problems === "忘却ゴブリン"
                     ? "border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.5)]"
-                    : "border-cyan-400 hover:border-cyan-300"
-                } bg-gradient-to-b from-cyan-800 to-sky-700 p-4 transition-all duration-300 h-52 md:h-56 flex flex-col items-center justify-between`}
+                    : "border-blue-400 hover:border-blue-300"
+                } bg-gradient-to-b from-blue-900 to-blue-800 p-4 transition-all duration-300 h-52 md:h-56 flex flex-col items-center justify-between`}
               >
-                <div className="absolute top-0 left-0 w-full h-full bg-cyan-500 opacity-10 rounded-lg"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-blue-500 opacity-10 rounded-lg"></div>
                 <div
                   className={`text-center ${
                     problems === "忘却ゴブリン" ? "scale-110" : ""
                   } transition-transform duration-300`}
                 >
                   <div className="flex justify-center mb-2">
-                    <div className="w-16 h-16 bg-cyan-700 rounded-full flex items-center justify-center">
+                    <div className="w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="32"
@@ -284,17 +284,17 @@ export default function Stage1BattlePage() {
                 className={`relative overflow-hidden rounded-lg border-2 ${
                   problems === "無限増殖スライム"
                     ? "border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.5)]"
-                    : "border-orange-400 hover:border-orange-300"
-                } bg-gradient-to-b from-orange-800 to-orange-900 p-4 transition-all duration-300 h-52 md:h-56 flex flex-col items-center justify-between`}
+                    : "border-blue-400 hover:border-blue-300"
+                } bg-gradient-to-b from-blue-900 to-blue-800 p-4 transition-all duration-300 h-52 md:h-56 flex flex-col items-center justify-between`}
               >
-                <div className="absolute top-0 left-0 w-full h-full bg-orange-500 opacity-10 rounded-lg"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-blue-500 opacity-10 rounded-lg"></div>
                 <div
                   className={`text-center ${
                     problems === "無限増殖スライム" ? "scale-110" : ""
                   } transition-transform duration-300`}
                 >
                   <div className="flex justify-center mb-2">
-                    <div className="w-16 h-16 bg-orange-800 rounded-full flex items-center justify-center">
+                    <div className="w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="32"
@@ -415,17 +415,17 @@ export default function Stage1BattlePage() {
                 className={`relative overflow-hidden rounded-lg border-2 ${
                   ideals === "スタイリストクローゼット"
                     ? "border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.5)]"
-                    : "border-cyan-400 hover:border-cyan-300"
-                } bg-gradient-to-b from-cyan-800 to-sky-700 p-4 transition-all duration-300 h-52 md:h-56 flex flex-col items-center justify-between`}
+                    : "border-pink-400 hover:border-pink-300"
+                } bg-gradient-to-b from-pink-900 to-pink-800 p-4 transition-all duration-300 h-52 md:h-56 flex flex-col items-center justify-between`}
               >
-                <div className="absolute top-0 left-0 w-full h-full bg-cyan-500 opacity-10 rounded-lg"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-10 rounded-lg"></div>
                 <div
                   className={`text-center ${
                     ideals === "スタイリストクローゼット" ? "scale-110" : ""
                   } transition-transform duration-300`}
                 >
                   <div className="flex justify-center mb-2">
-                    <div className="w-16 h-16 bg-cyan-700 rounded-full flex items-center justify-center">
+                    <div className="w-16 h-16 bg-pink-800 rounded-full flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="32"
@@ -474,17 +474,17 @@ export default function Stage1BattlePage() {
                 className={`relative overflow-hidden rounded-lg border-2 ${
                   ideals === "エターナルクローゼット"
                     ? "border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.5)]"
-                    : "border-orange-400 hover:border-orange-300"
-                } bg-gradient-to-b from-orange-800 to-orange-900 p-4 transition-all duration-300 h-52 md:h-56 flex flex-col items-center justify-between`}
+                    : "border-pink-400 hover:border-pink-300"
+                } bg-gradient-to-b from-pink-900 to-pink-800 p-4 transition-all duration-300 h-52 md:h-56 flex flex-col items-center justify-between`}
               >
-                <div className="absolute top-0 left-0 w-full h-full bg-orange-500 opacity-10 rounded-lg"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-10 rounded-lg"></div>
                 <div
                   className={`text-center ${
                     ideals === "エターナルクローゼット" ? "scale-110" : ""
                   } transition-transform duration-300`}
                 >
                   <div className="flex justify-center mb-2">
-                    <div className="w-16 h-16 bg-orange-800 rounded-full flex items-center justify-center">
+                    <div className="w-16 h-16 bg-pink-800 rounded-full flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="32"

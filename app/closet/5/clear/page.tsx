@@ -9,6 +9,8 @@ export default function Stage5ClearPage() {
   const [isMuted, setIsMuted] = useState(false)
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
   const [showConfetti, setShowConfetti] = useState(true)
+  const [showItemAnimation, setShowItemAnimation] = useState(false)
+  const [showExpAnimation, setShowExpAnimation] = useState(false)
 
   // シンプルな音声初期化
   useEffect(() => {
@@ -74,6 +76,22 @@ export default function Stage5ClearPage() {
   // Toggle mute
   const toggleMute = () => {
     setIsMuted(!isMuted)
+  }
+
+  // Handle item get
+  const handleGetItem = () => {
+    setShowItemAnimation(true)
+    setTimeout(() => {
+      setShowItemAnimation(false)
+    }, 1500)
+  }
+
+  // Handle exp get
+  const handleGetExp = () => {
+    setShowExpAnimation(true)
+    setTimeout(() => {
+      setShowExpAnimation(false)
+    }, 1500)
   }
 
   return (
@@ -162,61 +180,63 @@ export default function Stage5ClearPage() {
             <div className="space-y-4">
               {/* Item 1: Traveler's Furoshiki */}
               <div
-                className="flex items-center bg-purple-800 bg-opacity-70 p-4 rounded-lg border border-yellow-500 shadow-md animate-fadeIn"
+                className="flex items-center justify-between bg-purple-800 bg-opacity-70 p-4 rounded-lg border border-yellow-500 shadow-md animate-fadeIn relative"
                 style={{ animationDelay: "0.2s" }}
               >
-                <div className="flex-shrink-0 mr-4 bg-yellow-500 rounded-full p-3">
-                  <Package className="h-8 w-8 text-purple-900" />
+                {showItemAnimation && (
+                  <div className="animate-float-up text-yellow-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    アイテムゲット！
+                  </div>
+                )}
+                <div className="flex items-center">
+                  <div className="flex-shrink-0 mr-4 bg-yellow-500 rounded-full p-3">
+                    <Package className="h-8 w-8 text-purple-900" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-lg font-bold text-yellow-300">旅立ちの風呂敷</h3>
+                    <p className="text-white text-sm">どんなものでも美しく包み、持ち運びを容易にする魔法の布</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <h3 className="text-lg font-bold text-yellow-300">旅立ちの風呂敷</h3>
-                  <p className="text-white text-sm">どんなものでも美しく包み、持ち運びを容易にする魔法の布</p>
-                </div>
+                <Button
+                  onClick={handleGetItem}
+                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-purple-900 font-bold text-sm"
+                  size="sm"
+                >
+                  アイテムをゲットする
+                </Button>
               </div>
 
               {/* Item 2: Experience Points */}
               <div
-                className="flex items-center bg-purple-800 bg-opacity-70 p-4 rounded-lg border border-yellow-500 shadow-md animate-fadeIn"
+                className="flex items-center justify-between bg-purple-800 bg-opacity-70 p-4 rounded-lg border border-yellow-500 shadow-md animate-fadeIn relative"
                 style={{ animationDelay: "0.5s" }}
               >
-                <div className="flex-shrink-0 mr-4 bg-yellow-500 rounded-full p-3">
-                  <Star className="h-8 w-8 text-purple-900" />
+                {showExpAnimation && (
+                  <div className="animate-float-up text-green-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    ＋50EXP！
+                  </div>
+                )}
+                <div className="flex items-center">
+                  <div className="flex-shrink-0 mr-4 bg-yellow-500 rounded-full p-3">
+                    <Star className="h-8 w-8 text-purple-900" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-lg font-bold text-yellow-300">経験値50ポイント</h3>
+                    <p className="text-white text-sm">あなたの成長を加速させる貴重な経験</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <h3 className="text-lg font-bold text-yellow-300">経験値50ポイント</h3>
-                  <p className="text-white text-sm">あなたの成長を加速させる貴重な経験</p>
-                </div>
+                <Button
+                  onClick={handleGetExp}
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-purple-900 font-bold text-sm"
+                  size="sm"
+                >
+                  経験値をゲットする
+                </Button>
               </div>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/pub">
-              <Button
-                className="bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white font-bold py-3 px-6 rounded-lg border border-amber-400 shadow-lg flex items-center gap-2"
-                onClick={tryPlayAudio}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-5 w-5"
-                >
-                  <path d="M17 5c0 0 2 1 2 5v1 5c0 1.7-1.3 3-3 3h-8c-1.7 0-3-1.3-3-3v-5-1c0-4 2-5 2-5"></path>
-                  <path d="M13 5v4"></path>
-                  <path d="M7 9h14"></path>
-                  <path d="M12 12v3"></path>
-                </svg>
-                酒場で成果を報告
-              </Button>
-            </Link>
-
             <Link href="/closet">
               <Button
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg border border-blue-400 shadow-lg"
@@ -278,6 +298,16 @@ export default function Stage5ClearPage() {
           transform: translateY(100vh) rotate(720deg);
           opacity: 0;
         }
+      }
+      @keyframes floatUp {
+        0% { opacity: 0; transform: translateY(20px); }
+        50% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-40px); }
+      }
+      .animate-float-up {
+        animation: floatUp 1.5s ease-out forwards;
+        position: absolute;
+        z-index: 20;
       }
     `}</style>
     </div>

@@ -1,46 +1,46 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
-import { useRouter } from "next/navigation";  // ページ遷移に必要
+import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Sparkles } from "lucide-react"
+import { useRouter } from "next/navigation" // ページ遷移に必要
 
 export default function Home() {
-  const [loading, setLoading] = useState(false);  // ログイン処理のローディング管理
-  const [error, setError] = useState<string | null>(null);  // エラーメッセージ
-  const [isClient, setIsClient] = useState(false);
-  const router = useRouter();  // ページ遷移用のrouterフック
+  const [loading, setLoading] = useState(false) // ログイン処理のローディング管理
+  const [error, setError] = useState<string | null>(null) // エラーメッセージ
+  const [isClient, setIsClient] = useState(false)
+  const router = useRouter() // ページ遷移用のrouterフック
 
-  const clothingEmojis = ["👒", "👑", "👗", "👙", "👖", "✨", "🧤", "💃", "🦺", "🧦"];
+  const clothingEmojis = ["👒", "👑", "👗", "👙", "👖", "✨", "🧤", "💃", "🦺", "🧦"]
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    setIsClient(true)
+  }, [])
 
   const generateDeviceId = () => {
-    const userAgent = navigator.userAgent;
-    const screenInfo = `${screen.width}x${screen.height}`;
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const language = navigator.language;
-    
+    const userAgent = navigator.userAgent
+    const screenInfo = `${screen.width}x${screen.height}`
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const language = navigator.language
+
     // デバイス情報を組み合わせてハッシュを生成
-    const deviceString = `${userAgent}-${screenInfo}-${timeZone}-${language}`;
-    let hash = 0;
+    const deviceString = `${userAgent}-${screenInfo}-${timeZone}-${language}`
+    let hash = 0
     for (let i = 0; i < deviceString.length; i++) {
-      const char = deviceString.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32-bit integer
+      const char = deviceString.charCodeAt(i)
+      hash = (hash << 5) - hash + char
+      hash = hash & hash // Convert to 32-bit integer
     }
-    return `device_${Math.abs(hash).toString(36)}`;
-  };
+    return `device_${Math.abs(hash).toString(36)}`
+  }
 
   const handleLogin = async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
 
     try {
       // デバイスIDを生成
-      const deviceId = generateDeviceId();
+      const deviceId = generateDeviceId()
 
       // サーバーサイドAPIにPOSTリクエストを送信
       const res = await fetch("/api/login", {
@@ -51,30 +51,30 @@ export default function Home() {
         body: JSON.stringify({
           deviceId,
         }),
-      });
+      })
 
-      const data = await res.json();
+      const data = await res.json()
 
       if (res.ok) {
         // ログイン成功時に既存ユーザーか新規ユーザーかで遷移先を決定
         if (!data.result.data.NewlyCreated) {
           // 既存ユーザーの場合
-          router.push("/home");
+          router.push("/home")
         } else {
           // 新規ユーザーの場合
-          router.push("/prologue");
+          router.push("/prologue")
         }
       } else {
-        setError(data.message || "ログイン失敗"); // エラーメッセージ表示
+        setError(data.message || "ログイン失敗") // エラーメッセージ表示
       }
 
-      console.log('PlayFab response:', data.result);
+      console.log("PlayFab response:", data.result)
     } catch (error) {
-      setError("ログイン中にエラーが発生しました");
+      setError("ログイン中にエラーが発生しました")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-teal-950 p-4 relative overflow-hidden">
@@ -83,21 +83,25 @@ export default function Home() {
           <div
             key={i}
             className="absolute text-2xl float-animation"
-            style={isClient ? {
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              opacity: 0.2 + Math.random() * 0.3,
-              transform: `scale(${0.8 + Math.random() * 0.7})`,
-              animationDuration: `${6 + Math.random() * 8}s`,
-              animationDelay: `${Math.random() * 5}s`,
-            } : {
-              top: "0%",
-              left: "0%",
-              opacity: 0,
-              transform: "scale(1)",
-              animationDuration: "0s",
-              animationDelay: "0s",
-            }}
+            style={
+              isClient
+                ? {
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                    opacity: 0.2 + Math.random() * 0.3,
+                    transform: `scale(${0.8 + Math.random() * 0.7})`,
+                    animationDuration: `${6 + Math.random() * 8}s`,
+                    animationDelay: `${Math.random() * 5}s`,
+                  }
+                : {
+                    top: "0%",
+                    left: "0%",
+                    opacity: 0,
+                    transform: "scale(1)",
+                    animationDuration: "0s",
+                    animationDelay: "0s",
+                  }
+            }
           >
             {isClient ? clothingEmojis[Math.floor(Math.random() * clothingEmojis.length)] : "✨"}
           </div>
@@ -148,13 +152,18 @@ export default function Home() {
               {loading ? "ログイン中..." : "START"}
             </span>
           </Button>
-
           {error && <p className="text-red-500 text-sm">{error}</p>} {/* エラーメッセージ表示 */}
+          <p className="text-xs text-teal-300 opacity-80 mt-2 text-left">
+            ・このゲームでは、音楽が再生されます（音楽：魔王魂）
+            <br />
+            ・音量設定等、お気を付けください。
+          </p>
         </div>
       </div>
 
       <div className="absolute bottom-0 w-full h-16 bg-teal-950 opacity-90 z-0"></div>
       <div className="absolute bottom-0 w-full h-8 bg-teal-950 opacity-95 z-0"></div>
     </div>
-  );
+  )
 }
+

@@ -387,7 +387,12 @@ export default function HomePage() {
                       onMouseLeave={handleMouseLeave}
                     >
                       <div className="absolute -inset-1 rounded-full bg-purple-500 bg-opacity-30 animate-pulse"></div>
-                      <Image src="/cow-fairy.webp" alt="片付けの妖精モーちゃん" fill className="object-contain" />
+                      <Image
+                        src="/cow-fairy.webp"
+                        alt="片付けの妖精モーちゃん"
+                        fill
+                        className="object-cover border-4 border-orange-500 rounded-full"
+                      />
                     </div>
                     <div className="rpg-nameplate mt-1 bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900">
                       <p className="text-white text-center text-xs sm:text-sm">モーちゃん</p>

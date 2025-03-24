@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Volume2, VolumeX, Home, Trophy, ArrowRight, BookOpen, Star, Beer } from "lucide-react"
+import { Volume2, VolumeX, Home, Trophy, ArrowRight, BookOpen, Star } from "lucide-react"
 
 export default function Stage7ClearPage() {
   const [isMuted, setIsMuted] = useState(false)
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
   const [showConfetti, setShowConfetti] = useState(true)
+  const [showItemAnimation, setShowItemAnimation] = useState(false)
+  const [showExpAnimation, setShowExpAnimation] = useState(false)
 
   // シンプルな音声初期化
   useEffect(() => {
@@ -70,6 +72,22 @@ export default function Stage7ClearPage() {
 
     return () => clearTimeout(timer)
   }, [])
+
+  // Handle item get
+  const handleGetItem = () => {
+    setShowItemAnimation(true)
+    setTimeout(() => {
+      setShowItemAnimation(false)
+    }, 1500)
+  }
+
+  // Handle exp get
+  const handleGetExp = () => {
+    setShowExpAnimation(true)
+    setTimeout(() => {
+      setShowExpAnimation(false)
+    }, 1500)
+  }
 
   // Toggle mute
   const toggleMute = () => {
@@ -162,47 +180,65 @@ export default function Stage7ClearPage() {
             <div className="space-y-4">
               {/* Item 1: 整理の預言書 */}
               <div
-                className="bg-purple-800 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center gap-4 animate-fadeIn"
+                className="bg-purple-800 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center justify-between animate-fadeIn relative"
                 style={{ animationDelay: "0.2s" }}
               >
-                <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 bg-opacity-30 rounded-full flex items-center justify-center">
-                  <BookOpen className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-300" />
+                {showItemAnimation && (
+                  <div className="animate-float-up text-yellow-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    アイテムゲット！
+                  </div>
+                )}
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 bg-opacity-30 rounded-full flex items-center justify-center">
+                    <BookOpen className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-300" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-lg sm:text-xl font-bold text-yellow-300">整理の預言書</h3>
+                    <p className="text-white text-sm sm:text-base">
+                      未来の混沌を予測し、今すべき整理法を教えてくれる神秘の書
+                    </p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <h3 className="text-lg sm:text-xl font-bold text-yellow-300">整理の預言書</h3>
-                  <p className="text-white text-sm sm:text-base">
-                    未来の混沌を予測し、今すべき整理法を教えてくれる神秘の書
-                  </p>
-                </div>
+                <Button
+                  onClick={handleGetItem}
+                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-purple-900 font-bold text-sm"
+                  size="sm"
+                >
+                  アイテムをゲットする
+                </Button>
               </div>
 
               {/* Item 2: 経験値50ポイント */}
               <div
-                className="bg-purple-800 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center gap-4 animate-fadeIn"
+                className="bg-purple-800 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center justify-between animate-fadeIn relative"
                 style={{ animationDelay: "0.6s" }}
               >
-                <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 bg-opacity-30 rounded-full flex items-center justify-center">
-                  <Star className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-300" />
+                {showExpAnimation && (
+                  <div className="animate-float-up text-green-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    ＋50EXP！
+                  </div>
+                )}
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 bg-opacity-30 rounded-full flex items-center justify-center">
+                    <Star className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-300" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-lg sm:text-xl font-bold text-yellow-300">経験値50ポイント</h3>
+                    <p className="text-white text-sm sm:text-base">あなたの成長を加速させる貴重な経験</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <h3 className="text-lg sm:text-xl font-bold text-yellow-300">経験値50ポイント</h3>
-                  <p className="text-white text-sm sm:text-base">あなたの成長を加速させる貴重な経験</p>
-                </div>
+                <Button
+                  onClick={handleGetExp}
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-purple-900 font-bold text-sm"
+                  size="sm"
+                >
+                  経験値をゲットする
+                </Button>
               </div>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/pub">
-              <Button
-                className="bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2 border border-amber-400 shadow-lg"
-                onClick={tryPlayAudio}
-              >
-                <Beer className="h-5 w-5" />
-                酒場で成果を報告
-              </Button>
-            </Link>
-
             <Link href="/closet">
               <Button
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg border border-blue-400 shadow-lg"
@@ -268,6 +304,18 @@ export default function Stage7ClearPage() {
         
         .animate-confetti {
           animation: confetti linear forwards;
+        }
+        
+        @keyframes floatUp {
+          0% { opacity: 0; transform: translateY(20px); }
+          50% { opacity: 1; }
+          100% { opacity: 0; transform: translateY(-40px); }
+        }
+        
+        .animate-float-up {
+          animation: floatUp 1.5s ease-out forwards;
+          position: absolute;
+          z-index: 20;
         }
       `}</style>
     </div>

@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Volume2, VolumeX, Home, Trophy, ArrowRight, Scroll, Star, Beer } from "lucide-react"
+import { Volume2, VolumeX, Home, Trophy, ArrowRight, Scroll, Star } from "lucide-react"
 
 export default function Stage1ClearPage() {
   const [isMuted, setIsMuted] = useState(false)
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
   const [showConfetti, setShowConfetti] = useState(true)
+  const [showPledgeAnimation, setShowPledgeAnimation] = useState(false)
+  const [showExpAnimation, setShowExpAnimation] = useState(false)
 
   // シンプルな音声初期化
   useEffect(() => {
@@ -84,6 +86,24 @@ export default function Stage1ClearPage() {
         animation: fadeIn 0.8s ease-out forwards;
         opacity: 0;
       }
+      @keyframes popIn {
+        0% { opacity: 0; transform: scale(0.5); }
+        70% { opacity: 1; transform: scale(1.2); }
+        100% { opacity: 1; transform: scale(1); }
+      }
+      .animate-pop-in {
+        animation: popIn 0.6s ease-out forwards;
+      }
+      @keyframes floatUp {
+        0% { opacity: 0; transform: translateY(20px); }
+        50% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-40px); }
+      }
+      .animate-float-up {
+        animation: floatUp 1.5s ease-out forwards;
+        position: absolute;
+        z-index: 20;
+      }
     `
     document.head.appendChild(style)
 
@@ -95,6 +115,22 @@ export default function Stage1ClearPage() {
   // Toggle mute
   const toggleMute = () => {
     setIsMuted(!isMuted)
+  }
+
+  // Handle pledge item get
+  const handleGetPledge = () => {
+    setShowPledgeAnimation(true)
+    setTimeout(() => {
+      setShowPledgeAnimation(false)
+    }, 1500)
+  }
+
+  // Handle exp item get
+  const handleGetExp = () => {
+    setShowExpAnimation(true)
+    setTimeout(() => {
+      setShowExpAnimation(false)
+    }, 1500)
   }
 
   return (
@@ -179,42 +215,56 @@ export default function Stage1ClearPage() {
           <div className="bg-teal-800 bg-opacity-50 p-4 rounded-lg mb-6 text-left">
             <h2 className="text-xl font-bold text-yellow-300 mb-2">獲得したアイテム</h2>
             <div className="flex flex-col gap-4">
-              <div className="bg-purple-900 bg-opacity-50 p-3 rounded border border-yellow-500 flex items-center animate-fade-in">
+              <div className="bg-purple-900 bg-opacity-50 p-3 rounded border border-yellow-500 flex items-center animate-fade-in relative">
+                {showPledgeAnimation && (
+                  <div className="animate-float-up text-yellow-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    冒険者の誓約書をゲット！
+                  </div>
+                )}
                 <div className="mr-3">
                   <Scroll className="h-8 w-8 text-yellow-300" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <p className="text-yellow-300 font-bold">冒険者の誓約書</p>
                   <p className="text-white text-sm">クローゼット整理の冒険を始める証</p>
                 </div>
+                <Button
+                  onClick={handleGetPledge}
+                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-purple-900 font-bold text-sm"
+                  size="sm"
+                >
+                  アイテムをゲットする
+                </Button>
               </div>
 
               <div
-                className="bg-purple-900 bg-opacity-50 p-3 rounded border border-yellow-500 flex items-center animate-fade-in"
+                className="bg-purple-900 bg-opacity-50 p-3 rounded border border-yellow-500 flex items-center animate-fade-in relative"
                 style={{ animationDelay: "0.5s" }}
               >
+                {showExpAnimation && (
+                  <div className="animate-float-up text-green-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    ＋50EXP！
+                  </div>
+                )}
                 <div className="mr-3">
                   <Star className="h-8 w-8 text-yellow-300" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <p className="text-yellow-300 font-bold">経験値50ポイント</p>
                   <p className="text-white text-sm">クローゼット整理の第一歩を踏み出した証</p>
                 </div>
+                <Button
+                  onClick={handleGetExp}
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-purple-900 font-bold text-sm"
+                  size="sm"
+                >
+                  経験値をゲットする
+                </Button>
               </div>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/pub">
-              <Button
-                className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold py-3 px-6 rounded-lg border border-amber-400 shadow-lg flex items-center gap-2"
-                onClick={tryPlayAudio}
-              >
-                <Beer className="h-5 w-5" />
-                酒場で成果を報告
-              </Button>
-            </Link>
-
             <Link href="/closet">
               <Button
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg border border-blue-400 shadow-lg"

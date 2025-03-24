@@ -9,6 +9,8 @@ export default function Stage2ClearPage() {
   const [isMuted, setIsMuted] = useState(false)
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
   const [showConfetti, setShowConfetti] = useState(true)
+  const [showItemAnimation, setShowItemAnimation] = useState(false)
+  const [showExpAnimation, setShowExpAnimation] = useState(false)
 
   // シンプルな音声初期化
   useEffect(() => {
@@ -70,6 +72,22 @@ export default function Stage2ClearPage() {
 
     return () => clearTimeout(timer)
   }, [])
+
+  // Handle item get
+  const handleGetItem = () => {
+    setShowItemAnimation(true)
+    setTimeout(() => {
+      setShowItemAnimation(false)
+    }, 1500)
+  }
+
+  // Handle exp get
+  const handleGetExp = () => {
+    setShowExpAnimation(true)
+    setTimeout(() => {
+      setShowExpAnimation(false)
+    }, 1500)
+  }
 
   // Toggle mute
   const toggleMute = () => {
@@ -160,83 +178,88 @@ export default function Stage2ClearPage() {
 
             <div className="grid grid-cols-1 gap-4">
               {/* Chaos Breaker Item */}
-              <div className="bg-purple-900 bg-opacity-70 p-3 rounded-lg border border-yellow-500 shadow-md animate-fade-in-up">
-                <div className="flex items-center gap-3">
-                  <div className="bg-purple-700 p-2 rounded-full">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-8 w-8 text-yellow-300"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                      />
-                    </svg>
+              <div className="bg-purple-900 bg-opacity-70 p-3 rounded-lg border border-yellow-500 shadow-md animate-fade-in-up relative">
+                {showItemAnimation && (
+                  <div className="animate-float-up text-yellow-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    アイテムゲット！
                   </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-yellow-300">カオスブレイカー</h3>
-                    <p className="text-sm text-gray-200">混沌を打ち破る力を持つ伝説の道具</p>
+                )}
+                <div className="flex items-center gap-3 justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-purple-700 p-2 rounded-full">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-8 w-8 text-yellow-300"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <h3 className="text-lg font-bold text-yellow-300">カオスブレイカー</h3>
+                      <p className="text-sm text-gray-200">混沌を打ち破る力を持つ伝説の道具</p>
+                    </div>
                   </div>
+                  <Button
+                    onClick={handleGetItem}
+                    className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-purple-900 font-bold text-sm"
+                    size="sm"
+                  >
+                    アイテムをゲットする
+                  </Button>
                 </div>
               </div>
 
               {/* Experience Points Item */}
-              <div className="bg-purple-900 bg-opacity-70 p-3 rounded-lg border border-yellow-500 shadow-md animate-fade-in-up animation-delay-300">
-                <div className="flex items-center gap-3">
-                  <div className="bg-purple-700 p-2 rounded-full">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-8 w-8 text-yellow-300"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-.118l-3.976-2.888c-.784-.57-.38-1.81.588-.181h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                      />
-                    </svg>
+              <div className="bg-purple-900 bg-opacity-70 p-3 rounded-lg border border-yellow-500 shadow-md animate-fade-in-up animation-delay-300 relative">
+                {showExpAnimation && (
+                  <div className="animate-float-up text-green-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    ＋50EXP！
                   </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-yellow-300">経験値50ポイント</h3>
-                    <p className="text-sm text-gray-200">あなたの成長を加速させる貴重な経験</p>
+                )}
+                <div className="flex items-center gap-3 justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-purple-700 p-2 rounded-full">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-8 w-8 text-yellow-300"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-.118l-3.976-2.888c-.784-.57-.38-1.81.588-.181h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <h3 className="text-lg font-bold text-yellow-300">経験値50ポイント</h3>
+                      <p className="text-sm text-gray-200">あなたの成長を加速させる貴重な経験</p>
+                    </div>
                   </div>
+                  <Button
+                    onClick={handleGetExp}
+                    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-purple-900 font-bold text-sm"
+                    size="sm"
+                  >
+                    経験値をゲットする
+                  </Button>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/pub">
-              <Button
-                className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold py-3 px-6 rounded-lg border border-amber-400 shadow-lg flex items-center gap-2"
-                onClick={tryPlayAudio}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                  />
-                </svg>
-                酒場で成果を報告
-              </Button>
-            </Link>
-
             <Link href="/closet">
               <Button
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg border border-blue-400 shadow-lg"
@@ -289,6 +312,16 @@ export default function Stage2ClearPage() {
         }
         .animate-confetti {
           animation: confetti 5s linear forwards;
+        }
+        @keyframes floatUp {
+          0% { opacity: 0; transform: translateY(20px); }
+          50% { opacity: 1; }
+          100% { opacity: 0; transform: translateY(-40px); }
+        }
+        .animate-float-up {
+          animation: floatUp 1.5s ease-out forwards;
+          position: absolute;
+          z-index: 20;
         }
       `}</style>
     </div>

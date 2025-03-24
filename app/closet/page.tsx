@@ -1,14 +1,10 @@
 "use client"
-
-import { useRef } from "react"
 import type React from "react"
 import { useState, useEffect } from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Volume2, VolumeX, ArrowLeft, Star, Lock, Home, Send, X } from "lucide-react"
+import { Volume2, VolumeX, ArrowLeft, Star, Lock, Home } from "lucide-react"
 
 // Define the stages
 const stages = [
@@ -72,14 +68,7 @@ export default function ClosetPage() {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
   const [showWelcome, setShowWelcome] = useState(true)
   const [selectedStage, setSelectedStage] = useState<number | null>(null)
-  const [showChat, setShowChat] = useState(false)
-  const [userMessage, setUserMessage] = useState("")
-  const [chatMessages, setChatMessages] = useState([
-    { sender: "mo-chan", text: "クローゼット王国での冒険はどうですか？何か質問があればどうぞ！" },
-  ])
   const [isClient, setIsClient] = useState(false)
-  const chatInputRef = useRef<HTMLInputElement>(null)
-  const chatEndRef = useRef<HTMLDivElement | null>(null)
   const router = useRouter()
 
   // クライアントサイドでのみ実行されるようにする
@@ -128,13 +117,6 @@ export default function ClosetPage() {
     }
   }, [isMuted, audio, isClient])
 
-  // Scroll to bottom of chat when messages change
-  useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" })
-    }
-  }, [chatMessages])
-
   // Toggle mute
   const toggleMute = () => {
     setIsMuted(!isMuted)
@@ -170,48 +152,6 @@ export default function ClosetPage() {
       setSelectedStage(stageId)
       // Navigate to the stage page
       router.push(`/closet/${stageId}`)
-    }
-  }
-
-  // Toggle chat bubble
-  const toggleChat = () => {
-    setShowChat(!showChat)
-    // Focus the input when opening chat
-    if (!showChat && chatInputRef.current) {
-      setTimeout(() => {
-        chatInputRef.current?.focus()
-      }, 300)
-    }
-
-    // チャットを開く/閉じる時に音声再生を試みる（ユーザーインタラクション）
-    tryPlayAudio()
-  }
-
-  // Close chat bubble
-  const closeChat = () => {
-    setShowChat(false)
-  }
-
-  // Handle chat form submission
-  const handleChatSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (userMessage.trim()) {
-      // Add user message
-      setChatMessages([...chatMessages, { sender: "user", text: userMessage }])
-
-      // Simulate Mo-chan's response after a short delay
-      setTimeout(() => {
-        setChatMessages((prev) => [
-          ...prev,
-          {
-            sender: "mo-chan",
-            text: "なるほど！クローゼットの整理についてですね。ステージを進めていくと、様々な整理術が学べますよ！",
-          },
-        ])
-      }, 1000)
-
-      // Clear input
-      setUserMessage("")
     }
   }
 
@@ -283,18 +223,10 @@ export default function ClosetPage() {
         {showWelcome && (
           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
             <div className="bg-gradient-to-br from-purple-900 to-teal-900 rounded-xl p-6 max-w-md border-2 border-yellow-500 shadow-lg relative">
-              <div className="absolute -top-16 left-1/2 transform -translate-x-1/2">
-                <div className="relative w-24 h-24" style={{ animation: "rpg-float 3s ease-in-out infinite" }}>
-                  {isClient && (
-                    <Image src="/cow-fairy.webp" alt="片付けの妖精モーちゃん" fill className="object-contain" />
-                  )}
-                </div>
-              </div>
-
-              <h2 className="text-xl font-bold text-yellow-300 mt-8 mb-4 text-center">モーちゃん</h2>
+              <h2 className="text-xl font-bold text-yellow-300 mb-4 text-center">クローゼット王国</h2>
 
               <p className="text-white text-center mb-6">
-                クローゼット王国へようこそ！１ステージづつ片付けいこう！さぁ、一緒に冒険だ！
+                クローゼット王国へようこそ！１ステージづつ片付けいこう！さぁ、冒険だ！
               </p>
 
               <div className="flex justify-center">
@@ -409,70 +341,6 @@ export default function ClosetPage() {
                 </div>
               )
             })}
-          </div>
-        </div>
-
-        {/* Mo-chan character with chat bubble in bottom right */}
-        <div className="fixed bottom-4 right-4 z-20">
-          <div className="relative">
-            {/* Chat bubble */}
-            {showChat && (
-              <div className="absolute bottom-full right-0 mb-2 w-64 sm:w-72 bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-3 shadow-lg border-2 border-yellow-500 chat-bubble">
-                {/* Close button */}
-                <button
-                  onClick={closeChat}
-                  className="absolute top-1 right-1 w-6 h-6 flex items-center justify-center rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700 transition-colors duration-200 border border-yellow-400 shadow-md"
-                  aria-label="チャットを閉じる"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-
-                <div className="max-h-48 overflow-y-auto pr-1 mb-2 mt-3 chat-messages">
-                  {chatMessages.map((msg, index) => (
-                    <div key={index} className={`mb-2 ${msg.sender === "user" ? "text-right" : ""}`}>
-                      <div
-                        className={`inline-block p-2 rounded-lg ${
-                          msg.sender === "user"
-                            ? "bg-gradient-to-r from-teal-600 to-blue-600 text-white shadow-md"
-                            : "bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-md"
-                        }`}
-                      >
-                        {msg.text}
-                      </div>
-                    </div>
-                  ))}
-                  <div ref={chatEndRef} />
-                </div>
-
-                <form onSubmit={handleChatSubmit} className="flex gap-1">
-                  <Input
-                    ref={chatInputRef}
-                    type="text"
-                    placeholder="メッセージを入力..."
-                    value={userMessage}
-                    onChange={(e) => setUserMessage(e.target.value)}
-                    className="flex-1 bg-purple-100 border-purple-300 text-purple-900 text-sm"
-                  />
-                  <Button
-                    type="submit"
-                    size="icon"
-                    className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-purple-900"
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </form>
-              </div>
-            )}
-
-            {/* Mo-chan */}
-            <div
-              className="relative w-16 h-16 sm:w-20 sm:h-20 cursor-pointer"
-              style={{ animation: "rpg-float 3s ease-in-out infinite" }}
-              onClick={toggleChat}
-            >
-              <div className="absolute -inset-1 rounded-full bg-purple-500 bg-opacity-30 animate-pulse"></div>
-              {isClient && <Image src="/cow-fairy.webp" alt="片付けの妖精モーちゃん" fill className="object-contain" />}
-            </div>
           </div>
         </div>
       </main>

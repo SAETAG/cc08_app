@@ -3,13 +3,15 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Volume2, VolumeX, Home, Trophy, ArrowRight, Star, Beer } from "lucide-react"
+import { Volume2, VolumeX, Home, Trophy, ArrowRight, Star } from "lucide-react"
 
 export default function Stage13ClearPage() {
   const [isMuted, setIsMuted] = useState(false)
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
   const [showConfetti, setShowConfetti] = useState(true)
   const [showRewards, setShowRewards] = useState(false)
+  const [showItemAnimation, setShowItemAnimation] = useState(false)
+  const [showExpAnimation, setShowExpAnimation] = useState(false)
 
   // Initialize audio
   useEffect(() => {
@@ -73,6 +75,22 @@ export default function Stage13ClearPage() {
 
     return () => clearTimeout(timer)
   }, [])
+
+  // Handle item get
+  const handleGetItem = () => {
+    setShowItemAnimation(true)
+    setTimeout(() => {
+      setShowItemAnimation(false)
+    }, 1500)
+  }
+
+  // Handle exp get
+  const handleGetExp = () => {
+    setShowExpAnimation(true)
+    setTimeout(() => {
+      setShowExpAnimation(false)
+    }, 1500)
+  }
 
   // Toggle mute
   const toggleMute = () => {
@@ -169,47 +187,68 @@ export default function Stage13ClearPage() {
 
             {/* Treasure item */}
             <div
-              className={`bg-purple-800 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center gap-4 transition-all duration-500 ${
+              className={`bg-purple-800 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center justify-between transition-all duration-500 relative ${
                 showRewards ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               }`}
             >
-              <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 rounded-full flex items-center justify-center">
-                <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-purple-900" />
+              {showItemAnimation && (
+                <div className="animate-float-up text-yellow-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                  アイテムゲット！
+                </div>
+              )}
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 rounded-full flex items-center justify-center">
+                  <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-purple-900" />
+                </div>
+                <div className="text-left">
+                  <h3 className="text-lg sm:text-xl font-bold text-yellow-300">クローゼットの秘宝</h3>
+                  <p className="text-sm sm:text-base text-white">
+                    全ての収納の知恵が宿る伝説の秘宝。持ち主に整理整頓の究極の力を与える。
+                  </p>
+                </div>
               </div>
-              <div className="text-left">
-                <h3 className="text-lg sm:text-xl font-bold text-yellow-300">クローゼットの秘宝</h3>
-                <p className="text-sm sm:text-base text-white">
-                  全ての収納の知恵が宿る伝説の秘宝。持ち主に整理整頓の究極の力を与える。
-                </p>
-              </div>
+              <Button
+                onClick={handleGetItem}
+                className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-purple-900 font-bold text-sm"
+                size="sm"
+              >
+                アイテムをゲットする
+              </Button>
             </div>
 
             {/* Experience points */}
             <div
-              className={`bg-purple-800 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center gap-4 transition-all duration-500 delay-300 ${
+              className={`bg-purple-800 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center justify-between transition-all duration-500 delay-300 relative ${
                 showRewards ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               }`}
             >
-              <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 rounded-full flex items-center justify-center">
-                <Star className="w-8 h-8 sm:w-10 sm:h-10 text-purple-900" />
+              {showExpAnimation && (
+                <div className="animate-float-up text-green-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                  ＋50EXP！
+                </div>
+              )}
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 rounded-full flex items-center justify-center">
+                  <Star className="w-8 h-8 sm:w-10 sm:h-10 text-purple-900" />
+                </div>
+                <div className="text-left">
+                  <h3 className="text-lg sm:text-xl font-bold text-yellow-300">経験値50ポイント</h3>
+                  <p className="text-sm sm:text-base text-white">
+                    あなたの成長を加速させる貴重な経験。次のステージへの準備が整いました。
+                  </p>
+                </div>
               </div>
-              <div className="text-left">
-                <h3 className="text-lg sm:text-xl font-bold text-yellow-300">経験値50ポイント</h3>
-                <p className="text-sm sm:text-base text-white">
-                  あなたの成長を加速させる貴重な経験。次のステージへの準備が整いました。
-                </p>
-              </div>
+              <Button
+                onClick={handleGetExp}
+                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-purple-900 font-bold text-sm"
+                size="sm"
+              >
+                経験値をゲットする
+              </Button>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/pub" onClick={tryPlayAudio}>
-              <Button className="bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2 border border-amber-400 shadow-lg">
-                <Beer className="h-5 w-5" />
-                酒場で成果を報告
-              </Button>
-            </Link>
-
             <Link href="/closet" onClick={tryPlayAudio}>
               <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg border border-blue-400 shadow-lg">
                 マップに戻る
@@ -225,6 +264,48 @@ export default function Stage13ClearPage() {
           </div>
         </div>
       </main>
+
+      <style jsx>{`
+        @keyframes bounce-slow {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+        }
+        
+        .animate-bounce-slow {
+          animation: bounce-slow 3s ease-in-out infinite;
+        }
+        
+        @keyframes confetti {
+          0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+          }
+        }
+        
+        .animate-confetti {
+          animation: confetti 5s linear forwards;
+        }
+        
+        @keyframes floatUp {
+          0% { opacity: 0; transform: translateY(20px); }
+          50% { opacity: 1; }
+          100% { opacity: 0; transform: translateY(-40px); }
+        }
+        
+        .animate-float-up {
+          animation: floatUp 1.5s ease-out forwards;
+          position: absolute;
+          z-index: 20;
+        }
+      `}</style>
     </div>
   )
 }

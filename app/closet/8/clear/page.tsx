@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Volume2, VolumeX, Home, Trophy, ArrowRight, Box, Star, Beer } from "lucide-react"
+import { Volume2, VolumeX, Home, Trophy, ArrowRight, Box, Star } from "lucide-react"
 
 export default function Stage8ClearPage() {
   const [isMuted, setIsMuted] = useState(false)
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
   const [showConfetti, setShowConfetti] = useState(true)
+  const [showItemAnimation, setShowItemAnimation] = useState(false)
+  const [showExpAnimation, setShowExpAnimation] = useState(false)
 
   // シンプルな音声初期化
   useEffect(() => {
@@ -70,6 +72,22 @@ export default function Stage8ClearPage() {
 
     return () => clearTimeout(timer)
   }, [])
+
+  // Handle item get
+  const handleGetItem = () => {
+    setShowItemAnimation(true)
+    setTimeout(() => {
+      setShowItemAnimation(false)
+    }, 1500)
+  }
+
+  // Handle exp get
+  const handleGetExp = () => {
+    setShowExpAnimation(true)
+    setTimeout(() => {
+      setShowExpAnimation(false)
+    }, 1500)
+  }
 
   // Toggle mute
   const toggleMute = () => {
@@ -162,45 +180,63 @@ export default function Stage8ClearPage() {
             <div className="space-y-4">
               {/* Item 1: Infinite Storage Box */}
               <div
-                className="bg-purple-900 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center gap-4 animate-fadeIn"
+                className="bg-purple-900 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center justify-between animate-fadeIn relative"
                 style={{ animationDelay: "0.2s" }}
               >
-                <div className="flex-shrink-0 bg-yellow-500 rounded-full p-3">
-                  <Box className="h-8 w-8 text-purple-900" />
+                {showItemAnimation && (
+                  <div className="animate-float-up text-yellow-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    アイテムゲット！
+                  </div>
+                )}
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 bg-yellow-500 rounded-full p-3">
+                    <Box className="h-8 w-8 text-purple-900" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-lg font-bold text-yellow-300">無限の収納箱</h3>
+                    <p className="text-white text-sm">外見は小さくても、中は無限の空間を持つ不思議な箱</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <h3 className="text-lg font-bold text-yellow-300">無限の収納箱</h3>
-                  <p className="text-white text-sm">外見は小さくても、中は無限の空間を持つ不思議な箱</p>
-                </div>
+                <Button
+                  onClick={handleGetItem}
+                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-purple-900 font-bold text-sm"
+                  size="sm"
+                >
+                  アイテムをゲットする
+                </Button>
               </div>
 
               {/* Item 2: Experience Points */}
               <div
-                className="bg-purple-900 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center gap-4 animate-fadeIn"
+                className="bg-purple-900 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center justify-between animate-fadeIn relative"
                 style={{ animationDelay: "0.6s" }}
               >
-                <div className="flex-shrink-0 bg-yellow-500 rounded-full p-3">
-                  <Star className="h-8 w-8 text-purple-900" />
+                {showExpAnimation && (
+                  <div className="animate-float-up text-green-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    ＋50EXP！
+                  </div>
+                )}
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 bg-yellow-500 rounded-full p-3">
+                    <Star className="h-8 w-8 text-purple-900" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-lg font-bold text-yellow-300">経験値50ポイント</h3>
+                    <p className="text-white text-sm">あなたの成長を加速させる貴重な経験</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <h3 className="text-lg font-bold text-yellow-300">経験値50ポイント</h3>
-                  <p className="text-white text-sm">あなたの成長を加速させる貴重な経験</p>
-                </div>
+                <Button
+                  onClick={handleGetExp}
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-purple-900 font-bold text-sm"
+                  size="sm"
+                >
+                  経験値をゲットする
+                </Button>
               </div>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/pub">
-              <Button
-                className="bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2 border border-amber-400 shadow-lg"
-                onClick={tryPlayAudio}
-              >
-                <Beer className="h-5 w-5" />
-                酒場で成果を報告
-              </Button>
-            </Link>
-
             <Link href="/closet">
               <Button
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg border border-blue-400 shadow-lg"
@@ -268,6 +304,18 @@ export default function Stage8ClearPage() {
             transform: translateY(100vh) rotate(720deg);
             opacity: 0;
           }
+        }
+        
+        @keyframes floatUp {
+          0% { opacity: 0; transform: translateY(20px); }
+          50% { opacity: 1; }
+          100% { opacity: 0; transform: translateY(-40px); }
+        }
+        
+        .animate-float-up {
+          animation: floatUp 1.5s ease-out forwards;
+          position: absolute;
+          z-index: 20;
         }
       `}</style>
     </div>

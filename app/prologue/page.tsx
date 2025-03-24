@@ -42,7 +42,7 @@ const DynamicPrologue = () => {
     "かつて、クローゼット王国は調和と美しさに満ちた世界でした。\nすべての衣装や小物は、まるで魔法のようにその居場所を知り、王国は輝いていたのです。",
     "しかし、ある日、突如として現れた『混沌の呪い』が王国に暗い影を落としました。\n棚は乱れ、衣装は迷宮のごとく入り組み、かつての秩序は音を立てて崩れ去っていったのです。",
     "勇者よ、あなたにのみ託された使命がある。\n散らかり果てた王国に再び秩序をもたらし、失われた美しさを取り戻すのです。\n『片方見つからないソックスライム』、そして『リバウンドラゴン』…彼らを打ち倒し、再び平和と輝きに満ちたクローゼットを取り戻すのです！",
-    "冒険の始まり：\n\nここからあなたは、自らの『職業』を選び、断捨離の剣士、空間デザインの魔法使い、または時短の錬金術師として、各エリアに潜む混沌を一掃するための旅に出ます。\n初めは小さなクエストから始まり、ひとつひとつの達成があなたを強くします。\nそしてクローゼット王国が再び輝きを取り戻すまさにその時、あなたは国を統治する偉大な王になるのです。\n\nさぁ選ばれし勇者よ、行ってらっしゃい！",
+    "冒険の始まり：\n\nここからあなたは、勇者として、各エリアに潜む混沌を一掃するための旅に出ます。\n初めは小さなクエストから始まり、ひとつひとつの達成があなたを強くします。\nそしてクローゼット王国が再び輝きを取り戻すまさにその時、あなたは国を統治する偉大な王になるのです。\n\nさぁ選ばれし勇者よ、行ってらっしゃい！",
     "",
   ]
 
@@ -98,13 +98,6 @@ const DynamicPrologue = () => {
     // Clear any existing timers when stage changes
     clearAllTimers()
 
-    // Disable auto-advance for stage 4
-    if (stage === 4) {
-      setAutoAdvance(false)
-    } else {
-      setAutoAdvance(true)
-    }
-
     if (stage > 0 && stage < 6) {
       console.log(`Showing stage ${stage}`)
       setStageProgress(0)
@@ -116,13 +109,19 @@ const DynamicPrologue = () => {
             return prev + 1
           } else {
             clearInterval(progressInterval)
+            // Auto-advance to stage 5 when stage 4 progress reaches 100%
+            if (stage === 4) {
+              setTimeout(() => {
+                setStage(5)
+              }, 2000) // Wait 2 seconds before advancing to give time to read
+            }
             return 100
           }
         })
       }, 80) // 8 seconds total duration (80ms * 100)
 
-      // Auto advance to next stage after a delay (except for stage 4)
-      if (autoAdvance && stage < 4) {
+      // Auto advance to next stage after a delay (for stages 1-3)
+      if (stage < 4) {
         stageTimerRef.current = setTimeout(() => {
           console.log(`Advancing to stage ${stage + 1}`)
           clearInterval(progressInterval)
@@ -141,7 +140,7 @@ const DynamicPrologue = () => {
     return () => {
       clearAllTimers()
     }
-  }, [stage, autoAdvance])
+  }, [stage])
 
   // Initialize audio
   useEffect(() => {
@@ -225,6 +224,32 @@ const DynamicPrologue = () => {
           {particle}
         </div>
       )
+    })
+  }
+
+  // Function to render paragraphs with special styling for the final line
+  const renderParagraphs = (paragraphs: string[]) => {
+    return paragraphs.map((paragraph, index) => {
+      // Check if this is the last paragraph of stage 4 and contains the target text
+      if (
+        stage === 4 &&
+        index === paragraphs.length - 1 &&
+        paragraph.includes("さぁ選ばれし勇者よ、行ってらっしゃい！")
+      ) {
+        // Split the paragraph to isolate the target text
+        const parts = paragraph.split("さぁ選ばれし勇者よ、行ってらっしゃい！")
+        return (
+          <p key={index}>
+            {parts[0]}
+            <span className="text-xl font-bold text-lime-400 animate-pulse drop-shadow-[0_0_8px_rgba(163,230,53,0.8)]">
+              さぁ選ばれし勇者よ、行ってらっしゃい！
+            </span>
+            {parts[1]}
+          </p>
+        )
+      }
+      // Regular paragraph
+      return <p key={index}>{paragraph}</p>
     })
   }
 
@@ -326,8 +351,8 @@ const DynamicPrologue = () => {
 
               {stage === 3 && (
                 <div className="flex justify-center mb-4 animate-magical-appear">
-                  <div className="relative w-24 h-24 sm:w-32 sm:h-32">
-                    <Image src="/cow-fairy.webp" alt="片付けの妖精モーちゃん" fill className="object-contain" />
+                  <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.7)]">
+                    <Image src="/cow-fairy.webp" alt="片付けの妖精モーちゃん" fill className="object-cover" />
                   </div>
                 </div>
               )}
@@ -340,24 +365,10 @@ const DynamicPrologue = () => {
 
               <div className="bg-black bg-opacity-50 p-4 rounded-lg">
                 <div className="text-white text-sm sm:text-base whitespace-pre-line text-left space-y-2">
-                  {/* Display all paragraphs immediately without animation */}
-                  {currentParagraphs.map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
+                  {/* Use the new renderParagraphs function instead of directly mapping */}
+                  {renderParagraphs(currentParagraphs)}
                 </div>
               </div>
-
-              {/* Continue button for stage 4 */}
-              {stage === 4 && stageProgress === 100 && (
-                <div className="mt-6 animate-magical-appear" style={{ animationDelay: "2s" }}>
-                  <Button
-                    className="w-full sm:w-auto bg-teal-800 hover:bg-teal-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-2 px-4 rounded-lg border border-teal-600"
-                    onClick={continueToCharacterCreation}
-                  >
-                    次へ
-                  </Button>
-                </div>
-              )}
             </div>
           )}
 
