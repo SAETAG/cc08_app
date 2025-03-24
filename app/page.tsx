@@ -17,11 +17,31 @@ export default function Home() {
     setIsClient(true);
   }, []);
 
+  const generateDeviceId = () => {
+    const userAgent = navigator.userAgent;
+    const screenInfo = `${screen.width}x${screen.height}`;
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const language = navigator.language;
+    
+    // デバイス情報を組み合わせてハッシュを生成
+    const deviceString = `${userAgent}-${screenInfo}-${timeZone}-${language}`;
+    let hash = 0;
+    for (let i = 0; i < deviceString.length; i++) {
+      const char = deviceString.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return `device_${Math.abs(hash).toString(36)}`;
+  };
+
   const handleLogin = async () => {
     setLoading(true);
     setError(null);
 
     try {
+      // デバイスIDを生成
+      const deviceId = generateDeviceId();
+
       // サーバーサイドAPIにPOSTリクエストを送信
       const res = await fetch("/api/login", {
         method: "POST",
@@ -29,18 +49,26 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          customId: "user_custom_id_123",  // 任意のCustomIdを指定
+          deviceId,
         }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        // ログイン成功時にホームページへ遷移
-        router.push("/home"); // 必要に応じて遷移先を変更
+        // ログイン成功時に既存ユーザーか新規ユーザーかで遷移先を決定
+        if (!data.result.data.NewlyCreated) {
+          // 既存ユーザーの場合
+          router.push("/home");
+        } else {
+          // 新規ユーザーの場合
+          router.push("/prologue");
+        }
       } else {
         setError(data.message || "ログイン失敗"); // エラーメッセージ表示
       }
+
+      console.log('PlayFab response:', data.result);
     } catch (error) {
       setError("ログイン中にエラーが発生しました");
     } finally {
