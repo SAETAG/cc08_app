@@ -13,9 +13,6 @@ export default function UserPage() {
   // ユーザー情報（実際のアプリではこれらはデータベースやローカルストレージから取得する）
   const userInfo = {
     name: "勇者名", // プレイヤーネームもDBから取得する形に変更
-    job: "断捨離の剣士",
-    boss: "リバウンドラゴン",
-    reward: "クリスタルクローゼット",
     exp: 1250, // 獲得経験ポイント数
     clearedStages: "ステージ８", // クリア済ステージ
   }
@@ -145,24 +142,6 @@ export default function UserPage() {
             <div className="flex items-center justify-between bg-teal-800 p-3 rounded-lg border border-teal-700">
               <span className="text-white font-medium">プレイヤーネーム：</span>
               <span className="text-yellow-300 font-bold">{userInfo.name}</span>
-            </div>
-
-            {/* Job */}
-            <div className="flex items-center justify-between bg-teal-800 p-3 rounded-lg border border-teal-700">
-              <span className="text-white font-medium">職業：</span>
-              <span className="text-yellow-300 font-bold">{userInfo.job}</span>
-            </div>
-
-            {/* Boss */}
-            <div className="flex items-center justify-between bg-teal-800 p-3 rounded-lg border border-teal-700">
-              <span className="text-white font-medium">ボス：</span>
-              <span className="text-yellow-300 font-bold">{userInfo.boss}</span>
-            </div>
-
-            {/* Reward */}
-            <div className="flex items-center justify-between bg-teal-800 p-3 rounded-lg border border-teal-700">
-              <span className="text-white font-medium">最終報酬：</span>
-              <span className="text-yellow-300 font-bold">{userInfo.reward}</span>
             </div>
 
             {/* Experience Points */}
