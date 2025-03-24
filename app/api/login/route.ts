@@ -8,19 +8,19 @@ const titleId = process.env.PLAYFAB_TITLE_ID;
 PlayFabClient.settings.titleId = titleId || '';
 
 export async function POST(request: Request) {
-  const { deviceId } = await request.json();
+  const { customId } = await request.json();
 
   if (!titleId) {
     return NextResponse.json({ message: 'PlayFab Title ID is not set' }, { status: 400 });
   }
 
-  if (!deviceId) {
-    return NextResponse.json({ message: 'Device ID is required' }, { status: 400 });
+  if (!customId) {
+    return NextResponse.json({ message: 'Custom ID is required' }, { status: 400 });
   }
 
   const requestPayload = {
     TitleId: titleId,
-    CustomId: deviceId, // deviceIdをCustomIdとして使用
+    CustomId: customId,
     CreateAccount: true,
   };
 
