@@ -127,6 +127,13 @@ export default function CreateNamePage() {
               {loading ? "更新中..." : "完了！"}
             </Button>
           </form>
+
+          <Button
+            onClick={() => router.push("/home")}
+            className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-indigo-500 text-lg sm:text-xl transition-colors duration-200"
+          >
+            名前を登録せずに始める
+          </Button>
         </div>
       </div>
     </div>
