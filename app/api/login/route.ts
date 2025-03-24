@@ -33,7 +33,26 @@ export async function POST(request: Request) {
           error: error.errorMessage || 'Unknown error occurred' 
         }, { status: 400 }));
       }
-      return resolve(NextResponse.json({ message: 'Login successful', result }, { status: 200 }));
+
+      // セッションチケットを取得
+      const sessionTicket = result.data.SessionTicket;
+
+      // セッションチケットをクッキーに設定
+      const response = NextResponse.json({ 
+        message: 'Login successful', 
+        result,
+        sessionTicket 
+      }, { status: 200 });
+
+      response.cookies.set('session_ticket', sessionTicket, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7 // 7日間
+      });
+
+      return resolve(response);
     });
   });
 }
