@@ -1,29 +1,105 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Scroll, Sparkles } from "lucide-react"
+"use client";
+
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";  // ページ遷移に必要
 
 export default function Home() {
-  // Array of clothing emojis
-  const clothingEmojis = ["👒", "👑", "👗", "👙", "👖", "✨", "🧤", "💃", "🦺", "🧦"]
+  const [loading, setLoading] = useState(false);  // ログイン処理のローディング管理
+  const [error, setError] = useState<string | null>(null);  // エラーメッセージ
+  const [isClient, setIsClient] = useState(false);
+  const router = useRouter();  // ページ遷移用のrouterフック
+
+  const clothingEmojis = ["👒", "👑", "👗", "👙", "👖", "✨", "🧤", "💃", "🦺", "🧦"];
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const generateDeviceId = () => {
+    const userAgent = navigator.userAgent;
+    const screenInfo = `${screen.width}x${screen.height}`;
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const language = navigator.language;
+    
+    // デバイス情報を組み合わせてハッシュを生成
+    const deviceString = `${userAgent}-${screenInfo}-${timeZone}-${language}`;
+    let hash = 0;
+    for (let i = 0; i < deviceString.length; i++) {
+      const char = deviceString.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return `device_${Math.abs(hash).toString(36)}`;
+  };
+
+  const handleLogin = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // デバイスIDを生成
+      const deviceId = generateDeviceId();
+
+      // サーバーサイドAPIにPOSTリクエストを送信
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          deviceId,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // ログイン成功時に既存ユーザーか新規ユーザーかで遷移先を決定
+        if (!data.result.data.NewlyCreated) {
+          // 既存ユーザーの場合
+          router.push("/home");
+        } else {
+          // 新規ユーザーの場合
+          router.push("/prologue");
+        }
+      } else {
+        setError(data.message || "ログイン失敗"); // エラーメッセージ表示
+      }
+
+      console.log('PlayFab response:', data.result);
+    } catch (error) {
+      setError("ログイン中にエラーが発生しました");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-teal-950 p-4 relative overflow-hidden">
-      {/* Sparkling clothing emojis in background */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(20)].map((_, i) => (
           <div
             key={i}
             className="absolute text-2xl float-animation"
-            style={{
+            style={isClient ? {
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
               opacity: 0.2 + Math.random() * 0.3,
               transform: `scale(${0.8 + Math.random() * 0.7})`,
               animationDuration: `${6 + Math.random() * 8}s`,
               animationDelay: `${Math.random() * 5}s`,
+            } : {
+              top: "0%",
+              left: "0%",
+              opacity: 0,
+              transform: "scale(1)",
+              animationDuration: "0s",
+              animationDelay: "0s",
             }}
           >
-            {clothingEmojis[Math.floor(Math.random() * clothingEmojis.length)]}
+            {isClient ? clothingEmojis[Math.floor(Math.random() * clothingEmojis.length)] : "✨"}
           </div>
         ))}
       </div>
@@ -62,20 +138,23 @@ export default function Home() {
         </div>
 
         <div className="pt-4 sm:pt-6 space-y-3 sm:space-y-4">
-          <Link href="/home" className="block">
-            <Button className="w-full bg-teal-800 hover:bg-teal-700 text-white font-medium py-4 px-6 rounded-lg flex items-center justify-center gap-2 border border-teal-600 transition-colors duration-200">
-              <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-200" />
-              <span className="text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] text-lg sm:text-xl">
-                START
-              </span>
-            </Button>
-          </Link>
+          <Button
+            className="w-full bg-teal-800 hover:bg-teal-700 text-white font-medium py-4 px-6 rounded-lg flex items-center justify-center gap-2 border border-teal-600 transition-colors duration-200"
+            onClick={handleLogin}
+            disabled={loading} // ローディング中にボタンを無効化
+          >
+            <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-200" />
+            <span className="text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] text-lg sm:text-xl">
+              {loading ? "ログイン中..." : "START"}
+            </span>
+          </Button>
+
+          {error && <p className="text-red-500 text-sm">{error}</p>} {/* エラーメッセージ表示 */}
         </div>
       </div>
 
       <div className="absolute bottom-0 w-full h-16 bg-teal-950 opacity-90 z-0"></div>
       <div className="absolute bottom-0 w-full h-8 bg-teal-950 opacity-95 z-0"></div>
     </div>
-  )
+  );
 }
-
