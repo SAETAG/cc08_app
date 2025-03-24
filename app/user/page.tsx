@@ -163,7 +163,19 @@ export default function UserPage() {
             </div>
           </div>
 
-          
+          {/* Action Buttons */}
+          <div className="mt-6 space-y-4">
+            <Link href="/createname" className="block">
+              <Button className="w-full bg-purple-800 hover:bg-purple-700 text-white border-yellow-500">
+                名前を再登録する
+              </Button>
+            </Link>
+            <Link href="/prologue" className="block">
+              <Button className="w-full bg-purple-800 hover:bg-purple-700 text-white border-yellow-500">
+                プロローグをもう一度見る
+              </Button>
+            </Link>
+          </div>
         </div>
       </main>
     </div>
