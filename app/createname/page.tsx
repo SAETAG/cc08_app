@@ -1,22 +1,49 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Volume2, VolumeX } from "lucide-react"
 
 export default function CreateNamePage() {
   const [name, setName] = useState("")
   const [isMuted, setIsMuted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // ここで名前を保存する処理を追加できます
-    // 例: localStorage.setItem("playerName", name)
+    setError(null)
+    setLoading(true)
+
+    try {
+      const res = await fetch("/api/update-display-name", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          displayName: name,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (res.ok) {
+        // 更新成功時はホームページに遷移
+        router.push("/home")
+      } else {
+        setError(data.message || "名前の更新に失敗しました")
+      }
+    } catch (error) {
+      setError("名前の更新中にエラーが発生しました")
+    } finally {
+      setLoading(false)
+    }
   }
 
   const toggleSound = () => {
@@ -86,15 +113,27 @@ export default function CreateNamePage() {
               required
             />
 
-            <Link href="/home" className="block">
-              <Button
-                type="submit"
-                className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-orange-500 text-lg sm:text-xl transition-colors duration-200"
-              >
-                完了！
-              </Button>
-            </Link>
+            {error && (
+              <div className="text-red-400 text-sm">
+                {error}
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-orange-500 text-lg sm:text-xl transition-colors duration-200"
+            >
+              {loading ? "更新中..." : "完了！"}
+            </Button>
           </form>
+
+          <Button
+            onClick={() => router.push("/home")}
+            className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-indigo-500 text-lg sm:text-xl transition-colors duration-200"
+          >
+            名前を登録せずに始める
+          </Button>
         </div>
       </div>
     </div>

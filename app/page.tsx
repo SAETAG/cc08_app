@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Sparkles } from "lucide-react"
 import { useRouter } from "next/navigation" // ページ遷移に必要
+import Cookies from 'js-cookie'
 
 export default function Home() {
   const [loading, setLoading] = useState(false) // ログイン処理のローディング管理
@@ -17,30 +18,40 @@ export default function Home() {
     setIsClient(true)
   }, [])
 
-  const generateDeviceId = () => {
-    const userAgent = navigator.userAgent
-    const screenInfo = `${screen.width}x${screen.height}`
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    const language = navigator.language
-
-    // デバイス情報を組み合わせてハッシュを生成
-    const deviceString = `${userAgent}-${screenInfo}-${timeZone}-${language}`
-    let hash = 0
-    for (let i = 0; i < deviceString.length; i++) {
-      const char = deviceString.charCodeAt(i)
-      hash = (hash << 5) - hash + char
-      hash = hash & hash // Convert to 32-bit integer
+  // カスタムIDの生成（8文字のランダムな文字列）
+  const generateCustomId = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 8; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    return `device_${Math.abs(hash).toString(36)}`
-  }
+    return result;
+  };
+
+  // ユーザーIDの取得または新規作成
+  const getOrCreateUserId = () => {
+    const USER_ID_COOKIE = 'user_id';
+    let userId = Cookies.get(USER_ID_COOKIE);
+
+    if (!userId) {
+      userId = generateCustomId();
+      Cookies.set(USER_ID_COOKIE, userId, {
+        expires: 365,
+        secure: true,
+        sameSite: 'strict'
+      });
+    }
+
+    return userId;
+  };
 
   const handleLogin = async () => {
     setLoading(true)
     setError(null)
 
     try {
-      // デバイスIDを生成
-      const deviceId = generateDeviceId()
+      // カスタムIDを取得または生成
+      const customId = getOrCreateUserId()
 
       // サーバーサイドAPIにPOSTリクエストを送信
       const res = await fetch("/api/login", {
@@ -49,7 +60,7 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          deviceId,
+          customId,
         }),
       })
 

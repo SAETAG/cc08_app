@@ -162,8 +162,6 @@ export default function UserPage() {
               <span className="text-yellow-300 font-bold">{userInfo.clearedStages}</span>
             </div>
           </div>
-
-          
         </div>
       </main>
     </div>
