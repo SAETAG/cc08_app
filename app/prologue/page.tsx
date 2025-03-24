@@ -297,7 +297,7 @@ const DynamicPrologue = () => {
         )}
 
         {/* Content container */}
-        <div className="max-w-md w-full bg-opacity-90 p-6 sm:p-8 rounded-xl shadow-lg border-2 border-teal-700 z-10 relative bg-black bg-opacity-50">
+        <div className="max-w-md w-full bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 bg-opacity-90 p-6 sm:p-8 rounded-xl shadow-lg border-2 border-indigo-400 z-10 relative">
           {/* Stage 0: Initial screen */}
           {stage === 0 && (
             <div className="text-center space-y-6">
@@ -306,7 +306,7 @@ const DynamicPrologue = () => {
               </h1>
               <p className="text-white text-sm sm:text-base">ボタンを押して物語を始めよう</p>
               <Button
-                className="w-full sm:w-auto bg-teal-800 hover:bg-teal-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-2 px-4 rounded-lg border border-teal-600"
+                className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-orange-500 text-lg sm:text-xl"
                 onClick={startPrologue}
               >
                 物語を始める
@@ -367,8 +367,8 @@ const DynamicPrologue = () => {
               <h2 className="text-2xl sm:text-3xl font-bold text-yellow-300 drop-shadow-[0_0_8px_rgba(250,204,21,0.7)] animate-magical-appear">
                 さぁ、冒険を始めよう！
               </h2>
-              <Link href="/charasetting" className="block animate-magical-appear" style={{ animationDelay: "0.5s" }}>
-                <Button className="w-full sm:w-auto bg-teal-800 hover:bg-teal-900 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-2 px-4 rounded-lg border border-teal-600 transition-colors duration-200">
+              <Link href="/createname" className="block animate-magical-appear" style={{ animationDelay: "0.5s" }}>
+                <Button className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-orange-500 text-lg sm:text-xl transition-colors duration-200">
                   冒険の準備を始める
                 </Button>
               </Link>

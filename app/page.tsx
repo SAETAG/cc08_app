@@ -62,20 +62,11 @@ export default function Home() {
         </div>
 
         <div className="pt-4 sm:pt-6 space-y-3 sm:space-y-4">
-          <Link href="/signup" className="block">
-            <Button className="w-full bg-teal-800 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 border border-teal-600 transition-colors duration-200">
-              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-200" />
-              <span className="text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] text-sm sm:text-base">
-                新たな冒険へ
-              </span>
-            </Button>
-          </Link>
-
-          <Link href="/login" className="block">
-            <Button className="w-full bg-teal-800 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 border border-teal-600 transition-colors duration-200">
-              <Scroll className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-200" />
-              <span className="text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] text-sm sm:text-base">
-                冒険の続きへ
+          <Link href="/home" className="block">
+            <Button className="w-full bg-teal-800 hover:bg-teal-700 text-white font-medium py-4 px-6 rounded-lg flex items-center justify-center gap-2 border border-teal-600 transition-colors duration-200">
+              <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-200" />
+              <span className="text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] text-lg sm:text-xl">
+                START
               </span>
             </Button>
           </Link>
