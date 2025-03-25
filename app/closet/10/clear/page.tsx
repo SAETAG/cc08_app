@@ -81,12 +81,30 @@ export default function Stage10ClearPage() {
     }, 1500)
   }
 
-  // Handle exp get
-  const handleGetExp = () => {
+  // Handle exp item get
+  const handleGetExp = async () => {
     setShowExpAnimation(true)
     setTimeout(() => {
       setShowExpAnimation(false)
     }, 1500)
+
+    try {
+      const response = await fetch("/api/updateExp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update EXP");
+      }
+
+      const result = await response.json();
+      console.log("EXP update result:", result);
+    } catch (error) {
+      console.error("Error updating EXP:", error);
+    }
   }
 
   // Toggle mute
