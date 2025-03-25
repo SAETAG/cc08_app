@@ -119,27 +119,68 @@ export default function Stage12ClearPage() {
     }
   }
 
-  // Handle exp get
+  // Handle exp item get
   const handleGetExp = async () => {
+    setShowExpAnimation(true)
+    setTimeout(() => {
+      setShowExpAnimation(false)
+    }, 1500)
+
     try {
-      const response = await fetch('/api/updateExp', {
-        method: 'POST',
+      // Player Data (Title)のEXPを更新
+      const expResponse = await fetch("/api/updateExp", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-        }
+          "Content-Type": "application/json",
+        },
       });
 
-      if (!response.ok) {
-        throw new Error('経験値の取得に失敗しました');
+      if (!expResponse.ok) {
+        throw new Error("Failed to update EXP");
       }
 
-      setShowExpAnimation(true);
-      setTimeout(() => {
-        setShowExpAnimation(false);
-      }, 1500);
+      const expResult = await expResponse.json();
+      console.log("EXP update result:", expResult);
+
+      // Statistics APIを呼び出して統計情報を更新
+      console.log("Calling updateStatistics API...");
+      const statsResponse = await fetch("/api/updateStatistics", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // セッションクッキーを送信するために必要
+      });
+
+      console.log("updateStatistics response status:", statsResponse.status);
+      
+      if (!statsResponse.ok) {
+        const errorText = await statsResponse.text();
+        console.error("Statistics API error response:", errorText);
+        throw new Error(`Failed to update Statistics: ${statsResponse.status} ${errorText}`);
+      }
+
+      const statsResult = await statsResponse.json();
+      console.log("Statistics update result:", statsResult);
+
+      if (statsResult.result?.data?.updatedStatistics) {
+        console.log("Updated statistics values:", {
+          Experience: statsResult.result.data.updatedStatistics.find(s => s.StatisticName === "Experience")?.Value,
+          DayExperience: statsResult.result.data.updatedStatistics.find(s => s.StatisticName === "DayExperience")?.Value,
+          WeekExperience: statsResult.result.data.updatedStatistics.find(s => s.StatisticName === "WeekExperience")?.Value
+        });
+      } else {
+        console.log("No statistics data in response");
+      }
     } catch (error) {
-      console.error('経験値取得エラー:', error);
-      alert('経験値の取得に失敗しました。もう一度お試しください。');
+      console.error("Error updating EXP or Statistics:", error);
+      if (error instanceof Error) {
+        console.error("Error details:", {
+          name: error.name,
+          message: error.message,
+          stack: error.stack
+        });
+      }
     }
   }
 

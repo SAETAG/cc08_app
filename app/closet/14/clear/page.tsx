@@ -96,6 +96,56 @@ export default function CrownPage() {
     }
   }
 
+  const [showExpAnimation, setShowExpAnimation] = useState(false)
+
+  // Handle exp get
+  const handleGetExp = async () => {
+    // アニメーション開始
+    setShowExpAnimation(true)
+    setTimeout(() => {
+      setShowExpAnimation(false)
+    }, 1500)
+
+    try {
+      // Player Data (Title)のEXPを更新
+      const expResponse = await fetch("/api/updateExp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!expResponse.ok) {
+        throw new Error("Failed to update EXP");
+      }
+
+      const expResult = await expResponse.json();
+      console.log("EXP update result:", expResult);
+
+      // Statistics APIを呼び出して統計情報を更新
+      const statsResponse = await fetch("/api/updateStatistics", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!statsResponse.ok) {
+        throw new Error("Failed to update statistics");
+      }
+
+      const statsResult = await statsResponse.json();
+      console.log("Statistics update result:", statsResult);
+
+      // 成功通知を表示
+      showNotification("exp");
+    } catch (error) {
+      console.error("Error updating EXP or statistics:", error);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-950 to-black text-white flex flex-col items-center justify-center p-4 overflow-hidden relative">
       {/* 背景の光の効果 */}
@@ -242,30 +292,11 @@ export default function CrownPage() {
 
             {/* 経験値を受け取るボタン */}
             <Button
-              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2 px-4 rounded-full shadow-lg flex items-center gap-2"
-              onClick={async () => {
-                try {
-                  const response = await fetch("/api/updateExp", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                  })
-
-                  if (!response.ok) {
-                    throw new Error("Failed to update exp")
-                  }
-
-                  // 成功時に通知メッセージを表示
-                  showNotification("exp")
-                } catch (error) {
-                  console.error("Error updating exp:", error)
-                  alert("経験値の獲得に失敗しました。もう一度お試しください。")
-                }
-              }}
+              onClick={handleGetExp}
+              className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded-full shadow-lg transform transition-all duration-200 hover:scale-105"
+              disabled={showExpAnimation}
             >
-              <Award className="h-5 w-5" />
-              <span>経験値50EXPを受け取る</span>
+              経験値50EXPを受け取る
             </Button>
           </div>
 
@@ -290,6 +321,15 @@ export default function CrownPage() {
           {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
         </button>
       </div>
+
+      {/* 経験値獲得ボタンと経験値アニメーション */}
+      {showExpAnimation && (
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
+          <div className="text-4xl font-bold text-yellow-400 animate-bounce">
+            +50 EXP
+          </div>
+        </div>
+      )}
 
       {/* アニメーション用のスタイル */}
       <style jsx global>{`
