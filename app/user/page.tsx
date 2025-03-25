@@ -10,11 +10,12 @@ export default function UserPage() {
   const [audioLoaded, setAudioLoaded] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [displayName, setDisplayName] = useState<string>('')
+  const [exp, setExp] = useState<number>(0)
+  const [playFabId, setPlayFabId] = useState<string>('')
 
   // ユーザー情報（実際のアプリではこれらはデータベースやローカルストレージから取得する）
   const userInfo = {
     name: "勇者名", // プレイヤーネームもDBから取得する形に変更
-    exp: 1250, // 獲得経験ポイント数
     clearedStages: "ステージ８", // クリア済ステージ
   }
 
@@ -79,8 +80,14 @@ export default function UserPage() {
         }
 
         const data = await response.json();
+        console.log('User Info Response:', data);
+        
         if (data.userInfo?.TitleInfo?.DisplayName) {
           setDisplayName(data.userInfo.TitleInfo.DisplayName);
+        }
+        if (data.userInfo?.PlayFabId) {  // PlayFabIdの位置を修正
+          console.log('Setting PlayFabId:', data.userInfo.PlayFabId);
+          setPlayFabId(data.userInfo.PlayFabId);
         }
       } catch (error) {
         console.error('Error fetching user info:', error);
@@ -89,6 +96,32 @@ export default function UserPage() {
 
     fetchUserInfo();
   }, []);
+
+  useEffect(() => {
+    const fetchPlayerExp = async () => {
+      if (!playFabId) {
+        console.log('No PlayFabId available yet');
+        return;
+      }
+
+      try {
+        console.log('Fetching EXP for PlayFabId:', playFabId);
+        const response = await fetch(`/api/player/getPlayerExp?playFabId=${playFabId}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch player EXP');
+        }
+
+        const data = await response.json();
+        console.log('EXP Response:', data);
+        setExp(data.exp);
+      } catch (error) {
+        console.error('Error fetching player EXP:', error);
+      }
+    };
+
+    fetchPlayerExp();
+  }, [playFabId]);
 
   // Toggle mute
   const toggleMute = () => {
@@ -177,7 +210,7 @@ export default function UserPage() {
                 <Star className="h-5 w-5 text-yellow-400" />
                 <span className="text-white font-medium">獲得経験ポイント数：</span>
               </div>
-              <span className="text-yellow-300 font-bold">{userInfo.exp} EXP</span>
+              <span className="text-yellow-300 font-bold">{exp} EXP</span>
             </div>
 
             {/* Cleared Stages */}
