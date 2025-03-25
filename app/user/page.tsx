@@ -9,6 +9,7 @@ export default function UserPage() {
   const [isMuted, setIsMuted] = useState(false)
   const [audioLoaded, setAudioLoaded] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [displayName, setDisplayName] = useState<string>('')
 
   // ユーザー情報（実際のアプリではこれらはデータベースやローカルストレージから取得する）
   const userInfo = {
@@ -62,6 +63,32 @@ export default function UserPage() {
       }
     }
   }, [])
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch('/api/get-user-info', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user info');
+        }
+
+        const data = await response.json();
+        if (data.userInfo?.TitleInfo?.DisplayName) {
+          setDisplayName(data.userInfo.TitleInfo.DisplayName);
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
 
   // Toggle mute
   const toggleMute = () => {
@@ -141,7 +168,7 @@ export default function UserPage() {
             {/* User name - 編集不可に変更 */}
             <div className="flex items-center justify-between bg-teal-800 p-3 rounded-lg border border-teal-700">
               <span className="text-white font-medium">プレイヤーネーム：</span>
-              <span className="text-yellow-300 font-bold">{userInfo.name}</span>
+              <span className="text-yellow-300 font-bold">{displayName || '読み込み中...'}</span>
             </div>
 
             {/* Experience Points */}
