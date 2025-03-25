@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PlayFabClient } from 'playfab-sdk';
+import { PlayFabServer, PlayFabAdmin } from 'playfab-sdk';
 
 // 環境変数から設定を取得
 const titleId = process.env.PLAYFAB_TITLE_ID;
@@ -10,8 +10,10 @@ if (!titleId || !devSecret) {
 }
 
 // PlayFabの初期化
-PlayFabClient.settings.titleId = titleId;
-PlayFabClient.settings.productionUrl = `https://${titleId}.playfabapi.com`;
+PlayFabServer.settings.titleId = titleId;
+PlayFabServer.settings.developerSecretKey = devSecret;
+PlayFabAdmin.settings.titleId = titleId;
+PlayFabAdmin.settings.developerSecretKey = devSecret;
 
 export async function POST(request: Request) {
   try {
@@ -32,37 +34,56 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Session ticket not found' }, { status: 401 });
     }
 
-    // **URL デコードを行う**
+    // URLデコードを行う
     sessionTicket = decodeURIComponent(sessionTicket);
     console.log('Backend Session Ticket (Decoded):', sessionTicket);
 
-    // **PlayFabClient.settings を any 型で上書きして sessionTicket を設定**
-    (PlayFabClient.settings as any).sessionTicket = sessionTicket;
+    // セッションチケットからPlayFabIdを取得
+    const authResult = await new Promise((resolve, reject) => {
+      PlayFabServer.AuthenticateSessionTicket({
+        SessionTicket: sessionTicket
+      }, (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    });
 
-    // PlayFab API呼び出し（UpdateUserTitleDisplayName）
-    return new Promise<NextResponse>((resolve) => {
-      PlayFabClient.UpdateUserTitleDisplayName({
+    const playFabId = (authResult as any).data.UserInfo.PlayFabId;
+
+    // PlayFabAdminを使用してユーザー名を更新
+    const updateResult = await new Promise((resolve, reject) => {
+      PlayFabAdmin.UpdateUserTitleDisplayName({
+        PlayFabId: playFabId,
         DisplayName: displayName
       }, (error, result) => {
         if (error) {
           console.error('PlayFab UpdateUserTitleDisplayName error:', error);
-          return resolve(NextResponse.json({
-            message: 'Update failed',
-            error: error.errorMessage || 'Unknown error occurred'
-          }, { status: 400 }));
+          reject(error);
+        } else {
+          console.log('PlayFab UpdateUserTitleDisplayName success:', result);
+          resolve(result);
         }
-
-        return resolve(NextResponse.json({
-          message: 'Update successful',
-          result
-        }, { status: 200 }));
       });
     });
+
+    return NextResponse.json({
+      message: 'Update successful',
+      result: updateResult
+    }, { status: 200 });
+
   } catch (error) {
-    console.error('Server error:', error);
+    console.error('Server error details:', {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : 'Unknown error occurred',
+      stack: error instanceof Error ? error.stack : undefined
+    });
     return NextResponse.json({
       message: 'Internal server error',
-      error: error instanceof Error ? error.message : 'Unknown error occurred'
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      details: error instanceof Error ? error.stack : undefined
     }, { status: 500 });
   }
 }

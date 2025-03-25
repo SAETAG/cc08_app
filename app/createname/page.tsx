@@ -26,6 +26,7 @@ export default function CreateNamePage() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           displayName: name,
         }),
@@ -33,14 +34,15 @@ export default function CreateNamePage() {
 
       const data = await res.json()
 
-      if (res.ok) {
-        // 更新成功時はホームページに遷移
-        router.push("/home")
-      } else {
-        setError(data.message || "名前の更新に失敗しました")
+      if (!res.ok) {
+        throw new Error(data.message || "名前の更新に失敗しました")
       }
+
+      // 更新成功時はホームページに遷移
+      router.push("/home")
     } catch (error) {
-      setError("名前の更新中にエラーが発生しました")
+      console.error("Error updating display name:", error)
+      setError(error instanceof Error ? error.message : "名前の更新中にエラーが発生しました")
     } finally {
       setLoading(false)
     }

@@ -163,6 +163,13 @@ export default function UserPage() {
             </div>
           </div>
         </div>
+
+        {/* Player Name Change Button */}
+        <Link href="/createname" className="mt-4">
+          <Button className="w-full bg-purple-600 hover:bg-purple-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-purple-500 text-lg sm:text-xl transition-colors duration-200">
+            プレイヤーネーム変更
+          </Button>
+        </Link>
       </main>
     </div>
   )
