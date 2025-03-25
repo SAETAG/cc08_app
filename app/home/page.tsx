@@ -167,14 +167,14 @@ export default function HomePage() {
     setChatMessages((prev) => [...prev, { sender: "user", text: userMessage }])
 
     try {
-      console.log('Sending chat request:', {
+      console.log("Sending chat request:", {
         message: userMessage,
-        conversationId: currentConversationId
-      });
+        conversationId: currentConversationId,
+      })
 
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           query: userMessage,
           conversation_id: currentConversationId,
@@ -183,17 +183,17 @@ export default function HomePage() {
         }),
       })
 
-      const result = await response.json();
+      const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || 'API request failed');
+        throw new Error(result.error || "API request failed")
       }
 
-      console.log('Received chat response:', result);
-      
+      console.log("Received chat response:", result)
+
       // Add AI response to chat
       setChatMessages((prev) => [...prev, { sender: "mo-chan", text: result.answer }])
-      
+
       // Update conversation ID if provided
       if (result.conversation_id) {
         setCurrentConversationId(result.conversation_id)
@@ -349,7 +349,7 @@ export default function HomePage() {
                   {showChat && (
                     <div
                       ref={chatBubbleRef}
-                      className="absolute bottom-full right-0 mb-2 w-64 sm:w-72 bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-3 shadow-lg border-2 border-yellow-500 chat-bubble transition-opacity duration-300 ease-in-out"
+                      className="absolute bottom-full right-0 mb-2 w-80 sm:w-96 md:w-[30rem] bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-4 shadow-lg border-2 border-yellow-500 chat-bubble transition-opacity duration-300 ease-in-out"
                       onClick={handleChatInteraction}
                       onMouseEnter={handleChatInteraction}
                     >
@@ -367,7 +367,7 @@ export default function HomePage() {
                         </button>
                       )}
 
-                      <div className="max-h-48 overflow-y-auto pr-1 mb-2 mt-3 chat-messages">
+                      <div className="max-h-64 overflow-y-auto pr-1 mb-2 mt-3 chat-messages">
                         {chatMessages.map((msg, index) => (
                           <div key={index} className={`mb-2 ${msg.sender === "user" ? "text-right" : ""}`}>
                             <div
@@ -386,7 +386,18 @@ export default function HomePage() {
 
                       {/* Only show form when interacting */}
                       {isInteractingWithChat && (
-                        <form onSubmit={handleChatSubmit} className="flex gap-1">
+                        <form
+                          onSubmit={handleChatSubmit}
+                          className="flex gap-1"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                              e.preventDefault()
+                              if (userMessage.trim()) {
+                                handleChatSubmit(e)
+                              }
+                            }
+                          }}
+                        >
                           <Input
                             ref={chatInputRef}
                             type="text"
@@ -399,6 +410,7 @@ export default function HomePage() {
                             type="submit"
                             size="icon"
                             className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-purple-900"
+                            onClick={() => setUserMessage("")}
                           >
                             <Send className="h-4 w-4" />
                           </Button>
