@@ -212,15 +212,6 @@ export default function UserPage() {
               </div>
               <span className="text-yellow-300 font-bold">{exp} EXP</span>
             </div>
-
-            {/* Cleared Stages */}
-            <div className="flex items-center justify-between bg-teal-800 p-3 rounded-lg border border-teal-700">
-              <div className="flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-yellow-400" />
-                <span className="text-white font-medium">クリア済ステージ：</span>
-              </div>
-              <span className="text-yellow-300 font-bold">{userInfo.clearedStages}</span>
-            </div>
           </div>
         </div>
 
