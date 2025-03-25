@@ -24,138 +24,53 @@ interface RankingUser {
   score: number
   rank: number
   achievements: string[]
-  level: number
   isCurrentUser: boolean
 }
 
-// サンプルデータ
-const generateRankingData = (period: string): RankingUser[] => {
-  // 実際のアプリではAPIからデータを取得する
-  const baseUsers = [
-    {
-      id: "1",
-      name: "山田太郎",
-      avatar: "/placeholder.svg?height=40&width=40",
-      score: 9850,
-      achievements: ["全ステージクリア", "コンプリート達成", "連続ログイン30日"],
-      level: 42,
-      isCurrentUser: false,
-    },
-    {
-      id: "2",
-      name: "佐藤花子",
-      avatar: "/placeholder.svg?height=40&width=40",
-      score: 9720,
-      achievements: ["デイリーミッション達成王", "アイテムコレクター", "早起きチャレンジャー"],
-      level: 40,
-      isCurrentUser: false,
-    },
-    {
-      id: "3",
-      name: "鈴木一郎",
-      avatar: "/placeholder.svg?height=40&width=40",
-      score: 9580,
-      achievements: ["整理の達人", "収納マスター", "時間管理のプロ"],
-      level: 39,
-      isCurrentUser: false,
-    },
-    {
-      id: "4",
-      name: "田中美咲",
-      avatar: "/placeholder.svg?height=40&width=40",
-      score: 9350,
-      achievements: ["断捨離の達人", "ミニマリスト", "エコフレンドリー"],
-      level: 38,
-      isCurrentUser: true,
-    },
-    {
-      id: "5",
-      name: "高橋健太",
-      avatar: "/placeholder.svg?height=40&width=40",
-      score: 9200,
-      achievements: ["収納の魔術師", "整理整頓マスター", "時短テクニック"],
-      level: 37,
-      isCurrentUser: false,
-    },
-    {
-      id: "6",
-      name: "伊藤さくら",
-      avatar: "/placeholder.svg?height=40&width=40",
-      score: 9050,
-      achievements: ["クローゼット整理の達人", "カラーコーディネーター", "季節管理のプロ"],
-      level: 36,
-      isCurrentUser: false,
-    },
-    {
-      id: "7",
-      name: "渡辺大輔",
-      avatar: "/placeholder.svg?height=40&width=40",
-      score: 8900,
-      achievements: ["収納ボックスマスター", "ラベリングの達人", "空間活用のプロ"],
-      level: 35,
-      isCurrentUser: false,
-    },
-    {
-      id: "8",
-      name: "小林結衣",
-      avatar: "/placeholder.svg?height=40&width=40",
-      score: 8750,
-      achievements: ["デジタル整理の達人", "ファイル管理のプロ", "バックアップマスター"],
-      level: 34,
-      isCurrentUser: false,
-    },
-    {
-      id: "9",
-      name: "加藤雄太",
-      avatar: "/placeholder.svg?height=40&width=40",
-      score: 8600,
-      achievements: ["キッチン整理の達人", "食材管理のプロ", "収納スペースの魔術師"],
-      level: 33,
-      isCurrentUser: false,
-    },
-    {
-      id: "10",
-      name: "吉田千尋",
-      avatar: "/placeholder.svg?height=40&width=40",
-      score: 8450,
-      achievements: ["バスルーム整理の達人", "洗面所管理のプロ", "清潔さの維持"],
-      level: 32,
-      isCurrentUser: false,
-    },
-    {
-      id: "11",
-      name: "山本拓也",
-      avatar: "/placeholder.svg?height=40&width=40",
-      score: 8300,
-      achievements: ["書類整理の達人", "ペーパーレス推進者", "情報管理のプロ"],
-      level: 31,
-      isCurrentUser: false,
-    },
-    {
-      id: "12",
-      name: "中村美月",
-      avatar: "/placeholder.svg?height=40&width=40",
-      score: 8150,
-      achievements: ["季節の切り替え達人", "クローゼット変身術", "収納の効率化"],
-      level: 30,
-      isCurrentUser: false,
-    },
-  ]
+// サンプルデータ生成関数を削除し、実際のデータ取得関数を追加
+const fetchRankingData = async (period: string): Promise<RankingUser[]> => {
+  try {
+    console.log('Fetching ranking data for period:', period);
+    const response = await fetch(`/api/leaderboard?period=${period}`, {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
 
-  // 期間によって若干スコアを変動させる
-  let multiplier = 1
-  if (period === "weekly") multiplier = 0.7
-  if (period === "daily") multiplier = 0.4
+    const data = await response.json();
+    console.log('API response:', data);
 
-  // ランクを付与して返す
-  return baseUsers
-    .map((user, index) => ({
-      ...user,
-      score: Math.floor(user.score * multiplier),
+    if (!response.ok || data.error) {
+      console.error('API error:', data.error);
+      return [];
+    }
+    
+    // PlayFabのレスポンスデータをRankingUser型に変換
+    const leaderboard = data.data.leaderboard.Leaderboard;
+    if (!leaderboard) {
+      console.error('No leaderboard data found');
+      return [];
+    }
+
+    // 現在のユーザーのスコアを取得
+    const currentUserScore = data.data.currentUser.statisticValue;
+    const currentUserInLeaderboard = leaderboard.find((entry: any) => entry.StatValue === currentUserScore);
+
+    return leaderboard.map((entry: any, index: number) => ({
+      id: entry.PlayFabId,
+      name: entry.DisplayName || "名無しのユーザー",
+      avatar: entry.Profile?.AvatarUrl || "/images/avatar-placeholder.png",
+      score: entry.StatValue,
       rank: index + 1,
-    }))
-    .sort((a, b) => b.score - a.score)
-}
+      achievements: [], // PlayFabから取得可能な場合は追加
+      isCurrentUser: entry.StatValue === currentUserScore // スコアが一致する場合は現在のユーザー
+    }));
+  } catch (error) {
+    console.error('Error fetching ranking data:', error);
+    return [];
+  }
+};
 
 export default function MountainPage() {
   const [soundEnabled, setSoundEnabled] = useState(true)
@@ -164,6 +79,7 @@ export default function MountainPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [selectedUser, setSelectedUser] = useState<RankingUser | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [currentUserScore, setCurrentUserScore] = useState<number | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const currentUserRef = useRef<HTMLDivElement>(null)
 
@@ -213,21 +129,88 @@ export default function MountainPage() {
     setSoundEnabled((prev) => !prev)
   }
 
-  // Load ranking data based on selected period
+  // ランキングデータの初期読み込み
   useEffect(() => {
-    setRankingData(generateRankingData(currentPeriod))
-  }, [currentPeriod])
+    const loadRankingData = async () => {
+      const response = await fetch(`/api/leaderboard?period=${currentPeriod}`, {
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
 
-  // Handle refresh button click
-  const handleRefresh = () => {
-    setIsRefreshing(true)
+      const data = await response.json();
+      if (!response.ok || data.error) {
+        console.error('API error:', data.error);
+        return;
+      }
 
-    // Simulate refresh delay
-    setTimeout(() => {
-      setRankingData(generateRankingData(currentPeriod))
-      setIsRefreshing(false)
-    }, 1500)
-  }
+      const leaderboard = data.data.leaderboard.Leaderboard;
+      if (!leaderboard) {
+        console.error('No leaderboard data found');
+        return;
+      }
+
+      // 現在のユーザーのスコアを保存
+      setCurrentUserScore(data.data.currentUser.statisticValue);
+
+      // ランキングデータを変換して保存
+      const rankings = leaderboard.map((entry: any, index: number) => ({
+        id: entry.PlayFabId,
+        name: entry.DisplayName || "名無しのユーザー",
+        avatar: entry.Profile?.AvatarUrl || "/images/avatar-placeholder.png",
+        score: entry.StatValue,
+        rank: index + 1,
+        achievements: [],
+        isCurrentUser: entry.StatValue === data.data.currentUser.statisticValue
+      }));
+
+      setRankingData(rankings);
+    };
+    loadRankingData();
+  }, [currentPeriod]);
+
+  // リフレッシュ処理の更新
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    const response = await fetch(`/api/leaderboard?period=${currentPeriod}`, {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    if (!response.ok || data.error) {
+      console.error('API error:', data.error);
+      setIsRefreshing(false);
+      return;
+    }
+
+    const leaderboard = data.data.leaderboard.Leaderboard;
+    if (!leaderboard) {
+      console.error('No leaderboard data found');
+      setIsRefreshing(false);
+      return;
+    }
+
+    // 現在のユーザーのスコアを保存
+    setCurrentUserScore(data.data.currentUser.statisticValue);
+
+    // ランキングデータを変換して保存
+    const rankings = leaderboard.map((entry: any, index: number) => ({
+      id: entry.PlayFabId,
+      name: entry.DisplayName || "名無しのユーザー",
+      avatar: entry.Profile?.AvatarUrl || "/images/avatar-placeholder.png",
+      score: entry.StatValue,
+      rank: index + 1,
+      achievements: [],
+      isCurrentUser: entry.StatValue === data.data.currentUser.statisticValue
+    }));
+
+    setRankingData(rankings);
+    setIsRefreshing(false);
+  };
 
   // Handle user click
   const handleUserClick = (user: RankingUser) => {
@@ -252,8 +235,16 @@ export default function MountainPage() {
   const topUsers = rankingData.slice(0, 3)
   const otherUsers = rankingData.slice(3)
 
-  // Find current user
-  const currentUser = rankingData.find((user) => user.isCurrentUser)
+  // 現在のユーザー情報を取得（ランキング外の場合も含む）
+  const currentUser = rankingData.find((user) => user.isCurrentUser) || (currentUserScore !== null ? {
+    id: 'current-user',
+    name: 'あなた',
+    avatar: '/images/avatar-placeholder.png',
+    score: currentUserScore,
+    rank: rankingData.length + 1,
+    achievements: [],
+    isCurrentUser: true
+  } : null);
 
   // Get rank icon based on position
   const getRankIcon = (rank: number) => {
@@ -491,7 +482,6 @@ export default function MountainPage() {
                 {/* User info */}
                 <div className="flex-1">
                   <div className="font-medium">{user.name}</div>
-                  <div className="text-xs text-indigo-300">Lv.{user.level}</div>
                 </div>
 
                 {/* Score */}
@@ -520,7 +510,6 @@ export default function MountainPage() {
                 <div className="font-medium">
                   {currentUser.name} <span className="text-amber-300">(あなた)</span>
                 </div>
-                <div className="text-xs text-indigo-300">Lv.{currentUser.level}</div>
               </div>
 
               <div className="flex flex-col items-end">
@@ -574,10 +563,6 @@ export default function MountainPage() {
 
                 {/* User stats */}
                 <div className="w-full bg-indigo-900/50 rounded-lg p-4 mb-4">
-                  <div className="flex justify-between mb-2">
-                    <span className="text-indigo-300">レベル:</span>
-                    <span className="font-bold text-amber-300">Lv.{selectedUser.level}</span>
-                  </div>
                   <div className="flex justify-between">
                     <span className="text-indigo-300">スコア:</span>
                     <span className="font-bold text-amber-300">{selectedUser.score}</span>
