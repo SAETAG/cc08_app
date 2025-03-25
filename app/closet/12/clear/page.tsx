@@ -93,19 +93,54 @@ export default function Stage12ClearPage() {
   }
 
   // Handle item get
-  const handleGetItem = () => {
-    setShowItemAnimation(true)
-    setTimeout(() => {
-      setShowItemAnimation(false)
-    }, 1500)
+  const handleGetItem = async () => {
+    try {
+      const response = await fetch('/api/updateItem', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          itemName: 'HARMONY_BELL'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('アイテムの取得に失敗しました');
+      }
+
+      setShowItemAnimation(true);
+      setTimeout(() => {
+        setShowItemAnimation(false);
+      }, 1500);
+    } catch (error) {
+      console.error('アイテム取得エラー:', error);
+      alert('アイテムの取得に失敗しました。もう一度お試しください。');
+    }
   }
 
   // Handle exp get
-  const handleGetExp = () => {
-    setShowExpAnimation(true)
-    setTimeout(() => {
-      setShowExpAnimation(false)
-    }, 1500)
+  const handleGetExp = async () => {
+    try {
+      const response = await fetch('/api/updateExp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('経験値の取得に失敗しました');
+      }
+
+      setShowExpAnimation(true);
+      setTimeout(() => {
+        setShowExpAnimation(false);
+      }, 1500);
+    } catch (error) {
+      console.error('経験値取得エラー:', error);
+      alert('経験値の取得に失敗しました。もう一度お試しください。');
+    }
   }
 
   // Toggle mute
@@ -343,4 +378,3 @@ export default function Stage12ClearPage() {
     </div>
   )
 }
-

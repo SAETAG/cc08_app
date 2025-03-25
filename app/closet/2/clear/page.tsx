@@ -74,19 +74,58 @@ export default function Stage2ClearPage() {
   }, [])
 
   // Handle item get
-  const handleGetItem = () => {
+  const handleGetItem = async () => {
     setShowItemAnimation(true)
     setTimeout(() => {
       setShowItemAnimation(false)
     }, 1500)
+
+    try {
+      const response = await fetch("/api/updateItem", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          itemName: "CHAOS_CRYSTAL" // 混沌の結晶
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update item");
+      }
+
+      const result = await response.json();
+      console.log("Item update result:", result);
+    } catch (error) {
+      console.error("Error updating item:", error);
+    }
   }
 
-  // Handle exp get
-  const handleGetExp = () => {
+  // Handle exp item get
+  const handleGetExp = async () => {
     setShowExpAnimation(true)
     setTimeout(() => {
       setShowExpAnimation(false)
     }, 1500)
+
+    try {
+      const response = await fetch("/api/updateExp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update EXP");
+      }
+
+      const result = await response.json();
+      console.log("EXP update result:", result);
+    } catch (error) {
+      console.error("Error updating EXP:", error);
+    }
   }
 
   // Toggle mute

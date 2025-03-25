@@ -18,6 +18,18 @@ export default function CreateNamePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+
+    // Validate name before submission
+    if (name.length < 3 || name.length > 25) {
+      setError("名前は3～25文字で入力してください")
+      return
+    }
+
+    if (!/^[a-zA-Z0-9]+$/.test(name)) {
+      setError("英数字のみ使用可能です")
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -106,25 +118,27 @@ export default function CreateNamePage() {
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="あなたの名前"
-              className="w-full bg-black bg-opacity-50 border-indigo-400 text-white placeholder:text-gray-400 focus:border-yellow-300 focus:ring-yellow-300"
-              required
-            />
-
-            {error && (
-              <div className="text-red-400 text-sm">
-                {error}
+            <div className="space-y-1">
+              <Input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="あなたの名前"
+                className="w-full bg-black bg-opacity-50 border-indigo-400 text-white placeholder:text-gray-400 focus:border-yellow-300 focus:ring-yellow-300"
+                required
+              />
+              <div className="flex justify-between text-xs text-gray-300">
+                <span>3～25文字で英数字のみ使用可</span>
+                <span>{name.length} 文字</span>
               </div>
-            )}
+            </div>
+
+            {error && <div className="text-red-400 text-sm">{error}</div>}
 
             <Button
               type="submit"
               disabled={loading}
-              className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-orange-500 text-lg sm:text-xl transition-colors duration-200"
+              className="w-full bg-orange-600 hover:bg-orange-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-orange-500 text-lg sm:text-xl transition-colors duration-200"
             >
               {loading ? "更新中..." : "完了！"}
             </Button>
@@ -132,9 +146,9 @@ export default function CreateNamePage() {
 
           <Button
             onClick={() => router.push("/home")}
-            className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-indigo-500 text-lg sm:text-xl transition-colors duration-200"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-indigo-500 text-lg sm:text-xl transition-colors duration-200"
           >
-            名前を登録せずに始める
+            ホーム画面へ
           </Button>
         </div>
       </div>

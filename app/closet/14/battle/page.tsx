@@ -628,7 +628,7 @@ export default function Endroll() {
             className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-black font-bold py-3 px-6 rounded-full shadow-lg flex items-center gap-2"
           >
             <Crown className="h-5 w-5" />
-            <span>王冠を受け取る</span>
+            <span>次へ</span>
           </Button>
         </div>
       )}

@@ -111,20 +111,20 @@ export default function Stage5BattlePage() {
 
     try {
       // APIエンドポイントにデータを送信
-      const response = await fetch('/api/updateUserData', {
-        method: 'POST',
-        credentials: 'include',
+      const response = await fetch("/api/updateUserData", {
+        method: "POST",
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          stageId: 5
-        })
-      });
+          stageId: 5,
+        }),
+      })
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save record');
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to save record")
       }
 
       // Show feedback card instead of immediately navigating
@@ -237,170 +237,168 @@ export default function Stage5BattlePage() {
           <div className="mb-8">
             <h3 className="text-xl font-bold text-yellow-300 mb-4">断捨離の箱へ入れるべきリスト</h3>
 
-            <div className="space-y-4">
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="item1"
                   checked={discardItems[0]}
                   onCheckedChange={() => toggleDiscard(0)}
-                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="item1" className="text-red-300 font-bold cursor-pointer">
-                    ❌ 1. 呪われし装備（着ると気分が下がる服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="item1" className="text-red-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">👕❌</span> 呪われし装備
                   </label>
-                  <p className="text-white text-sm">
-                    👉 色褪せたTシャツ、ヨレヨレの服、着るとなんかテンションが下がる服
-                  </p>
+                  <p className="text-white text-sm">色褪せたTシャツ、ヨレヨレの服、着るとなんかテンションが下がる服</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="item2"
                   checked={discardItems[1]}
                   onCheckedChange={() => toggleDiscard(1)}
-                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="item2" className="text-red-300 font-bold cursor-pointer">
-                    ❌ 2. 朽ちた鎧（ボロボロの服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="item2" className="text-red-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">🧦💔</span> 朽ちた鎧
                   </label>
-                  <p className="text-white text-sm">👉 穴が空いた靴下、毛玉まみれのセーター、シミが落ちないシャツ</p>
+                  <p className="text-white text-sm">穴が空いた靴下、毛玉まみれのセーター、シミが落ちないシャツ</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="item3"
                   checked={discardItems[2]}
                   onCheckedChange={() => toggleDiscard(2)}
-                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="item3" className="text-red-300 font-bold cursor-pointer">
-                    ❌ 3. 幻影のローブ（1年以上着ていない服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="item3" className="text-red-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">👻👕</span> 幻影のローブ
                   </label>
                   <p className="text-white text-sm">
-                    👉 「いつか着るかも…」でずっと眠っている服は、もはや存在しないも同じ
+                    「いつか着るかも…」でずっと眠っている服は、もはや存在しないも同じ
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="item4"
                   checked={discardItems[3]}
                   onCheckedChange={() => toggleDiscard(3)}
-                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="item4" className="text-red-300 font-bold cursor-pointer">
-                    ❌ 4. 伝説になれなかった戦闘服（買ったけど結局着ない服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="item4" className="text-red-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">🏷️⚔️</span> 伝説になれなかった戦闘服
                   </label>
                   <p className="text-white text-sm">
-                    👉 試着室で「これ絶対着る！」と思ったのに、一度も外に出なかった勇者候補たち
+                    試着室で「これ絶対着る！」と思ったのに、一度も外に出なかった勇者候補たち
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="item5"
                   checked={discardItems[4]}
                   onCheckedChange={() => toggleDiscard(4)}
-                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="item5" className="text-red-300 font-bold cursor-pointer">
-                    ❌ 5. 負のオーラを宿す鎧（サイズが合わない服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="item5" className="text-red-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">👎👚</span> 負のオーラを宿す鎧
                   </label>
                   <p className="text-white text-sm">
-                    👉 「痩せたら着る！」はもう呪文のようなもの。今の自分に合わない服は手放そう
+                    「痩せたら着る！」はもう呪文のようなもの。今の自分に合わない服は手放そう
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="item6"
                   checked={discardItems[5]}
                   onCheckedChange={() => toggleDiscard(5)}
-                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="item6" className="text-red-300 font-bold cursor-pointer">
-                    ❌ 6. 闇に染まった羽衣（トレンドが過ぎ去った服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="item6" className="text-red-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">🌑🪶</span> 闇に染まった羽衣
                   </label>
                   <p className="text-white text-sm">
-                    👉 「昔はよく着てたけど、もう似合わない…」そんな服たちも、次の旅へ送り出そう
+                    「昔はよく着てたけど、もう似合わない…」そんな服たちも、次の旅へ送り出そう
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="item7"
                   checked={discardItems[6]}
                   onCheckedChange={() => toggleDiscard(6)}
-                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="item7" className="text-red-300 font-bold cursor-pointer">
-                    ❌ 7. かつての英雄のマント（思い出はあるけど着ない服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="item7" className="text-red-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">🦸‍♂️🧣</span> かつての英雄のマント
                   </label>
                   <p className="text-white text-sm">
-                    👉 昔のバイトTシャツ、学生時代のジャージ…思い出は写真に残して服は処分！
+                    昔のバイトTシャツ、学生時代のジャージ…思い出は写真に残して服は処分！
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="item8"
                   checked={discardItems[7]}
                   onCheckedChange={() => toggleDiscard(7)}
-                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="item8" className="text-red-300 font-bold cursor-pointer">
-                    ❌ 8. 迷いの装束（着るたびに微妙な気持ちになる服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="item8" className="text-red-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">🤔👔</span> 迷いの装束
                   </label>
                   <p className="text-white text-sm">
-                    👉 「なんかしっくりこない」「着心地が悪い」→ 未来の自分も多分同じこと思う
+                    「なんかしっくりこない」「着心地が悪い」→ 未来の自分も多分同じこと思う
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="item9"
                   checked={discardItems[8]}
                   onCheckedChange={() => toggleDiscard(8)}
-                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="item9" className="text-red-300 font-bold cursor-pointer">
-                    ❌ 9. 重すぎる呪いの鎧（お手入れが大変すぎる服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="item9" className="text-red-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">🧹⚖️</span> 重すぎる呪いの鎧
                   </label>
                   <p className="text-white text-sm">
-                    👉 毎回クリーニングが必要、アイロンが必須…メンテが面倒で着る気が起きない服
+                    毎回クリーニングが必要、アイロンが必須…メンテが面倒で着る気が起きない服
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="item10"
                   checked={discardItems[9]}
                   onCheckedChange={() => toggleDiscard(9)}
-                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-red-500 data-[state=checked]:text-white border-2 border-red-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="item10" className="text-red-300 font-bold cursor-pointer">
-                    ❌ 10. 影の戦士の残骸（似たような服がありすぎる）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="item10" className="text-red-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">👤👕</span> 影の戦士の残骸
                   </label>
-                  <p className="text-white text-sm">👉 黒Tシャツ10枚、同じデザインのスウェット5枚…そんなにいる！？</p>
+                  <p className="text-white text-sm">黒Tシャツ10枚、同じデザインのスウェット5枚…そんなにいる！？</p>
                 </div>
               </div>
             </div>
