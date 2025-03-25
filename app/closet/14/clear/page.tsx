@@ -96,8 +96,11 @@ export default function CrownPage() {
     }
   }
 
+  const [showExpAnimation, setShowExpAnimation] = useState(false)
+
   // Handle exp get
   const handleGetExp = async () => {
+    // アニメーション開始
     setShowExpAnimation(true)
     setTimeout(() => {
       setShowExpAnimation(false)
@@ -110,6 +113,7 @@ export default function CrownPage() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
       });
 
       if (!expResponse.ok) {
@@ -120,44 +124,25 @@ export default function CrownPage() {
       console.log("EXP update result:", expResult);
 
       // Statistics APIを呼び出して統計情報を更新
-      console.log("Calling updateStatistics API...");
       const statsResponse = await fetch("/api/updateStatistics", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // セッションクッキーを送信するために必要
+        credentials: "include",
       });
 
-      console.log("updateStatistics response status:", statsResponse.status);
-      
       if (!statsResponse.ok) {
-        const errorText = await statsResponse.text();
-        console.error("Statistics API error response:", errorText);
-        throw new Error(`Failed to update Statistics: ${statsResponse.status} ${errorText}`);
+        throw new Error("Failed to update statistics");
       }
 
       const statsResult = await statsResponse.json();
       console.log("Statistics update result:", statsResult);
 
-      if (statsResult.result?.data?.updatedStatistics) {
-        console.log("Updated statistics values:", {
-          Experience: statsResult.result.data.updatedStatistics.find(s => s.StatisticName === "Experience")?.Value,
-          DayExperience: statsResult.result.data.updatedStatistics.find(s => s.StatisticName === "DayExperience")?.Value,
-          WeekExperience: statsResult.result.data.updatedStatistics.find(s => s.StatisticName === "WeekExperience")?.Value
-        });
-      } else {
-        console.log("No statistics data in response");
-      }
+      // 成功通知を表示
+      showNotification("exp");
     } catch (error) {
-      console.error("Error updating EXP or Statistics:", error);
-      if (error instanceof Error) {
-        console.error("Error details:", {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        });
-      }
+      console.error("Error updating EXP or statistics:", error);
     }
   }
 
@@ -307,11 +292,11 @@ export default function CrownPage() {
 
             {/* 経験値を受け取るボタン */}
             <Button
-              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2 px-4 rounded-full shadow-lg flex items-center gap-2"
               onClick={handleGetExp}
+              className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded-full shadow-lg transform transition-all duration-200 hover:scale-105"
+              disabled={showExpAnimation}
             >
-              <Award className="h-5 w-5" />
-              <span>経験値50EXPを受け取る</span>
+              経験値50EXPを受け取る
             </Button>
           </div>
 
@@ -336,6 +321,15 @@ export default function CrownPage() {
           {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
         </button>
       </div>
+
+      {/* 経験値獲得ボタンと経験値アニメーション */}
+      {showExpAnimation && (
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
+          <div className="text-4xl font-bold text-yellow-400 animate-bounce">
+            +50 EXP
+          </div>
+        </div>
+      )}
 
       {/* アニメーション用のスタイル */}
       <style jsx global>{`
