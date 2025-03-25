@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Volume2, VolumeX, ArrowLeft, Home } from "lucide-react"
+import { PlayFabClient } from 'playfab-sdk'
 
 export default function Stage1BattlePage() {
   const [isMuted, setIsMuted] = useState(false)
@@ -86,14 +87,24 @@ export default function Stage1BattlePage() {
     setIsSaving(true)
 
     try {
-      // Simulate saving to database
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // APIエンドポイントにデータを送信
+      const response = await fetch('/api/updateUserData', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          stageId: 1,
+          problems,
+          ideals
+        })
+      });
 
-      // In a real app, you would save the data to your database here
-      console.log("Saving record:", {
-        problemMonster: problems,
-        idealCloset: ideals,
-      })
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save record');
+      }
 
       // Navigate to clear page
       router.push("/closet/1/clear")

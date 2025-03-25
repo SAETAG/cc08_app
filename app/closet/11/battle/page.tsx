@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Volume2, VolumeX, ArrowLeft, Home, Heart, Save, AlertCircle } from "lucide-react"
+import { Volume2, VolumeX, ArrowLeft, Home, Heart, Save, AlertCircle, BookOpen } from "lucide-react"
 
 // Feeling type definition
 type Feeling = {
@@ -193,13 +193,23 @@ export default function Stage11BattlePage() {
     setIsSaving(true)
 
     try {
-      // Simulate saving to database
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // APIエンドポイントにデータを送信
+      const response = await fetch('/api/updateUserData', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          stageId: 11,
+          feelings: feelings.filter((f) => f.selected).map((f) => f.text)
+        })
+      });
 
-      // In a real app, you would save the data to your database here
-      console.log("Saving record:", {
-        selectedFeelings: feelings.filter((f) => f.selected).map((f) => f.text),
-      })
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save record');
+      }
 
       // Navigate to clear page
       router.push("/closet/11/clear")
@@ -356,7 +366,7 @@ export default function Stage11BattlePage() {
                 "保存中..."
               ) : (
                 <>
-                  <Save className="h-5 w-5" />
+                  <BookOpen className="h-5 w-5" />
                   気持ちを記録する
                 </>
               )}

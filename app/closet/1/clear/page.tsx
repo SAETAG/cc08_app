@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Volume2, VolumeX, Home, Trophy, ArrowRight, Scroll, Star } from "lucide-react"
+import Confetti from "react-confetti"
 
 export default function Stage1ClearPage() {
   const [isMuted, setIsMuted] = useState(false)
@@ -132,6 +133,40 @@ export default function Stage1ClearPage() {
       setShowExpAnimation(false)
     }, 1500)
   }
+
+  // Save stage clear data
+  const saveStageUnlock = async () => {
+    try {
+      const response = await fetch("/api/updateUserData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          stage1_clear: true
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to update user data")
+      }
+
+      const data = await response.json()
+      console.log("Stage clear saved:", data)
+    } catch (error) {
+      console.error("Error saving stage clear:", error)
+    }
+  }
+
+  // Play BGM on mount
+  useEffect(() => {
+    tryPlayAudio()
+  }, [])
+
+  // Save stage unlock on mount
+  useEffect(() => {
+    saveStageUnlock()
+  }, [])
 
   return (
     <div className="min-h-screen bg-teal-950 flex flex-col" onClick={tryPlayAudio}>

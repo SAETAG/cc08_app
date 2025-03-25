@@ -2,7 +2,7 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Volume2, VolumeX, ArrowLeft, Star, Lock, Home } from "lucide-react"
 
@@ -70,6 +70,139 @@ export default function ClosetPage() {
   const [selectedStage, setSelectedStage] = useState<number | null>(null)
   const [isClient, setIsClient] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
+  const [stages, setStages] = useState([
+    { id: 1, name: "闇の扉", icon: "🚪", unlocked: true },
+    { id: 2, name: "選別の祭壇", icon: "🎁", unlocked: false },
+    { id: 3, name: "解放の広間", icon: "📦", unlocked: false },
+    { id: 4, name: "選ばれし者", icon: "💖", unlocked: false },
+    { id: 5, name: "断捨離の審判", icon: "🗑️", unlocked: false },
+    { id: 6, name: "未練の洞窟", icon: "💭", unlocked: false },
+    { id: 7, name: "限界の迷宮", icon: "🏰", unlocked: false },
+    { id: 8, name: "秩序の神殿", icon: "🌈", unlocked: false },
+    { id: 9, name: "時の洞窟", icon: "⏳", unlocked: false },
+    { id: 10, name: "収納の回廊", icon: "📍", unlocked: false },
+    { id: 11, name: "対話の鏡", icon: "📖", unlocked: false },
+    { id: 12, name: "確認の間", icon: "📸", unlocked: false },
+    { id: 13, name: "帰還の里", icon: "🔧", unlocked: false },
+    { id: 14, name: "最終決戦", icon: "🏰", unlocked: false },
+  ])
+
+  // Load stage clear data
+  const loadStageUnlockData = async () => {
+    try {
+      const response = await fetch("/api/getUserData", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to get user data")
+      }
+
+      const data = await response.json()
+      console.log("Loaded user data:", data)
+      console.log("Data object details:", {
+        PlayFabId: data.data.PlayFabId,
+        DataVersion: data.data.DataVersion,
+        Data: data.data.Data
+      })
+      console.log("Stage1 clear status:", data.data?.Data?.stage1_cleared?.Value === "true")
+      console.log("Stage2 clear status:", data.data?.Data?.stage2_cleared?.Value === "true")
+      console.log("Stage3 clear status:", data.data?.Data?.stage3_cleared?.Value === "true")
+      console.log("Stage4 clear status:", data.data?.Data?.stage4_cleared?.Value === "true")
+      console.log("Stage5 clear status:", data.data?.Data?.stage5_cleared?.Value === "true")
+      console.log("Stage6 clear status:", data.data?.Data?.stage6_cleared?.Value === "true")
+      console.log("Stage7 clear status:", data.data?.Data?.stage7_cleared?.Value === "true")
+      console.log("Stage8 clear status:", data.data?.Data?.stage8_cleared?.Value === "true")
+      console.log("Stage9 clear status:", data.data?.Data?.stage9_cleared?.Value === "true")
+      console.log("Stage10 clear status:", data.data?.Data?.stage10_cleared?.Value === "true")
+      console.log("Stage11 clear status:", data.data?.Data?.stage11_cleared?.Value === "true")
+      console.log("Stage12 clear status:", data.data?.Data?.stage12_cleared?.Value === "true")
+      console.log("Stage13 clear status:", data.data?.Data?.stage13_cleared?.Value === "true")
+      
+      // Update stages based on clear data
+      setStages(prevStages => {
+        return prevStages.map(stage => {
+          // ステージ2のロック解除条件
+          if (stage.id === 2 && data.data?.Data?.stage1_cleared?.Value === "true") {
+            console.log("Unlocking stage 2") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          // ステージ3のロック解除条件
+          if (stage.id === 3 && data.data?.Data?.stage2_cleared?.Value === "true") {
+            console.log("Unlocking stage 3") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          // ステージ4のロック解除条件
+          if (stage.id === 4 && data.data?.Data?.stage3_cleared?.Value === "true") {
+            console.log("Unlocking stage 4") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          // ステージ5のロック解除条件
+          if (stage.id === 5 && data.data?.Data?.stage4_cleared?.Value === "true") {
+            console.log("Unlocking stage 5") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          // ステージ6のロック解除条件
+          if (stage.id === 6 && data.data?.Data?.stage5_cleared?.Value === "true") {
+            console.log("Unlocking stage 6") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          // ステージ7のロック解除条件
+          if (stage.id === 7 && data.data?.Data?.stage6_cleared?.Value === "true") {
+            console.log("Unlocking stage 7") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          // ステージ8のロック解除条件
+          if (stage.id === 8 && data.data?.Data?.stage7_cleared?.Value === "true") {
+            console.log("Unlocking stage 8") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          // ステージ9のロック解除条件
+          if (stage.id === 9 && data.data?.Data?.stage8_cleared?.Value === "true") {
+            console.log("Unlocking stage 9") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          // ステージ10のロック解除条件
+          if (stage.id === 10 && data.data?.Data?.stage9_cleared?.Value === "true") {
+            console.log("Unlocking stage 10") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          // ステージ11のロック解除条件
+          if (stage.id === 11 && data.data?.Data?.stage10_cleared?.Value === "true") {
+            console.log("Unlocking stage 11") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          // ステージ12のロック解除条件
+          if (stage.id === 12 && data.data?.Data?.stage11_cleared?.Value === "true") {
+            console.log("Unlocking stage 12") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          // ステージ13のロック解除条件
+          if (stage.id === 13 && data.data?.Data?.stage12_cleared?.Value === "true") {
+            console.log("Unlocking stage 13") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          // ステージ14のロック解除条件
+          if (stage.id === 14 && data.data?.Data?.stage13_cleared?.Value === "true") {
+            console.log("Unlocking stage 14") // デバッグログを追加
+            return { ...stage, unlocked: true }
+          }
+          return stage
+        })
+      })
+    } catch (error) {
+      console.error("Error loading stage clear data:", error)
+    }
+  }
+
+  // Load stage unlock data on mount and route change
+  useEffect(() => {
+    loadStageUnlockData()
+  }, [pathname]) // usePathnameフックを使用してルート変更を検知
 
   // クライアントサイドでのみ実行されるようにする
   useEffect(() => {

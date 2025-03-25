@@ -13,6 +13,7 @@ import {
   VolumeX,
   ArrowUpIcon as BackArrow,
   Home,
+  Camera,
 } from "lucide-react"
 
 export default function Stage13Battle() {
@@ -22,6 +23,7 @@ export default function Stage13Battle() {
   const [currentStep, setCurrentStep] = useState(0)
   const [checkedItems, setCheckedItems] = useState<boolean[]>([false, false, false, false, false])
   const [allChecked, setAllChecked] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   // シンプルな音声初期化
   useEffect(() => {
@@ -105,8 +107,36 @@ export default function Stage13Battle() {
     }
   }
 
-  const handleComplete = () => {
-    router.push("/closet/12/clear")
+  // Save record to database and navigate to clear page
+  const saveRecord = async () => {
+    setIsSaving(true)
+
+    try {
+      // APIエンドポイントにデータを送信
+      const response = await fetch('/api/updateUserData', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          stageId: 12
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save record');
+      }
+
+      // Navigate to clear page
+      router.push("/closet/12/clear")
+    } catch (error) {
+      console.error("Error saving record:", error)
+      alert("保存中にエラーが発生しました。もう一度お試しください。")
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const checklistItems = [
@@ -286,20 +316,23 @@ export default function Stage13Battle() {
             </div>
           </div>
 
-          <button
+          <Button
             onClick={() => {
-              handleComplete()
               tryPlayAudio()
+              saveRecord()
             }}
-            disabled={!allChecked}
-            className={`w-full py-4 rounded-lg text-xl font-bold transition duration-300 border-2 ${
-              allChecked
-                ? "bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white border-yellow-500 transform hover:scale-105"
-                : "bg-gray-700 text-gray-400 cursor-not-allowed border-gray-600"
-            }`}
+            disabled={isSaving}
+            className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-purple-900 font-bold py-3 px-8 text-lg rounded-lg shadow-lg transform hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
           >
-            {allChecked ? "完了！" : "すべての項目をチェックしてください"}
-          </button>
+            {isSaving ? (
+              "保存中..."
+            ) : (
+              <>
+                <Camera className="h-5 w-5" />
+                完了！
+              </>
+            )}
+          </Button>
         </div>
       </main>
     </div>
