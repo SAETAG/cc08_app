@@ -25,6 +25,7 @@ export default function HomePage() {
   const chatEndRef = useRef<HTMLDivElement>(null)
   const chatBubbleRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery("(max-width: 768px)")
+  const [currentConversationId, setCurrentConversationId] = useState("")
 
   // シンプルな音声初期化
   useEffect(() => {
@@ -158,26 +159,55 @@ export default function HomePage() {
   }
 
   // Handle chat form submission
-  const handleChatSubmit = (e: React.FormEvent) => {
+  const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (userMessage.trim()) {
-      // Add user message
-      setChatMessages([...chatMessages, { sender: "user", text: userMessage }])
+    if (!userMessage.trim()) return
 
-      // Simulate Mo-chan's response after a short delay
-      setTimeout(() => {
-        setChatMessages((prev) => [
-          ...prev,
-          {
-            sender: "mo-chan",
-            text: "なるほど！お片付けの相談ですね。もう少し詳しく教えてもらえますか？",
-          },
-        ])
-      }, 1000)
+    // Add user message
+    setChatMessages((prev) => [...prev, { sender: "user", text: userMessage }])
 
-      // Clear input
-      setUserMessage("")
+    try {
+      console.log('Sending chat request:', {
+        message: userMessage,
+        conversationId: currentConversationId
+      });
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: userMessage,
+          conversation_id: currentConversationId,
+          user: "user-123",
+          response_mode: "blocking",
+        }),
+      })
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'API request failed');
+      }
+
+      console.log('Received chat response:', result);
+      
+      // Add AI response to chat
+      setChatMessages((prev) => [...prev, { sender: "mo-chan", text: result.answer }])
+      
+      // Update conversation ID if provided
+      if (result.conversation_id) {
+        setCurrentConversationId(result.conversation_id)
+      }
+    } catch (error) {
+      console.error("チャット送信エラー:", error)
+      setChatMessages((prev) => [
+        ...prev,
+        { sender: "mo-chan", text: "申し訳ありません。エラーが発生しました。もう一度お試しください。" },
+      ])
     }
+
+    // Clear input
+    setUserMessage("")
   }
 
   return (
