@@ -130,15 +130,22 @@ export default function Stage7BattlePage() {
     setIsSaving(true)
 
     try {
-      // Simulate saving to database
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // APIエンドポイントにデータを送信
+      const response = await fetch('/api/updateUserData', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          stageId: 7
+        })
+      });
 
-      // In a real app, you would save the data to your database here
-      console.log("Saving record:", {
-        rackLength,
-        hangerCount,
-        checksCompleted,
-      })
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save record');
+      }
 
       // Navigate to clear page
       router.push("/closet/7/clear")

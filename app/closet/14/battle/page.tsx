@@ -10,6 +10,8 @@ export default function Endroll() {
   const router = useRouter()
   const [isMuted, setIsMuted] = useState(false)
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
+  const [isClient, setIsClient] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   // アニメーションシーケンスの状態管理
   const [currentScene, setCurrentScene] = useState(0)
@@ -52,10 +54,10 @@ export default function Endroll() {
     "モオォォォォォ―。",
   ]
 
-  // シンプルな音声初期化
+  // シンプルな音声初期化 - ループなし（一回だけ再生）
   useEffect(() => {
     const audioElement = new Audio("/endroll.mp3")
-    audioElement.loop = true
+    audioElement.loop = false
     audioElement.volume = 0.7
     setAudio(audioElement)
 
@@ -230,16 +232,42 @@ export default function Endroll() {
     }
   }, [])
 
-  // handleCrownReceive関数を修正して、正しいパスに遷移するようにします
-  const handleCrownReceive = () => {
-    // 現在の音楽を停止
-    if (audio) {
-      audio.pause()
-      audio.src = ""
-    }
+  // handleCrownReceive関数を修正して、クリアデータを保存する処理を追加
+  const handleCrownReceive = async () => {
+    setIsSaving(true)
 
-    // 正しいパスに修正: /closet/endroll/crown
-    router.push("/closet/14/clear")
+    try {
+      // APIエンドポイントにデータを送信
+      const response = await fetch('/api/updateUserData', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          stageId: 14
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save record');
+      }
+
+      // 現在の音楽を停止
+      if (audio) {
+        audio.pause()
+        audio.src = ""
+      }
+
+      // 正しいパスに修正: /closet/14/clear
+      router.push("/closet/14/clear")
+    } catch (error) {
+      console.error("Error saving record:", error)
+      alert("保存中にエラーが発生しました。もう一度お試しください。")
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handleBackToHome = () => {
@@ -253,6 +281,43 @@ export default function Endroll() {
     }
 
     router.push("/home")
+  }
+
+  const handleComplete = async () => {
+    setIsSaving(true)
+
+    try {
+      // APIエンドポイントにデータを送信
+      const response = await fetch('/api/updateUserData', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          stageId: 14
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save record');
+      }
+
+      // 次のページに移動する前に確実に音声を停止
+      if (audio) {
+        audio.pause()
+        audio.currentTime = 0
+      }
+
+      // Navigate to clear page
+      router.push("/closet/14/clear")
+    } catch (error) {
+      console.error("Error saving record:", error)
+      alert("保存中にエラーが発生しました。もう一度お試しください。")
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -316,7 +381,7 @@ export default function Endroll() {
               </div>
             </div>
 
-            {/* ボスキャラクタ�� */}
+            {/* ボスキャラクター */}
             <div className="absolute top-1/4 right-1/4 transform translate-x-1/2 -translate-y-1/2">
               <div className="relative">
                 <div className={`text-8xl ${bossHealth === 0 ? "animate-boss-death" : "animate-boss-idle"}`}>👿</div>

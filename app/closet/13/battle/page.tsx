@@ -17,6 +17,7 @@ export default function Battle13() {
     sharedWithFamily: false,
   })
   const [activeTab, setActiveTab] = useState<"checklist" | "examples" | "tips">("checklist")
+  const [isSaving, setIsSaving] = useState(false)
 
   // シンプルな音声初期化 - ループなし（一回だけ再生）
   useEffect(() => {
@@ -103,13 +104,41 @@ export default function Battle13() {
     setIsMuted(!isMuted)
   }
 
-  const handleComplete = () => {
-    // 次のページに移動する前に確実に音声を停止
-    if (audio) {
-      audio.pause()
-      audio.currentTime = 0
+  const handleComplete = async () => {
+    setIsSaving(true)
+
+    try {
+      // APIエンドポイントにデータを送信
+      const response = await fetch('/api/updateUserData', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          stageId: 13
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save record');
+      }
+
+      // 次のページに移動する前に確実に音声を停止
+      if (audio) {
+        audio.pause()
+        audio.currentTime = 0
+      }
+
+      // Navigate to clear page
+      router.push("/closet/13/clear")
+    } catch (error) {
+      console.error("Error saving record:", error)
+      alert("保存中にエラーが発生しました。もう一度お試しください。")
+    } finally {
+      setIsSaving(false)
     }
-    router.push("/closet/13/clear")
   }
 
   const handleCheckboxChange = (item: keyof typeof checkedItems) => {

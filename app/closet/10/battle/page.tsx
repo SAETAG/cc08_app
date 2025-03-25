@@ -107,28 +107,34 @@ export default function Stage10BattlePage() {
   // Check if at least 5 items are checked
   const atLeastFiveChecked = totalChecked >= 5
 
-  // Update the saveRecord function to show feedback before navigating
+  // Save record to database and navigate to clear page
   const saveRecord = async () => {
     setIsSaving(true)
 
     try {
-      // Simulate saving to database
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // APIエンドポイントにデータを送信
+      const response = await fetch('/api/updateUserData', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          stageId: 10
+        })
+      });
 
-      // In a real app, you would save the data to your database here
-      console.log("Saving record:", {
-        storageChecked,
-      })
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save record');
+      }
 
-      // Show feedback card instead of immediately navigating
-      setShowFeedback(true)
-      setIsSaving(false)
-
-      // 保存ボタンクリック時に音声再生を試みる（ユーザーインタラクション）
-      tryPlayAudio()
+      // Navigate to clear page
+      router.push("/closet/10/clear")
     } catch (error) {
       console.error("Error saving record:", error)
       alert("保存中にエラーが発生しました。もう一度お試しください。")
+    } finally {
       setIsSaving(false)
     }
   }
@@ -709,9 +715,12 @@ export default function Stage10BattlePage() {
           {/* Submit button */}
           <div className="flex justify-center mt-6">
             <Button
-              onClick={saveRecord}
+              onClick={() => {
+                tryPlayAudio()
+                saveRecord()
+              }}
               disabled={isSaving || !atLeastFiveChecked}
-              className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-purple-900 font-bold py-2 px-6 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-purple-900 font-bold py-3 px-8 text-lg rounded-lg shadow-lg transform hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
             >
               {isSaving ? (
                 "保存中..."

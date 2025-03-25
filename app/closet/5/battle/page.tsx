@@ -24,9 +24,18 @@ export default function Stage5BattlePage() {
   const [desiredFeatures, setDesiredFeatures] = useState<string[]>([])
   const [otherFeedback, setOtherFeedback] = useState("")
 
-  // シンプルな音声初期化
+  const [isClient, setIsClient] = useState(false)
+
+  // クライアントサイドでのみ実行されるようにする
   useEffect(() => {
-    const audioElement = new Audio("/stepfight_5.mp3")
+    setIsClient(true)
+  }, [])
+
+  // シンプルな音声初期化 - クライアントサイドでのみ実行
+  useEffect(() => {
+    if (!isClient) return
+
+    const audioElement = new Audio("/battle.mp3")
     audioElement.loop = true
     audioElement.volume = 0.7
     setAudio(audioElement)
@@ -43,29 +52,31 @@ export default function Stage5BattlePage() {
       audioElement.pause()
       audioElement.src = ""
     }
-  }, [])
+  }, [isClient])
 
   // ミュート状態が変更されたときに適用
   useEffect(() => {
-    if (audio) {
-      audio.muted = isMuted
+    if (!audio || !isClient) return
 
-      // ミュート解除時に再生を試みる
-      if (!isMuted && audio.paused) {
-        try {
-          audio.play().catch((error) => {
-            console.log("Play on unmute failed:", error)
-          })
-        } catch (error) {
-          console.log("Play error:", error)
-        }
+    audio.muted = isMuted
+
+    // ミュート解除時に再生を試みる
+    if (!isMuted && audio.paused) {
+      try {
+        audio.play().catch((error) => {
+          console.log("Play on unmute failed:", error)
+        })
+      } catch (error) {
+        console.log("Play error:", error)
       }
     }
-  }, [isMuted, audio])
+  }, [isMuted, audio, isClient])
 
   // 画面タップで再生を試みる関数
   const tryPlayAudio = () => {
-    if (audio && audio.paused && !isMuted) {
+    if (!audio || !isClient) return
+
+    if (audio.paused && !isMuted) {
       try {
         audio.play().catch((error) => {
           console.log("Play on screen tap failed:", error)
@@ -99,13 +110,22 @@ export default function Stage5BattlePage() {
     setIsSaving(true)
 
     try {
-      // Simulate saving to database
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // APIエンドポイントにデータを送信
+      const response = await fetch('/api/updateUserData', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          stageId: 5
+        })
+      });
 
-      // In a real app, you would save the data to your database here
-      console.log("Saving record:", {
-        discardItems,
-      })
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save record');
+      }
 
       // Show feedback card instead of immediately navigating
       setShowFeedback(true)
@@ -149,7 +169,7 @@ export default function Stage5BattlePage() {
   }
 
   return (
-    <div className="min-h-screen bg-teal-950 flex flex-col" onClick={tryPlayAudio}>
+    <div className="min-h-screen bg-teal-950 flex flex-col" onClick={isClient ? tryPlayAudio : undefined}>
       {/* Header */}
       <header className="bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900 p-3 flex justify-between items-center border-b-2 border-yellow-500 shadow-md relative">
         {/* Decorative corners */}
@@ -159,7 +179,7 @@ export default function Stage5BattlePage() {
         <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-yellow-500"></div>
 
         <div className="flex items-center gap-2">
-          <Link href="/closet/5">
+          <Link href="/closet">
             <Button
               variant="outline"
               size="icon"
