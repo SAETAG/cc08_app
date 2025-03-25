@@ -98,20 +98,20 @@ export default function Stage4BattlePage() {
 
     try {
       // APIエンドポイントにデータを送信
-      const response = await fetch('/api/updateUserData', {
-        method: 'POST',
-        credentials: 'include',
+      const response = await fetch("/api/updateUserData", {
+        method: "POST",
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          stageId: 4
-        })
-      });
+          stageId: 4,
+        }),
+      })
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save record');
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to save record")
       }
 
       // Navigate to clear page
@@ -187,154 +187,154 @@ export default function Stage4BattlePage() {
           <div className="mb-8">
             <h3 className="text-xl font-bold text-yellow-300 mb-4">選ぶ基準</h3>
 
-            <div className="space-y-4">
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="criteria1"
                   checked={criteriaChecked[0]}
                   onCheckedChange={() => toggleCriteria(0)}
-                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="criteria1" className="text-yellow-300 font-bold cursor-pointer">
-                    1. 日常の戦闘服（お気に入りの普段着）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="criteria1" className="text-yellow-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">👕</span> 日常の戦闘服
                   </label>
-                  <p className="text-white text-sm">👉 週に何度も着る、快適で自分らしさを感じる服</p>
+                  <p className="text-white text-sm">週に何度も着る、快適で自分らしさを感じる服</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="criteria2"
                   checked={criteriaChecked[1]}
                   onCheckedChange={() => toggleCriteria(1)}
-                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="criteria2" className="text-yellow-300 font-bold cursor-pointer">
-                    2. 伝説の鎧（仕事・フォーマル用の服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="criteria2" className="text-yellow-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">👔</span> 伝説の鎧
                   </label>
-                  <p className="text-white text-sm">👉 オフィス・ビジネスシーンで頼れる一着</p>
+                  <p className="text-white text-sm">オフィス・ビジネスシーンで頼れる一着</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="criteria3"
                   checked={criteriaChecked[2]}
                   onCheckedChange={() => toggleCriteria(2)}
-                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="criteria3" className="text-yellow-300 font-bold cursor-pointer">
-                    3. 勇者のローブ（冠婚葬祭用の服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="criteria3" className="text-yellow-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">👘</span> 勇者のローブ
                   </label>
-                  <p className="text-white text-sm">👉 結婚式・お葬式・特別なイベントで必須の装い</p>
+                  <p className="text-white text-sm">結婚式・お葬式・特別なイベントで必須の装い</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="criteria4"
                   checked={criteriaChecked[3]}
                   onCheckedChange={() => toggleCriteria(3)}
-                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="criteria4" className="text-yellow-300 font-bold cursor-pointer">
-                    4. 四季の装束（季節ごとの定番服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="criteria4" className="text-yellow-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">🍂</span> 四季の装束
                   </label>
-                  <p className="text-white text-sm">👉 春・夏・秋・冬、それぞれの気候に適したアイテム</p>
+                  <p className="text-white text-sm">春・夏・秋・冬、それぞれの気候に適したアイテム</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="criteria5"
                   checked={criteriaChecked[4]}
                   onCheckedChange={() => toggleCriteria(4)}
-                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="criteria5" className="text-yellow-300 font-bold cursor-pointer">
-                    5. 旅人の装い（旅行やアウトドア用の服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="criteria5" className="text-yellow-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">🧳</span> 旅人の装い
                   </label>
-                  <p className="text-white text-sm">👉 動きやすく、収納しやすい便利なウェア</p>
+                  <p className="text-white text-sm">動きやすく、収納しやすい便利なウェア</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="criteria6"
                   checked={criteriaChecked[5]}
                   onCheckedChange={() => toggleCriteria(5)}
-                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="criteria6" className="text-yellow-300 font-bold cursor-pointer">
-                    6. 魔法の羽衣（快適なルームウェア・パジャマ）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="criteria6" className="text-yellow-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">🛌</span> 魔法の羽衣
                   </label>
-                  <p className="text-white text-sm">👉 リラックスできて、長く愛用できるもの</p>
+                  <p className="text-white text-sm">リラックスできて、長く愛用できるもの</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="criteria7"
                   checked={criteriaChecked[6]}
                   onCheckedChange={() => toggleCriteria(6)}
-                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="criteria7" className="text-yellow-300 font-bold cursor-pointer">
-                    7. 伝説のマント（防寒具・アウター）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="criteria7" className="text-yellow-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">🧥</span> 伝説のマント
                   </label>
-                  <p className="text-white text-sm">👉 一年中活躍する、お気に入りのアウター</p>
+                  <p className="text-white text-sm">一年中活躍する、お気に入りのアウター</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="criteria8"
                   checked={criteriaChecked[7]}
                   onCheckedChange={() => toggleCriteria(7)}
-                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="criteria8" className="text-yellow-300 font-bold cursor-pointer">
-                    8. 精霊の靴下（機能的なインナー＆靴下）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="criteria8" className="text-yellow-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">🧦</span> 精霊の靴下
                   </label>
-                  <p className="text-white text-sm">👉 気持ちよく着られ、毎日活躍するものだけを残す</p>
+                  <p className="text-white text-sm">気持ちよく着られ、毎日活躍するものだけを残す</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="criteria9"
                   checked={criteriaChecked[8]}
                   onCheckedChange={() => toggleCriteria(8)}
-                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="criteria9" className="text-yellow-300 font-bold cursor-pointer">
-                    9. 秘宝の手袋（アクセサリー・小物類）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="criteria9" className="text-yellow-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">🧣</span> 秘宝の手袋
                   </label>
-                  <p className="text-white text-sm">👉 お気に入りのベルト、ストール、帽子など</p>
+                  <p className="text-white text-sm">お気に入りのベルト、ストール、帽子など</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700">
+              <div className="flex items-center space-x-4 bg-teal-800 bg-opacity-50 p-4 rounded-lg border border-teal-700 h-[120px]">
                 <Checkbox
                   id="criteria10"
                   checked={criteriaChecked[9]}
                   onCheckedChange={() => toggleCriteria(9)}
-                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6 mt-1"
+                  className="data-[state=checked]:bg-yellow-500 data-[state=checked]:text-purple-900 border-2 border-yellow-300 h-6 w-6"
                 />
-                <div>
-                  <label htmlFor="criteria10" className="text-yellow-300 font-bold cursor-pointer">
-                    10. 守護の鎧（特別な思い出が詰まった服）
+                <div className="flex flex-col justify-center">
+                  <label htmlFor="criteria10" className="text-yellow-300 font-bold cursor-pointer flex items-center">
+                    <span className="text-xl mr-2">👑</span> 守護の鎧
                   </label>
-                  <p className="text-white text-sm">👉 着る機会は少なくても、大切にしたい一着</p>
+                  <p className="text-white text-sm">着る機会は少なくても、大切にしたい一着</p>
                 </div>
               </div>
             </div>

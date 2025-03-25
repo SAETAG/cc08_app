@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { Home, Crown, Volume2, VolumeX } from "lucide-react"
+import { Home, Crown, Volume2, VolumeX, Award } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function CrownPage() {
@@ -12,7 +12,11 @@ export default function CrownPage() {
 
   const [showCrown, setShowCrown] = useState(false)
   const [showFin, setShowFin] = useState(false)
-  const [showHomeButton, setShowHomeButton] = useState(false)
+  const [showButtons, setShowButtons] = useState(false)
+
+  // 通知メッセージの状態
+  const [showCrownMessage, setShowCrownMessage] = useState(false)
+  const [showExpMessage, setShowExpMessage] = useState(false)
 
   // 音声のミュート切り替え
   const toggleMute = () => {
@@ -54,9 +58,9 @@ export default function CrownPage() {
       setTimeout(() => {
         setShowFin(true)
 
-        // FIN表示後、ホームに戻るボタンの表示
+        // FIN表示後、ボタンの表示
         setTimeout(() => {
-          setShowHomeButton(true)
+          setShowButtons(true)
         }, 2000)
       }, 3000)
     }, 1000)
@@ -80,6 +84,17 @@ export default function CrownPage() {
       }
     }
   }, [])
+
+  // 通知メッセージを表示して自動的に消す
+  const showNotification = (type: "crown" | "exp") => {
+    if (type === "crown") {
+      setShowCrownMessage(true)
+      setTimeout(() => setShowCrownMessage(false), 2000)
+    } else {
+      setShowExpMessage(true)
+      setTimeout(() => setShowExpMessage(false), 2000)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-950 to-black text-white flex flex-col items-center justify-center p-4 overflow-hidden relative">
@@ -135,6 +150,29 @@ export default function CrownPage() {
         })}
       </div>
 
+      {/* 通知メッセージ - 王冠GET */}
+      {showCrownMessage && (
+        <div className="fixed top-1/3 left-0 right-0 z-50 flex justify-center animate-notification-appear">
+          <div className="text-4xl font-bold text-orange-500 drop-shadow-[0_0_8px_rgba(249,115,22,0.7)]">王冠GET！</div>
+        </div>
+      )}
+
+      {/* 通知メッセージ - EXP */}
+      {showExpMessage && (
+        <div className="fixed top-1/3 left-0 right-0 z-50 flex justify-center animate-notification-appear">
+          <div className="text-4xl font-bold text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.7)]">＋50EXP！</div>
+        </div>
+      )}
+
+      {/* FIN表示 - 中央に配置 */}
+      {showFin && (
+        <div className="absolute inset-0 z-20 w-full h-full flex items-center justify-center animate-fin-sparkle">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500 drop-shadow-[0_0_15px_rgba(245,158,11,0.8)]">
+            Closet Chronicle FIN
+          </h1>
+        </div>
+      )}
+
       {/* 王冠のアニメーション - 中央に配置 */}
       {showCrown && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
@@ -166,24 +204,78 @@ export default function CrownPage() {
         </div>
       )}
 
-      {/* FIN表示 - 下部に配置して王冠と重ならないようにする */}
-      {showFin && (
-        <div className="absolute bottom-20 z-20 w-full flex items-center justify-center animate-fin-appear">
-          <h1 className="text-4xl sm:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
-            Closet Chronicle FIN
-          </h1>
-        </div>
-      )}
+      {/* ボタン配置 - 画面下部 */}
+      {showButtons && (
+        <div className="fixed bottom-10 left-0 right-0 z-30 flex flex-col items-center gap-4 animate-fade-in">
+          {/* 横長の長方形ボタン - 横並び */}
+          <div className="flex gap-3 justify-center">
+            {/* 王冠を受け取るボタン */}
+            <Button
+              className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-white font-bold py-2 px-4 rounded-full shadow-lg flex items-center gap-2"
+              onClick={async () => {
+                try {
+                  const response = await fetch("/api/updateItem", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      itemName: "CLOSET_CROWN",
+                    }),
+                  })
 
-      {/* ホームに戻るボタン */}
-      {showHomeButton && (
-        <div className="absolute bottom-10 z-30 animate-fade-in">
+                  if (!response.ok) {
+                    throw new Error("Failed to update item")
+                  }
+
+                  // 成功時に通知メッセージを表示
+                  showNotification("crown")
+                } catch (error) {
+                  console.error("Error updating item:", error)
+                  alert("王冠の受け取りに失敗しました。もう一度お試しください。")
+                }
+              }}
+            >
+              <Crown className="h-5 w-5" />
+              <span>王冠を受け取る</span>
+            </Button>
+
+            {/* 経験値を受け取るボタン */}
+            <Button
+              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2 px-4 rounded-full shadow-lg flex items-center gap-2"
+              onClick={async () => {
+                try {
+                  const response = await fetch("/api/updateExp", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  })
+
+                  if (!response.ok) {
+                    throw new Error("Failed to update exp")
+                  }
+
+                  // 成功時に通知メッセージを表示
+                  showNotification("exp")
+                } catch (error) {
+                  console.error("Error updating exp:", error)
+                  alert("経験値の獲得に失敗しました。もう一度お試しください。")
+                }
+              }}
+            >
+              <Award className="h-5 w-5" />
+              <span>経験値50EXPを受け取る</span>
+            </Button>
+          </div>
+
+          {/* 小さい丸型のホームボタン - 下に配置 */}
           <Button
             onClick={handleBackToHome}
-            className="bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold py-2 px-4 rounded-full shadow-lg flex items-center gap-2"
+            className="rounded-full w-12 h-12 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white shadow-lg flex items-center justify-center p-0 mt-2"
+            aria-label="ホームに戻る"
           >
-            <Home className="h-4 w-4" />
-            <span>ホームに戻る</span>
+            <Home className="h-5 w-5" />
           </Button>
         </div>
       )}
@@ -261,6 +353,28 @@ export default function CrownPage() {
 
         .animate-confetti {
           animation: confetti-fall linear forwards;
+        }
+
+        @keyframes finSparkle {
+          0% { opacity: 0; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1.05); text-shadow: 0 0 20px rgba(245,158,11,0.8); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+
+        .animate-fin-sparkle {
+          animation: finSparkle 2s forwards ease-out;
+        }
+        
+        @keyframes notificationAppear {
+          0% { opacity: 0; transform: translateY(-20px) scale(0.8); }
+          20% { opacity: 1; transform: translateY(0) scale(1.2); }
+          40% { transform: scale(1); }
+          80% { opacity: 1; }
+          100% { opacity: 0; transform: translateY(-10px); }
+        }
+        
+        .animate-notification-appear {
+          animation: notificationAppear 2s forwards ease-out;
         }
       `}</style>
     </div>

@@ -90,18 +90,18 @@ export default function Stage13ClearPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          itemName: "CLOSET_TREASURE" // クローゼットの秘宝
-        })
-      });
+          itemName: "CLOSET_TREASURE", // クローゼットの秘宝
+        }),
+      })
 
       if (!response.ok) {
-        throw new Error("Failed to update item");
+        throw new Error("Failed to update item")
       }
 
-      const result = await response.json();
-      console.log("Item update result:", result);
+      const result = await response.json()
+      console.log("Item update result:", result)
     } catch (error) {
-      console.error("Error updating item:", error);
+      console.error("Error updating item:", error)
     }
   }
 
@@ -118,16 +118,16 @@ export default function Stage13ClearPage() {
         headers: {
           "Content-Type": "application/json",
         },
-      });
+      })
 
       if (!response.ok) {
-        throw new Error("Failed to update EXP");
+        throw new Error("Failed to update EXP")
       }
 
-      const result = await response.json();
-      console.log("EXP update result:", result);
+      const result = await response.json()
+      console.log("EXP update result:", result)
     } catch (error) {
-      console.error("Error updating EXP:", error);
+      console.error("Error updating EXP:", error)
     }
   }
 
@@ -221,69 +221,59 @@ export default function Stage13ClearPage() {
           </p>
 
           {/* Rewards section */}
-          <div className="space-y-4 mb-6">
+          <div className="bg-teal-800 bg-opacity-50 p-4 rounded-lg mb-6 text-left">
             <h2 className="text-xl font-bold text-yellow-300 mb-2">獲得したアイテム</h2>
-
-            {/* Treasure item */}
-            <div
-              className={`bg-purple-800 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center justify-between transition-all duration-500 relative ${
-                showRewards ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-              }`}
-            >
-              {showItemAnimation && (
-                <div className="animate-float-up text-yellow-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
-                  アイテムゲット！
+            <div className="flex flex-col gap-4">
+              <div className="bg-purple-900 bg-opacity-50 p-3 rounded border border-yellow-500 flex items-center animate-fade-in relative">
+                {showItemAnimation && (
+                  <div className="animate-float-up text-yellow-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    クローゼットの秘宝をゲット！
+                  </div>
+                )}
+                <div className="mr-3">
+                  <Trophy className="h-8 w-8 text-yellow-300" />
                 </div>
-              )}
-              <div className="flex items-center gap-4">
-                <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 rounded-full flex items-center justify-center">
-                  <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-purple-900" />
-                </div>
-                <div className="text-left">
-                  <h3 className="text-lg sm:text-xl font-bold text-yellow-300">クローゼットの秘宝</h3>
-                  <p className="text-sm sm:text-base text-white">
+                <div className="flex-1">
+                  <p className="text-yellow-300 font-bold">クローゼットの秘宝</p>
+                  <p className="text-white text-sm">
                     全ての収納の知恵が宿る伝説の秘宝。持ち主に整理整頓の究極の力を与える。
                   </p>
                 </div>
+                <Button
+                  onClick={handleGetItem}
+                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-purple-900 font-bold text-sm"
+                  size="sm"
+                >
+                  アイテムをゲットする
+                </Button>
               </div>
-              <Button
-                onClick={handleGetItem}
-                className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-purple-900 font-bold text-sm"
-                size="sm"
-              >
-                アイテムをゲットする
-              </Button>
-            </div>
 
-            {/* Experience points */}
-            <div
-              className={`bg-purple-800 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center justify-between transition-all duration-500 delay-300 relative ${
-                showRewards ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-              }`}
-            >
-              {showExpAnimation && (
-                <div className="animate-float-up text-green-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
-                  ＋50EXP！
+              <div
+                className="bg-purple-900 bg-opacity-50 p-3 rounded border border-yellow-500 flex items-center animate-fade-in relative"
+                style={{ animationDelay: "0.5s" }}
+              >
+                {showExpAnimation && (
+                  <div className="animate-float-up text-green-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    ＋50EXP！
+                  </div>
+                )}
+                <div className="mr-3">
+                  <Star className="h-8 w-8 text-yellow-300" />
                 </div>
-              )}
-              <div className="flex items-center gap-4">
-                <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 rounded-full flex items-center justify-center">
-                  <Star className="w-8 h-8 sm:w-10 sm:h-10 text-purple-900" />
-                </div>
-                <div className="text-left">
-                  <h3 className="text-lg sm:text-xl font-bold text-yellow-300">経験値50ポイント</h3>
-                  <p className="text-sm sm:text-base text-white">
+                <div className="flex-1">
+                  <p className="text-yellow-300 font-bold">経験値50ポイント</p>
+                  <p className="text-white text-sm">
                     あなたの成長を加速させる貴重な経験。次のステージへの準備が整いました。
                   </p>
                 </div>
+                <Button
+                  onClick={handleGetExp}
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-purple-900 font-bold text-sm"
+                  size="sm"
+                >
+                  経験値をゲットする
+                </Button>
               </div>
-              <Button
-                onClick={handleGetExp}
-                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-purple-900 font-bold text-sm"
-                size="sm"
-              >
-                経験値をゲットする
-              </Button>
             </div>
           </div>
 
@@ -343,6 +333,15 @@ export default function Stage13ClearPage() {
           animation: floatUp 1.5s ease-out forwards;
           position: absolute;
           z-index: 20;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.8s ease-out forwards;
+          opacity: 0;
         }
       `}</style>
     </div>

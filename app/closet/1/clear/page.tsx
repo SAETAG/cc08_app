@@ -4,13 +4,11 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Volume2, VolumeX, Home, Trophy, ArrowRight, Scroll, Star } from "lucide-react"
-import Confetti from "react-confetti"
 
 export default function Stage1ClearPage() {
   const [isMuted, setIsMuted] = useState(false)
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
   const [showConfetti, setShowConfetti] = useState(true)
-  const [showPledgeAnimation, setShowPledgeAnimation] = useState(false)
   const [showExpAnimation, setShowExpAnimation] = useState(false)
   const [showItemAnimation, setShowItemAnimation] = useState(false)
 
@@ -119,14 +117,6 @@ export default function Stage1ClearPage() {
     setIsMuted(!isMuted)
   }
 
-  // Handle pledge item get
-  const handleGetPledge = () => {
-    setShowPledgeAnimation(true)
-    setTimeout(() => {
-      setShowPledgeAnimation(false)
-    }, 1500)
-  }
-
   // Handle exp item get
   const handleGetExp = async () => {
     setShowExpAnimation(true)
@@ -140,16 +130,16 @@ export default function Stage1ClearPage() {
         headers: {
           "Content-Type": "application/json",
         },
-      });
+      })
 
       if (!response.ok) {
-        throw new Error("Failed to update EXP");
+        throw new Error("Failed to update EXP")
       }
 
-      const result = await response.json();
-      console.log("EXP update result:", result);
+      const result = await response.json()
+      console.log("EXP update result:", result)
     } catch (error) {
-      console.error("Error updating EXP:", error);
+      console.error("Error updating EXP:", error)
     }
   }
 
@@ -167,18 +157,18 @@ export default function Stage1ClearPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          itemName: "SORTING_COMPASS" // 整理の羅針盤
-        })
-      });
+          itemName: "SORTING_COMPASS", // 整理の羅針盤
+        }),
+      })
 
       if (!response.ok) {
-        throw new Error("Failed to update item");
+        throw new Error("Failed to update item")
       }
 
-      const result = await response.json();
-      console.log("Item update result:", result);
+      const result = await response.json()
+      console.log("Item update result:", result)
     } catch (error) {
-      console.error("Error updating item:", error);
+      console.error("Error updating item:", error)
     }
   }
 
@@ -191,7 +181,7 @@ export default function Stage1ClearPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          stage1_clear: true
+          stage1_clear: true,
         }),
       })
 
@@ -298,21 +288,24 @@ export default function Stage1ClearPage() {
           <div className="bg-teal-800 bg-opacity-50 p-4 rounded-lg mb-6 text-left">
             <h2 className="text-xl font-bold text-yellow-300 mb-2">獲得したアイテム</h2>
             <div className="flex flex-col gap-4">
-              <div className="bg-purple-900 bg-opacity-50 p-3 rounded border border-yellow-500 flex items-center animate-fade-in relative">
-                {showPledgeAnimation && (
-                  <div className="animate-float-up text-yellow-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
-                    冒険者の誓約書をゲット！
+              <div
+                className="bg-purple-900 bg-opacity-50 p-3 rounded border border-yellow-500 flex items-center animate-fade-in relative"
+                style={{ animationDelay: "0.5s" }}
+              >
+                {showItemAnimation && (
+                  <div className="animate-float-up text-amber-400 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    アイテムゲット！
                   </div>
                 )}
                 <div className="mr-3">
                   <Scroll className="h-8 w-8 text-yellow-300" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-yellow-300 font-bold">冒険者の誓約書</p>
-                  <p className="text-white text-sm">クローゼット整理の冒険を始める証</p>
+                  <p className="text-yellow-300 font-bold">整理の羅針盤</p>
+                  <p className="text-white text-sm">クローゼット整理の重要な道具</p>
                 </div>
                 <Button
-                  onClick={handleGetPledge}
+                  onClick={handleGetItem}
                   className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-purple-900 font-bold text-sm"
                   size="sm"
                 >
@@ -322,7 +315,7 @@ export default function Stage1ClearPage() {
 
               <div
                 className="bg-purple-900 bg-opacity-50 p-3 rounded border border-yellow-500 flex items-center animate-fade-in relative"
-                style={{ animationDelay: "0.5s" }}
+                style={{ animationDelay: "1s" }}
               >
                 {showExpAnimation && (
                   <div className="animate-float-up text-green-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
@@ -342,31 +335,6 @@ export default function Stage1ClearPage() {
                   size="sm"
                 >
                   経験値をゲットする
-                </Button>
-              </div>
-
-              <div
-                className="bg-purple-900 bg-opacity-50 p-3 rounded border border-yellow-500 flex items-center animate-fade-in relative"
-                style={{ animationDelay: "1s" }}
-              >
-                {showItemAnimation && (
-                  <div className="animate-float-up text-blue-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
-                    整理の羅針盤をゲット！
-                  </div>
-                )}
-                <div className="mr-3">
-                  <Scroll className="h-8 w-8 text-yellow-300" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-yellow-300 font-bold">整理の羅針盤</p>
-                  <p className="text-white text-sm">クローゼット整理の重要な道具</p>
-                </div>
-                <Button
-                  onClick={handleGetItem}
-                  className="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-purple-900 font-bold text-sm"
-                  size="sm"
-                >
-                  アイテムをゲットする
                 </Button>
               </div>
             </div>
