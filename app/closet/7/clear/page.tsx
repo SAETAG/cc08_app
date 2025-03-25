@@ -74,11 +74,32 @@ export default function Stage7ClearPage() {
   }, [])
 
   // Handle item get
-  const handleGetItem = () => {
+  const handleGetItem = async () => {
     setShowItemAnimation(true)
     setTimeout(() => {
       setShowItemAnimation(false)
     }, 1500)
+
+    try {
+      const response = await fetch("/api/updateItem", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          itemName: "FOLDING_WAND" // 折り畳みの杖
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update item");
+      }
+
+      const result = await response.json();
+      console.log("Item update result:", result);
+    } catch (error) {
+      console.error("Error updating item:", error);
+    }
   }
 
   // Handle exp item get

@@ -93,11 +93,32 @@ export default function Stage11ClearPage() {
   }
 
   // Handle item get
-  const handleGetItem = () => {
+  const handleGetItem = async () => {
     setShowItemAnimation(true)
     setTimeout(() => {
       setShowItemAnimation(false)
     }, 1500)
+
+    try {
+      const response = await fetch("/api/updateItem", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          itemName: "SEASONAL_HOURGLASS" // 季節の砂時計
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update item");
+      }
+
+      const result = await response.json();
+      console.log("Item update result:", result);
+    } catch (error) {
+      console.error("Error updating item:", error);
+    }
   }
 
   // Handle exp item get

@@ -12,6 +12,7 @@ export default function Stage1ClearPage() {
   const [showConfetti, setShowConfetti] = useState(true)
   const [showPledgeAnimation, setShowPledgeAnimation] = useState(false)
   const [showExpAnimation, setShowExpAnimation] = useState(false)
+  const [showItemAnimation, setShowItemAnimation] = useState(false)
 
   // シンプルな音声初期化
   useEffect(() => {
@@ -149,6 +150,35 @@ export default function Stage1ClearPage() {
       console.log("EXP update result:", result);
     } catch (error) {
       console.error("Error updating EXP:", error);
+    }
+  }
+
+  // Handle item get
+  const handleGetItem = async () => {
+    setShowItemAnimation(true)
+    setTimeout(() => {
+      setShowItemAnimation(false)
+    }, 1500)
+
+    try {
+      const response = await fetch("/api/updateItem", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          itemName: "SORTING_COMPASS" // 整理の羅針盤
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update item");
+      }
+
+      const result = await response.json();
+      console.log("Item update result:", result);
+    } catch (error) {
+      console.error("Error updating item:", error);
     }
   }
 
@@ -312,6 +342,31 @@ export default function Stage1ClearPage() {
                   size="sm"
                 >
                   経験値をゲットする
+                </Button>
+              </div>
+
+              <div
+                className="bg-purple-900 bg-opacity-50 p-3 rounded border border-yellow-500 flex items-center animate-fade-in relative"
+                style={{ animationDelay: "1s" }}
+              >
+                {showItemAnimation && (
+                  <div className="animate-float-up text-blue-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                    整理の羅針盤をゲット！
+                  </div>
+                )}
+                <div className="mr-3">
+                  <Scroll className="h-8 w-8 text-yellow-300" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-yellow-300 font-bold">整理の羅針盤</p>
+                  <p className="text-white text-sm">クローゼット整理の重要な道具</p>
+                </div>
+                <Button
+                  onClick={handleGetItem}
+                  className="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-purple-900 font-bold text-sm"
+                  size="sm"
+                >
+                  アイテムをゲットする
                 </Button>
               </div>
             </div>
