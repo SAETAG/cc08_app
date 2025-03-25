@@ -96,6 +96,71 @@ export default function CrownPage() {
     }
   }
 
+  // Handle exp get
+  const handleGetExp = async () => {
+    setShowExpAnimation(true)
+    setTimeout(() => {
+      setShowExpAnimation(false)
+    }, 1500)
+
+    try {
+      // Player Data (Title)のEXPを更新
+      const expResponse = await fetch("/api/updateExp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!expResponse.ok) {
+        throw new Error("Failed to update EXP");
+      }
+
+      const expResult = await expResponse.json();
+      console.log("EXP update result:", expResult);
+
+      // Statistics APIを呼び出して統計情報を更新
+      console.log("Calling updateStatistics API...");
+      const statsResponse = await fetch("/api/updateStatistics", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // セッションクッキーを送信するために必要
+      });
+
+      console.log("updateStatistics response status:", statsResponse.status);
+      
+      if (!statsResponse.ok) {
+        const errorText = await statsResponse.text();
+        console.error("Statistics API error response:", errorText);
+        throw new Error(`Failed to update Statistics: ${statsResponse.status} ${errorText}`);
+      }
+
+      const statsResult = await statsResponse.json();
+      console.log("Statistics update result:", statsResult);
+
+      if (statsResult.result?.data?.updatedStatistics) {
+        console.log("Updated statistics values:", {
+          Experience: statsResult.result.data.updatedStatistics.find(s => s.StatisticName === "Experience")?.Value,
+          DayExperience: statsResult.result.data.updatedStatistics.find(s => s.StatisticName === "DayExperience")?.Value,
+          WeekExperience: statsResult.result.data.updatedStatistics.find(s => s.StatisticName === "WeekExperience")?.Value
+        });
+      } else {
+        console.log("No statistics data in response");
+      }
+    } catch (error) {
+      console.error("Error updating EXP or Statistics:", error);
+      if (error instanceof Error) {
+        console.error("Error details:", {
+          name: error.name,
+          message: error.message,
+          stack: error.stack
+        });
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-950 to-black text-white flex flex-col items-center justify-center p-4 overflow-hidden relative">
       {/* 背景の光の効果 */}
@@ -243,26 +308,7 @@ export default function CrownPage() {
             {/* 経験値を受け取るボタン */}
             <Button
               className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-2 px-4 rounded-full shadow-lg flex items-center gap-2"
-              onClick={async () => {
-                try {
-                  const response = await fetch("/api/updateExp", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                  })
-
-                  if (!response.ok) {
-                    throw new Error("Failed to update exp")
-                  }
-
-                  // 成功時に通知メッセージを表示
-                  showNotification("exp")
-                } catch (error) {
-                  console.error("Error updating exp:", error)
-                  alert("経験値の獲得に失敗しました。もう一度お試しください。")
-                }
-              }}
+              onClick={handleGetExp}
             >
               <Award className="h-5 w-5" />
               <span>経験値50EXPを受け取る</span>
