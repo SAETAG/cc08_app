@@ -212,6 +212,17 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-teal-950 flex flex-col" onClick={tryPlayAudio}>
+      {/* Feedback Button */}
+      <div className="fixed bottom-4 left-4 z-50">
+        <Link href="https://docs.google.com/forms/d/e/1FAIpQLSf4ZaaQ5SY1ru9chOF_pqdfZadqUhUmi-Tgx_b_Dwyigt8yTg/viewform?usp=header" target="_blank" rel="noopener noreferrer">
+          <Button
+            className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm shadow-lg transform hover:scale-105 transition-transform duration-200 flex items-center gap-2"
+          >
+            <Scroll className="h-4 w-4" />
+            このアプリに対するフィードバックをお願いします✨（Googleアンケートページへ飛びます）
+          </Button>
+        </Link>
+      </div>
       {/* Header */}
       <header className="bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900 p-3 flex justify-between items-center border-b-2 border-yellow-500 shadow-md relative">
         {/* Decorative corners */}
