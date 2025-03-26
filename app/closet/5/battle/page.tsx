@@ -105,67 +105,36 @@ export default function Stage5BattlePage() {
   // Check if at least 5 items are selected
   const atLeastFiveSelected = discardItems.filter(Boolean).length >= 5
 
-  // Update the saveRecord function to show feedback before navigating
+  // Save record to database and navigate to clear page
   const saveRecord = async () => {
     setIsSaving(true)
 
     try {
       // APIエンドポイントにデータを送信
-      const response = await fetch("/api/updateUserData", {
-        method: "POST",
-        credentials: "include",
+      const response = await fetch('/api/updateUserData', {
+        method: 'POST',
+        credentials: 'include',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          stageId: 5,
-        }),
-      })
+          stageId: 5
+        })
+      });
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to save record")
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save record');
       }
-
-      // Show feedback card instead of immediately navigating
-      setShowFeedback(true)
-      setIsSaving(false)
-
-      // 保存ボタンクリック時に音声再生を試みる（ユーザーインタラクション）
-      tryPlayAudio()
-    } catch (error) {
-      console.error("Error saving record:", error)
-      alert("保存中にエラーが発生しました。もう一度お試しください。")
-      setIsSaving(false)
-    }
-  }
-
-  // Add a function to handle feedback submission
-  const submitFeedback = async () => {
-    try {
-      // Simulate saving feedback to database
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
-      // In a real app, you would save the feedback to your database here
-      console.log("Saving feedback:", {
-        rating,
-        unnecessaryFeatures,
-        desiredFeatures,
-        otherFeedback,
-      })
 
       // Navigate to clear page
       router.push("/closet/5/clear")
     } catch (error) {
-      console.error("Error saving feedback:", error)
-      // Navigate anyway if there's an error
-      router.push("/closet/5/clear")
+      console.error("Error saving record:", error)
+      alert("保存中にエラーが発生しました。もう一度お試しください。")
+    } finally {
+      setIsSaving(false)
     }
-  }
-
-  // Add a function to skip feedback
-  const skipFeedback = () => {
-    router.push("/closet/5/clear")
   }
 
   return (
@@ -421,7 +390,7 @@ export default function Stage5BattlePage() {
           </div>
 
           {/* Submit button */}
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center">
             <Button
               onClick={saveRecord}
               disabled={isSaving || !atLeastFiveSelected}
@@ -438,146 +407,6 @@ export default function Stage5BattlePage() {
             </Button>
           </div>
         </div>
-        {showFeedback && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="max-w-md w-full bg-gradient-to-b from-white to-pink-100 rounded-lg border-2 border-yellow-500 shadow-lg p-6 animate-in fade-in duration-300 overflow-y-auto max-h-[90vh]">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-purple-800">アプリに関するフィードバックのお願い</h3>
-                <button onClick={skipFeedback} className="text-gray-500 hover:text-gray-700" aria-label="Close">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-purple-800 mb-2">このアプリの評価をお聞かせください</label>
-                <div className="flex space-x-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      onClick={() => setRating(star)}
-                      className="text-2xl focus:outline-none"
-                      aria-label={`Rate ${star} stars`}
-                    >
-                      {star <= rating ? "⭐" : "☆"}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-purple-800 mb-2">
-                  1. 無くてもいいと思った機能（複数選択可、1つ以上必須）
-                </label>
-                <div className="space-y-2">
-                  {[
-                    { id: "feature1", label: "酒場の成果報告機能" },
-                    { id: "feature2", label: "酒場の整理収納知識の共有機能" },
-                    { id: "feature3", label: "マイコレクション（持ち物の写真一覧表示）の機能" },
-                    { id: "feature4", label: "モーちゃん（AI）機能" },
-                    { id: "feature5", label: "クローゼット王国の片づけ14ステップ（もっと少ステップでいい）" },
-                    { id: "feature6", label: "特になし" },
-                  ].map((feature) => (
-                    <div key={feature.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={feature.id}
-                        checked={unnecessaryFeatures.includes(feature.label)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            if (feature.label === "特になし") {
-                              setUnnecessaryFeatures(["特になし"])
-                            } else {
-                              setUnnecessaryFeatures((prev) =>
-                                prev.includes("特になし")
-                                  ? [...prev.filter((f) => f !== "特になし"), feature.label]
-                                  : [...prev, feature.label],
-                              )
-                            }
-                          } else {
-                            setUnnecessaryFeatures((prev) => prev.filter((f) => f !== feature.label))
-                          }
-                        }}
-                      />
-                      <label htmlFor={feature.id} className="text-gray-700 cursor-pointer">
-                        {feature.label}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-purple-800 mb-2">
-                  2. 追加して欲しいと思う機能（複数選択可、1つ以上必須）
-                </label>
-                <div className="space-y-2">
-                  {[
-                    { id: "desired1", label: "もっと気軽にできるサブクエスト（掃除機がけなど）機能" },
-                    { id: "desired2", label: "パズルなどのゲーム機能" },
-                    { id: "desired3", label: "レアアイテムやランキング機能" },
-                    { id: "desired4", label: "プロの整理収納アドバイザーにチャットで相談できる機能" },
-                    { id: "desired5", label: "クローゼット以外の整理収納支援機能" },
-                    { id: "desired6", label: "特になし" },
-                  ].map((feature) => (
-                    <div key={feature.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={feature.id}
-                        checked={desiredFeatures.includes(feature.label)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            if (feature.label === "特になし") {
-                              setDesiredFeatures(["特になし"])
-                            } else {
-                              setDesiredFeatures((prev) =>
-                                prev.includes("特になし")
-                                  ? [...prev.filter((f) => f !== "特になし"), feature.label]
-                                  : [...prev, feature.label],
-                              )
-                            }
-                          } else {
-                            setDesiredFeatures((prev) => prev.filter((f) => f !== feature.label))
-                          }
-                        }}
-                      />
-                      <label htmlFor={feature.id} className="text-gray-700 cursor-pointer">
-                        {feature.label}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label htmlFor="otherFeedback" className="block text-purple-800 mb-2">
-                  3. その他、良かった点や今後改善を期待する点を自由にお書きください
-                </label>
-                <textarea
-                  id="otherFeedback"
-                  value={otherFeedback}
-                  onChange={(e) => setOtherFeedback(e.target.value)}
-                  className="w-full p-2 rounded bg-white text-gray-800 border border-pink-300 focus:border-purple-400 focus:outline-none"
-                  rows={3}
-                  placeholder="任意入力"
-                />
-              </div>
-
-              <button
-                onClick={submitFeedback}
-                disabled={unnecessaryFeatures.length === 0 || desiredFeatures.length === 0}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                送信する
-              </button>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   )
