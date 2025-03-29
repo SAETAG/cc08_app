@@ -219,8 +219,7 @@ export default function HomePage() {
             className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm shadow-lg transform hover:scale-105 transition-transform duration-200 flex items-center gap-2"
           >
             <Scroll className="h-4 w-4" />
-            このアプリに対するフィードバックをお願いします✨（Googleアンケートページへ飛びます）
-          </Button>
+            良ければアンケートにお答えください✨</Button>
         </Link>
       </div>
       {/* Header */}
