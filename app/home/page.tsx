@@ -421,7 +421,12 @@ export default function HomePage() {
                             type="submit"
                             size="icon"
                             className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-purple-900"
-                            onClick={() => setUserMessage("")}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              if (userMessage.trim()) {
+                                handleChatSubmit(e)
+                              }
+                            }}
                           >
                             <Send className="h-4 w-4" />
                           </Button>
