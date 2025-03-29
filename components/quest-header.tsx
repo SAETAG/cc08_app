@@ -67,6 +67,7 @@ export function QuestHeader({ exp }: QuestHeaderProps) {
           <h1 className="text-4xl md:text-5xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
             鍛練の森デイリークエスト
           </h1>
+          <p className="text-sm text-amber-300/80 mb-6">※MOCのみ（バックエンド未実装）</p>
 
           <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-8">
             <div className="text-amber-200 text-lg text-center px-4 py-2 bg-amber-950/30 rounded-full border border-amber-500/30">

@@ -368,7 +368,7 @@ export default function MountainPage() {
         </div>
 
         {/* Top 3 users */}
-        <div className="flex flex-col md:flex-row justify-center items-end gap-4 mb-12">
+        <div className="flex flex-row justify-center items-end gap-4 mb-12">
           {topUsers.map((user, index) => {
             // Determine position-based styling
             const position = user.rank
@@ -378,17 +378,17 @@ export default function MountainPage() {
             let zIndex = "z-10"
 
             if (position === 1) {
-              containerClasses += " order-2 md:order-2"
+              containerClasses += " order-2"
               avatarSize = "w-28 h-28"
               podiumHeight = "h-24"
               zIndex = "z-30"
             } else if (position === 2) {
-              containerClasses += " order-1 md:order-1"
+              containerClasses += " order-1"
               avatarSize = "w-24 h-24"
               podiumHeight = "h-20"
               zIndex = "z-20"
             } else if (position === 3) {
-              containerClasses += " order-3 md:order-3"
+              containerClasses += " order-3"
               avatarSize = "w-24 h-24"
               podiumHeight = "h-16"
               zIndex = "z-20"

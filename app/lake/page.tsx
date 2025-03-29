@@ -346,6 +346,7 @@ export default function LakePage() {
           <h1 className="text-5xl md:text-6xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-200 to-cyan-300 drop-shadow-[0_2px_8px_rgba(0,255,255,0.5)]">
             秘宝の湖
           </h1>
+          <p className="text-sm text-cyan-300/80 mb-4">※MOCのみ（バックエンド未実装）</p>
           <p className="text-cyan-200/80 max-w-2xl mx-auto">
             神秘的な湖面に浮かぶ秘宝たち。あなたの冒険の証が、ここに集まります。
           </p>
