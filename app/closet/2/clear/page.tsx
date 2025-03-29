@@ -136,7 +136,7 @@ export default function Stage2ClearPage() {
       });
 
       console.log("updateStatistics response status:", statsResponse.status);
-      
+
       if (!statsResponse.ok) {
         const errorText = await statsResponse.text();
         console.error("Statistics API error response:", errorText);
