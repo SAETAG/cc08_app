@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Volume2, VolumeX, Home, Trophy, ArrowRight, Ruler, Star } from "lucide-react"
+import { Volume2, VolumeX, Home, Trophy, ArrowRight, Ruler, Star, Package } from "lucide-react"
 
 export default function Stage6ClearPage() {
   const [isMuted, setIsMuted] = useState(false)
@@ -175,15 +175,15 @@ export default function Stage6ClearPage() {
   return (
     <div className="min-h-screen bg-teal-950 flex flex-col" onClick={tryPlayAudio}>
       {/* Header */}
-      <header className="bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900 p-3 flex justify-between items-center border-b-2 border-yellow-500 shadow-md relative">
+      <header className="bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900 p-2 sm:p-3 flex justify-between items-center border-b-2 border-yellow-500 shadow-md relative">
         {/* Decorative corners */}
-        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-yellow-500"></div>
-        <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-yellow-500"></div>
-        <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-yellow-500"></div>
-        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-yellow-500"></div>
+        <div className="absolute top-0 left-0 w-4 h-4 sm:w-6 sm:h-6 border-t-2 border-l-2 border-yellow-500"></div>
+        <div className="absolute top-0 right-0 w-4 h-4 sm:w-6 sm:h-6 border-t-2 border-r-2 border-yellow-500"></div>
+        <div className="absolute bottom-0 left-0 w-4 h-4 sm:w-6 sm:h-6 border-b-2 border-l-2 border-yellow-500"></div>
+        <div className="absolute bottom-0 right-0 w-4 h-4 sm:w-6 sm:h-6 border-b-2 border-r-2 border-yellow-500"></div>
 
         <div className="flex items-center gap-2">
-          <h1 className="text-lg sm:text-2xl font-bold text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.5)] px-2">
+          <h1 className="text-base sm:text-lg md:text-2xl font-bold text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.5)] px-2">
             ステージクリア！
           </h1>
         </div>
@@ -192,18 +192,18 @@ export default function Stage6ClearPage() {
           <Button
             variant="outline"
             size="icon"
-            className="bg-purple-800 border-yellow-600 text-white hover:bg-purple-700 h-8 w-8 sm:h-10 sm:w-10"
+            className="bg-purple-800 border-yellow-600 text-white hover:bg-purple-700 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10"
             onClick={toggleMute}
           >
-            {isMuted ? <VolumeX className="h-4 w-4 sm:h-5 sm:w-5" /> : <Volume2 className="h-4 w-4 sm:h-5 sm:w-5" />}
+            {isMuted ? <VolumeX className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" /> : <Volume2 className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
           </Button>
           <Link href="/home">
             <Button
               variant="outline"
               size="icon"
-              className="bg-purple-800 border-yellow-600 text-white hover:bg-purple-700 h-8 w-8 sm:h-10 sm:w-10"
+              className="bg-purple-800 border-yellow-600 text-white hover:bg-purple-700 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10"
             >
-              <Home className="h-4 w-4 sm:h-5 sm:w-5" />
+              <Home className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
             </Button>
           </Link>
         </div>
@@ -232,82 +232,72 @@ export default function Stage6ClearPage() {
       )}
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col items-center justify-center p-4">
-        <div className="max-w-2xl w-full bg-gradient-to-b from-purple-900 to-teal-900 rounded-lg p-6 border-2 border-yellow-500 shadow-lg text-center">
+      <main className="flex-1 flex flex-col items-center justify-center p-2 sm:p-4">
+        <div className="max-w-2xl w-full bg-gradient-to-b from-purple-900 to-teal-900 rounded-lg p-3 sm:p-6 border-2 border-yellow-500 shadow-lg text-center">
           {/* Trophy icon */}
-          <div className="flex justify-center mb-6">
-            <div className="relative w-24 h-24 sm:w-32 sm:h-32 animate-bounce-slow">
+          <div className="flex justify-center mb-4 sm:mb-6">
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 animate-bounce-slow">
               <Trophy className="w-full h-full text-yellow-300 drop-shadow-[0_0_8px_rgba(250,204,21,0.7)]" />
             </div>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-bold text-yellow-300 mb-4 drop-shadow-[0_0_8px_rgba(250,204,21,0.7)]">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-300 mb-3 sm:mb-4 drop-shadow-[0_0_8px_rgba(250,204,21,0.7)]">
             ステージクリア！
           </h1>
 
-          <p className="text-white text-lg sm:text-xl mb-6">
+          <p className="text-white text-base sm:text-lg md:text-xl mb-4 sm:mb-6">
             おめでとうございます！「未練の洞窟」ステージをクリアしました。
             <br />
             あなたは「運命の箱」の中身を再度見直し、本当に必要なものだけを残すことができました。
           </p>
 
-          {/* Obtained Items Section */}
-          <div className="mb-6">
-            <h2 className="text-xl font-bold text-yellow-300 mb-4">獲得したアイテム</h2>
-
-            <div className="space-y-4">
-              {/* Item 1: 空間測定のルーン */}
+          <div className="bg-teal-800 bg-opacity-50 p-3 sm:p-4 rounded-lg mb-4 sm:mb-6 text-left">
+            <h2 className="text-lg sm:text-xl font-bold text-yellow-300 mb-2">獲得したアイテム</h2>
+            <div className="flex flex-col gap-3 sm:gap-4">
               <div
-                className="bg-purple-800 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center justify-between animate-fadeIn relative"
-                style={{ animationDelay: "0.2s" }}
+                className="bg-purple-900 bg-opacity-50 p-2 sm:p-3 rounded border border-yellow-500 flex items-center animate-fade-in relative"
+                style={{ animationDelay: "0.5s" }}
               >
                 {showItemAnimation && (
-                  <div className="animate-float-up text-yellow-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                  <div className="animate-float-up text-amber-400 font-bold text-lg sm:text-xl left-1/2 top-0 transform -translate-x-1/2">
                     アイテムゲット！
                   </div>
                 )}
-                <div className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 bg-opacity-30 rounded-full flex items-center justify-center">
-                    <Ruler className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-300" />
-                  </div>
-                  <div className="text-left">
-                    <h3 className="text-lg sm:text-xl font-bold text-yellow-300">空間測定のルーン</h3>
-                    <p className="text-white text-sm sm:text-base">
-                      空間を正確に測定し、最適な収納方法を導き出す古代の魔法
-                    </p>
-                  </div>
+                <div className="mr-2 sm:mr-3">
+                  <Package className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-300" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-yellow-300 font-bold text-sm sm:text-base">旅立ちの風呂敷</p>
+                  <p className="text-white text-xs sm:text-sm">どんなものでも美しく包み、持ち運びを容易にする魔法の布</p>
                 </div>
                 <Button
                   onClick={handleGetItem}
-                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-purple-900 font-bold text-sm"
+                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-purple-900 font-bold text-xs sm:text-sm"
                   size="sm"
                 >
                   アイテムをゲットする
                 </Button>
               </div>
 
-              {/* Item 2: 経験値50ポイント */}
               <div
-                className="bg-purple-800 bg-opacity-70 border border-yellow-500 rounded-lg p-4 flex items-center justify-between animate-fadeIn relative"
-                style={{ animationDelay: "0.6s" }}
+                className="bg-purple-900 bg-opacity-50 p-2 sm:p-3 rounded border border-yellow-500 flex items-center animate-fade-in relative"
+                style={{ animationDelay: "1s" }}
               >
                 {showExpAnimation && (
-                  <div className="animate-float-up text-green-300 font-bold text-xl left-1/2 top-0 transform -translate-x-1/2">
+                  <div className="animate-float-up text-green-300 font-bold text-lg sm:text-xl left-1/2 top-0 transform -translate-x-1/2">
                     ＋50EXP！
                   </div>
                 )}
-                <div className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 bg-opacity-30 rounded-full flex items-center justify-center">
-                    <Star className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-300" />
-                  </div>
-                  <div className="text-left">
-                    <h3 className="text-lg sm:text-xl font-bold text-yellow-300">経験値50ポイント</h3>
-                    <p className="text-white text-sm sm:text-base">あなたの成長を加速させる貴重な経験</p>
-                  </div>
+                <div className="mr-2 sm:mr-3">
+                  <Star className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-300" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-yellow-300 font-bold text-sm sm:text-base">経験値50ポイント</p>
+                  <p className="text-white text-xs sm:text-sm">あなたの成長を加速させる貴重な経験</p>
                 </div>
                 <Button
                   onClick={handleGetExp}
-                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-purple-900 font-bold text-sm"
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-purple-900 font-bold text-xs sm:text-sm"
                   size="sm"
                 >
                   経験値をゲットする
@@ -316,10 +306,10 @@ export default function Stage6ClearPage() {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <Link href="/closet">
               <Button
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg border border-blue-400 shadow-lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg border border-blue-400 shadow-lg text-sm sm:text-base"
                 onClick={tryPlayAudio}
               >
                 マップに戻る
@@ -328,11 +318,11 @@ export default function Stage6ClearPage() {
 
             <Link href="/closet/7">
               <Button
-                className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2 border border-green-400 shadow-lg"
+                className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg flex items-center gap-2 border border-green-400 shadow-lg text-sm sm:text-base"
                 onClick={tryPlayAudio}
               >
                 次のステージへ
-                <ArrowRight className="h-5 w-5" />
+                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>
           </div>

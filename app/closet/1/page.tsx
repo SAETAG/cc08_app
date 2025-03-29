@@ -77,9 +77,6 @@ export default function Stage1Page() {
     if (audio) {
       audio.pause()
     }
-
-    // 動画再生ボタンクリック時に音声再生を試みる（ユーザーインタラクション）
-    tryPlayAudio()
   }
 
   // Handle video end
