@@ -13,7 +13,7 @@ export default function HomePage() {
   const [isMuted, setIsMuted] = useState(false)
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const [currentQuest, setCurrentQuest] = useState("クローゼット王国を救え！")
+  const [currentQuest, setCurrentQuest] = useState("あなたの週間ランキング：位")
 
   // シンプルな音声初期化
   useEffect(() => {
@@ -74,16 +74,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-teal-950 flex flex-col" onClick={tryPlayAudio}>
-      {/* Feedback Button */}
-      <div className="fixed bottom-4 left-4 z-50">
-        <Link href="https://docs.google.com/forms/d/e/1FAIpQLSf4ZaaQ5SY1ru9chOF_pqdfZadqUhUmi-Tgx_b_Dwyigt8yTg/viewform?usp=header" target="_blank" rel="noopener noreferrer">
-          <Button
-            className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 text-sm shadow-lg transform hover:scale-105 transition-transform duration-200 flex items-center gap-2"
-          >
-            <Scroll className="h-4 w-4" />
-            良ければアンケートにお答えください✨</Button>
-        </Link>
-      </div>
       {/* Header */}
       <header className="bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900 p-3 flex justify-between items-center border-b-2 border-yellow-500 shadow-md relative">
         {/* Decorative corners */}
@@ -126,14 +116,20 @@ export default function HomePage() {
       </header>
 
       {/* Current Quest Bar */}
-      <div className="bg-gradient-to-r from-teal-800 via-purple-800 to-teal-800 border-b-2 border-yellow-500 p-2 px-4 flex items-center shadow-md">
+      <div className="bg-gradient-to-r from-teal-800 via-purple-800 to-teal-800 border-b-2 border-yellow-500 p-2 px-4 flex items-center justify-between shadow-md">
         <div className="flex items-center space-x-2">
           <Scroll className="h-5 w-5 text-yellow-300" />
-          <span className="text-white font-medium text-sm sm:text-base">現在のクエスト：</span>
           <span className="text-yellow-300 font-bold text-sm sm:text-base drop-shadow-[0_0_3px_rgba(250,204,21,0.5)]">
             {currentQuest}
           </span>
         </div>
+        <Link href="/mountain">
+          <Button
+            className="bg-purple-600 hover:bg-purple-700 text-white rounded-lg px-4 py-2 text-sm shadow-lg transform hover:scale-105 transition-transform duration-200 flex items-center gap-2 border-2 border-yellow-500"
+          >
+            ランキングを見る
+          </Button>
+        </Link>
       </div>
 
       {/* Main content */}
@@ -152,35 +148,25 @@ export default function HomePage() {
             <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-purple-400 z-10"></div>
             <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-purple-400 z-10"></div>
 
-            {/* Map locations in triangle formation */}
+            {/* RPG Map Layout */}
             <div className="absolute inset-0 flex items-center justify-center">
               {/* 知識の湖 - 画面左上 */}
               <Link
                 href="/lake"
                 className="absolute top-[20%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
               >
-                <div className="relative w-16 h-16 sm:w-28 md:w-36 lg:w-40 sm:h-28 md:h-36 lg:h-40 cursor-pointer">
-                  <div className="absolute inset-0 bg-purple-500 bg-opacity-20 animate-pulse rounded-lg"></div>
-                  <div className="absolute inset-0 border-2 border-yellow-500 rounded-lg"></div>
-                  <Image src="/lake.webp" alt="知識の湖" fill className="object-cover rounded-lg" />
-                </div>
-                <div className="rpg-nameplate mt-1 bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900">
-                  <p className="text-white text-center text-xs sm:text-sm md:text-base">知識の湖</p>
+                <div className="relative w-40 h-16 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg border-4 border-yellow-500 cursor-pointer flex items-center justify-center">
+                  <p className="text-white text-base font-bold">知識の湖</p>
                 </div>
               </Link>
 
-              {/* 審判の森 - 画面左下 */}
+              {/* パーティーの洞窟 - 画面右上 */}
               <Link
-                href="/forest"
-                className="absolute top-[80%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
+                href="/cave"
+                className="absolute top-[20%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
               >
-                <div className="relative w-20 h-20 sm:w-32 md:w-40 lg:w-48 sm:h-32 md:h-40 lg:h-48 cursor-pointer">
-                  <div className="absolute inset-0 bg-purple-500 bg-opacity-20 animate-pulse rounded-lg"></div>
-                  <div className="absolute inset-0 border-2 border-yellow-500 rounded-lg"></div>
-                  <Image src="/forest.webp" alt="審判の森" fill className="object-cover rounded-lg" />
-                </div>
-                <div className="rpg-nameplate mt-1 bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900">
-                  <p className="text-white text-center text-xs sm:text-sm md:text-base">審判の森</p>
+                <div className="relative w-40 h-16 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg border-4 border-yellow-500 cursor-pointer flex items-center justify-center">
+                  <p className="text-white text-base font-bold">パーティーの洞窟</p>
                 </div>
               </Link>
 
@@ -189,13 +175,18 @@ export default function HomePage() {
                 href="/closet"
                 className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
               >
-                <div className="relative w-24 h-24 sm:w-36 md:w-44 lg:w-52 sm:h-36 md:h-44 lg:h-52 cursor-pointer">
-                  <div className="absolute inset-0 bg-purple-500 bg-opacity-20 animate-pulse rounded-lg"></div>
-                  <div className="absolute inset-0 border-2 border-yellow-500 rounded-lg"></div>
-                  <Image src="/kingdom.webp" alt="クローゼット城" fill className="object-cover rounded-lg" />
+                <div className="relative w-48 h-20 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg border-4 border-yellow-500 cursor-pointer flex items-center justify-center">
+                  <p className="text-white text-lg font-bold">クローゼット城</p>
                 </div>
-                <div className="rpg-nameplate mt-1 bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900">
-                  <p className="text-white text-center text-xs sm:text-sm md:text-base">クローゼット城</p>
+              </Link>
+
+              {/* 審判の森 - 画面左下 */}
+              <Link
+                href="/forest"
+                className="absolute top-[80%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
+              >
+                <div className="relative w-40 h-16 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg border-4 border-yellow-500 cursor-pointer flex items-center justify-center">
+                  <p className="text-white text-base font-bold">審判の森</p>
                 </div>
               </Link>
 
@@ -204,28 +195,8 @@ export default function HomePage() {
                 href="/shop"
                 className="absolute top-[80%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
               >
-                <div className="relative w-16 h-16 sm:w-28 md:w-36 lg:w-40 sm:h-28 md:h-36 lg:h-40 cursor-pointer">
-                  <div className="absolute inset-0 bg-purple-500 bg-opacity-20 animate-pulse rounded-lg"></div>
-                  <div className="absolute inset-0 border-2 border-yellow-500 rounded-lg"></div>
-                  <Image src="/shop.webp" alt="モーモーショップ" fill className="object-cover rounded-lg" />
-                </div>
-                <div className="rpg-nameplate mt-1 bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900">
-                  <p className="text-white text-center text-xs sm:text-sm md:text-base">モーモーショップ</p>
-                </div>
-              </Link>
-
-              {/* パーティーの洞窟 - 画面右上 */}
-              <Link
-                href="/party"
-                className="absolute top-[20%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
-              >
-                <div className="relative w-20 h-20 sm:w-32 md:w-40 lg:w-48 sm:h-32 md:h-40 lg:h-48 cursor-pointer">
-                  <div className="absolute inset-0 bg-purple-500 bg-opacity-20 animate-pulse rounded-lg"></div>
-                  <div className="absolute inset-0 border-2 border-yellow-500 rounded-lg"></div>
-                  <Image src="/party.webp" alt="パーティーの洞窟" fill className="object-cover rounded-lg" />
-                </div>
-                <div className="rpg-nameplate mt-1 bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900">
-                  <p className="text-white text-center text-xs sm:text-sm md:text-base">パーティーの洞窟</p>
+                <div className="relative w-40 h-16 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg border-4 border-yellow-500 cursor-pointer flex items-center justify-center">
+                  <p className="text-white text-base font-bold">モーモーショップ</p>
                 </div>
               </Link>
             </div>
