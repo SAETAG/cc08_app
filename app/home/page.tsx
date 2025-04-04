@@ -172,7 +172,7 @@ export default function HomePage() {
 
               {/* クローゼット城 - 画面中央 */}
               <Link
-                href="/closet"
+                href="/castle"
                 className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
               >
                 <div className="relative w-48 h-20 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg border-4 border-yellow-500 cursor-pointer flex items-center justify-center">
