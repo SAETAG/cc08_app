@@ -1,10 +1,12 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Crown, Package, Shirt, Layers, Sparkles } from 'lucide-react'
+import { Crown, Package, Shirt, Layers, Sparkles } from "lucide-react"
 
 // Mock data - replace with actual data fetching
 const userData = {
@@ -44,7 +46,7 @@ export default function CastleLobbyPage() {
   const hasDrawers = Object.keys(userData.drawers).length > 0
 
   return (
-    <div className="min-h-screen w-full bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-green-950/80">
       {/* Magical floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 30 }).map((_, i) => (
@@ -78,11 +80,11 @@ export default function CastleLobbyPage() {
         style={{ animationDelay: "1s" }}
       ></div>
       <div
-        className="absolute left-1/3 bottom-1/4 w-24 h-24 rounded-full bg-blue-500/20 blur-2xl animate-pulse"
+        className="absolute left-1/3 bottom-1/4 w-24 h-24 rounded-full bg-green-500/20 blur-2xl animate-pulse"
         style={{ animationDelay: "1.5s" }}
       ></div>
       <div
-        className="absolute right-1/3 bottom-1/4 w-24 h-24 rounded-full bg-blue-500/20 blur-2xl animate-pulse"
+        className="absolute right-1/3 bottom-1/4 w-24 h-24 rounded-full bg-green-500/20 blur-2xl animate-pulse"
         style={{ animationDelay: "0.5s" }}
       ></div>
 
@@ -99,7 +101,7 @@ export default function CastleLobbyPage() {
           transition={{ duration: 90, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
         />
         <motion.div
-          className="absolute w-[600px] h-[600px] border border-blue-600/10 rounded-full"
+          className="absolute w-[600px] h-[600px] border border-green-600/10 rounded-full"
           animate={{ rotate: 180 }}
           transition={{ duration: 60, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
         />
@@ -113,67 +115,67 @@ export default function CastleLobbyPage() {
       >
         <div className="relative inline-block">
           {/* Sparkle effects */}
-          <motion.div 
+          <motion.div
             className="absolute -top-6 -left-6 text-amber-300 opacity-70"
-            animate={{ 
+            animate={{
               scale: [1, 1.2, 1],
               opacity: [0.4, 0.7, 0.4],
-              rotate: [0, 15, 0]
+              rotate: [0, 15, 0],
             }}
             transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse" }}
           >
             <Sparkles size={24} />
           </motion.div>
-          <motion.div 
+          <motion.div
             className="absolute -top-4 -right-6 text-amber-300 opacity-70"
-            animate={{ 
+            animate={{
               scale: [1, 1.2, 1],
               opacity: [0.5, 0.8, 0.5],
-              rotate: [0, -15, 0]
+              rotate: [0, -15, 0],
             }}
             transition={{ duration: 2.5, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse", delay: 0.5 }}
           >
             <Sparkles size={20} />
           </motion.div>
-          <motion.div 
+          <motion.div
             className="absolute -bottom-6 -right-8 text-amber-300 opacity-70"
-            animate={{ 
+            animate={{
               scale: [1, 1.2, 1],
               opacity: [0.4, 0.7, 0.4],
-              rotate: [0, 20, 0]
+              rotate: [0, 20, 0],
             }}
             transition={{ duration: 3.2, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse", delay: 1 }}
           >
             <Sparkles size={22} />
           </motion.div>
-          <motion.div 
+          <motion.div
             className="absolute -bottom-4 -left-8 text-amber-300 opacity-70"
-            animate={{ 
+            animate={{
               scale: [1, 1.2, 1],
               opacity: [0.5, 0.8, 0.5],
-              rotate: [0, -20, 0]
+              rotate: [0, -20, 0],
             }}
             transition={{ duration: 2.8, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse", delay: 1.5 }}
           >
             <Sparkles size={18} />
           </motion.div>
-          
+
           <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-wider relative inline-block">
-            <motion.span 
+            <motion.span
               className="relative text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-500 to-amber-300"
-              animate={{ 
+              animate={{
                 backgroundPosition: ["0% center", "100% center", "0% center"],
                 textShadow: [
                   "0 0 7px rgba(251,191,36,0.6), 0 0 10px rgba(251,191,36,0.4), 0 0 21px rgba(251,191,36,0.2), 0 0 42px rgba(251,191,36,0.1)",
                   "0 0 10px rgba(251,191,36,0.8), 0 0 15px rgba(251,191,36,0.6), 0 0 25px rgba(251,191,36,0.4), 0 0 45px rgba(251,191,36,0.2)",
-                  "0 0 7px rgba(251,191,36,0.6), 0 0 10px rgba(251,191,36,0.4), 0 0 21px rgba(251,191,36,0.2), 0 0 42px rgba(251,191,36,0.1)"
-                ]
+                  "0 0 7px rgba(251,191,36,0.6), 0 0 10px rgba(251,191,36,0.4), 0 0 21px rgba(251,191,36,0.2), 0 0 42px rgba(251,191,36,0.1)",
+                ],
               }}
               transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse" }}
               style={{ backgroundSize: "200% auto" }}
             >
               クローゼット城
-              <motion.span 
+              <motion.span
                 className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent"
                 animate={{ opacity: [0.5, 1, 0.5], width: ["80%", "100%", "80%"] }}
                 transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
@@ -193,7 +195,7 @@ export default function CastleLobbyPage() {
           icon={<Shirt className="w-12 h-12" />}
           isActive={hasHangers}
           count={Object.keys(userData.hangers).length}
-          href="/castle/hangers"
+          href="/castle/hanger"
           delay={0.6}
         />
 
@@ -250,7 +252,7 @@ function RoomCard({ title, icon, isActive, count, href, delay }: RoomCardProps) 
           className={`relative p-6 h-[280px] flex flex-col items-center justify-center text-center transition-all duration-300 overflow-hidden
           ${
             isActive
-              ? "bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
+              ? "bg-gradient-to-b from-green-900/90 to-green-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
               : "bg-gradient-to-b from-slate-800/80 to-slate-900/80 border-2 border-slate-700/50 opacity-70"
           }`}
         >
@@ -277,11 +279,19 @@ function RoomCard({ title, icon, isActive, count, href, delay }: RoomCardProps) 
           )}
 
           <div className="mb-4 relative">
-            <motion.div 
+            <motion.div
               className={`relative z-10 ${isActive ? "text-amber-400" : "text-slate-400"}`}
-              animate={isActive ? { 
-                filter: ["drop-shadow(0 0 2px rgba(251,191,36,0.5))", "drop-shadow(0 0 5px rgba(251,191,36,0.7))", "drop-shadow(0 0 2px rgba(251,191,36,0.5))"] 
-              } : {}}
+              animate={
+                isActive
+                  ? {
+                      filter: [
+                        "drop-shadow(0 0 2px rgba(251,191,36,0.5))",
+                        "drop-shadow(0 0 5px rgba(251,191,36,0.7))",
+                        "drop-shadow(0 0 2px rgba(251,191,36,0.5))",
+                      ],
+                    }
+                  : {}
+              }
               transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
             >
               {icon}
@@ -364,7 +374,7 @@ function KingRoomCard({ isUnlocked, href }: KingRoomCardProps) {
         className={`relative p-8 h-[280px] flex flex-col items-center justify-center text-center transition-all duration-500 overflow-hidden
         ${
           isUnlocked
-            ? "bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
+            ? "bg-gradient-to-b from-green-900/90 to-green-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
             : "bg-gradient-to-b from-slate-800/80 to-slate-900/90 border-2 border-slate-700/50 opacity-80"
         }`}
       >
@@ -390,11 +400,11 @@ function KingRoomCard({ isUnlocked, href }: KingRoomCardProps) {
               animate={{ opacity: [0.3, 0.1, 0.3] }}
               transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
             />
-            
+
             {/* Subtle border pulse */}
             <motion.div
               className="absolute -inset-[1px] rounded-lg border-2 border-amber-500/0"
-              animate={{ 
+              animate={{
                 borderColor: ["rgba(251,191,36,0)", "rgba(251,191,36,0.4)", "rgba(251,191,36,0)"],
               }}
               transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
@@ -403,11 +413,19 @@ function KingRoomCard({ isUnlocked, href }: KingRoomCardProps) {
         )}
 
         <div className="relative mb-4">
-          <motion.div 
+          <motion.div
             className={`relative z-10 ${isUnlocked ? "text-amber-400" : "text-slate-400"}`}
-            animate={isUnlocked ? { 
-              filter: ["drop-shadow(0 0 3px rgba(251,191,36,0.5))", "drop-shadow(0 0 6px rgba(251,191,36,0.6))", "drop-shadow(0 0 3px rgba(251,191,36,0.5))"] 
-            } : {}}
+            animate={
+              isUnlocked
+                ? {
+                    filter: [
+                      "drop-shadow(0 0 3px rgba(251,191,36,0.5))",
+                      "drop-shadow(0 0 6px rgba(251,191,36,0.6))",
+                      "drop-shadow(0 0 3px rgba(251,191,36,0.5))",
+                    ],
+                  }
+                : {}
+            }
             transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
           >
             <Crown className="w-16 h-16" />
@@ -432,7 +450,7 @@ function KingRoomCard({ isUnlocked, href }: KingRoomCardProps) {
           <span className={`relative ${isUnlocked ? "text-amber-300" : "text-slate-400"}`}>
             王の間
             {isUnlocked && (
-              <motion.span 
+              <motion.span
                 className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent"
                 animate={{ opacity: [0.5, 1, 0.5], width: ["80%", "100%", "80%"] }}
                 transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
@@ -461,3 +479,4 @@ function KingRoomCard({ isUnlocked, href }: KingRoomCardProps) {
     </Link>
   )
 }
+
