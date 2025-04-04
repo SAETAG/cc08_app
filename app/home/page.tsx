@@ -6,14 +6,14 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Volume2, VolumeX, User, LogOut, Scroll } from "lucide-react"
+import { Volume2, VolumeX, User, LogOut, Scroll, Info, Footprints, Settings } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-mobile"
 
 export default function HomePage() {
   const [isMuted, setIsMuted] = useState(false)
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const [currentQuest, setCurrentQuest] = useState("あなたの週間ランキング：位")
+  const [currentQuest, setCurrentQuest] = useState("今日のデイリーミッション：")
 
   // シンプルな音声初期化
   useEffect(() => {
@@ -94,13 +94,13 @@ export default function HomePage() {
           >
             {isMuted ? <VolumeX className="h-4 w-4 sm:h-5 sm:w-5" /> : <Volume2 className="h-4 w-4 sm:h-5 sm:w-5" />}
           </Button>
-          <Link href="/user">
+          <Link href="/settings">
             <Button
               variant="outline"
               size="icon"
               className="bg-purple-800 border-yellow-600 text-white hover:bg-purple-700 h-8 w-8 sm:h-10 sm:w-10"
             >
-              <User className="h-4 w-4 sm:h-5 sm:w-5" />
+              <Settings className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </Link>
           <Link href="/">
@@ -127,7 +127,7 @@ export default function HomePage() {
           <Button
             className="bg-purple-600 hover:bg-purple-700 text-white rounded-lg px-4 py-2 text-sm shadow-lg transform hover:scale-105 transition-transform duration-200 flex items-center gap-2 border-2 border-yellow-500"
           >
-            ランキングを見る
+            ミッションをする✨！
           </Button>
         </Link>
       </div>
@@ -196,7 +196,7 @@ export default function HomePage() {
                 className="absolute top-[80%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
               >
                 <div className="relative w-40 h-16 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg border-4 border-yellow-500 cursor-pointer flex items-center justify-center">
-                  <p className="text-white text-base font-bold">モーモーショップ</p>
+                  <p className="text-white text-base font-bold">勇者の家</p>
                 </div>
               </Link>
             </div>

@@ -98,7 +98,7 @@ export default function ShopPage() {
                   モーちゃん
                 </div>
                 <p className="text-xl md:text-2xl font-pixel typewriter overflow-hidden whitespace-nowrap">
-                  いらっしゃい。ご用件は何かな？
+                  ご用件は何かな？
                 </p>
                 <div className="absolute bottom-2 right-3 animate-bounce text-amber-300 text-xl">▼</div>
               </div>
