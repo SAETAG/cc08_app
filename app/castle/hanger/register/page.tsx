@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { motion } from "framer-motion"
@@ -11,6 +11,15 @@ import { Label } from "@/components/ui/label"
 import { Upload, Camera, X, ArrowLeft, Home } from "lucide-react"
 import Image from "next/image"
 import { toast } from "@/components/ui/use-toast"
+import { getAuth, onAuthStateChanged, signInAnonymously } from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { firebaseConfig } from '@/lib/firebase';
+
+// Firebaseの初期化
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const storage = getStorage(app);
 
 export default function HangerRegisterPage() {
   const router = useRouter()
@@ -18,6 +27,35 @@ export default function HangerRegisterPage() {
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [currentUser, setCurrentUser] = useState<any>(null)
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        console.log('認証済みユーザー:', user.uid)
+        setCurrentUser(user)
+        document.cookie = `userId=${user.uid}; path=/; max-age=3600; SameSite=Strict`
+      } else {
+        console.log('匿名認証を試みます...')
+        try {
+          const userCredential = await signInAnonymously(auth)
+          console.log('匿名認証成功:', userCredential.user.uid)
+          setCurrentUser(userCredential.user)
+          document.cookie = `userId=${userCredential.user.uid}; path=/; max-age=3600; SameSite=Strict`
+        } catch (error) {
+          console.error('匿名認証エラー:', error)
+          toast({
+            title: "エラー",
+            description: "認証に失敗しました。再度お試しください。",
+            variant: "destructive",
+          })
+          router.push('/')
+        }
+      }
+    })
+
+    return () => unsubscribe()
+  }, [router])
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -33,6 +71,16 @@ export default function HangerRegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    if (!currentUser) {
+      toast({
+        title: "エラー",
+        description: "認証情報が見つかりません。再度ログインしてください。",
+        variant: "destructive",
+      })
+      router.push('/')
+      return
+    }
+
     if (!newHangerName.trim()) {
       toast({
         title: "エラー",
@@ -45,7 +93,7 @@ export default function HangerRegisterPage() {
     if (!fileInputRef.current?.files?.[0]) {
       toast({
         title: "エラー",
-        description: "画像をアップロードするか、カメラで撮影してください",
+        description: "画像を選択してください",
         variant: "destructive",
       })
       return
@@ -53,20 +101,39 @@ export default function HangerRegisterPage() {
 
     setIsLoading(true)
     try {
+      if (!currentUser?.uid) {
+        throw new Error('ユーザーIDが見つかりません。再度ログインしてください。')
+      }
+
+      console.log('現在のユーザーID:', currentUser.uid)
+      const file = fileInputRef.current.files[0];
+      const fileName = `${Date.now()}_${file.name}`;
+      const storageRef = ref(storage, `users/${currentUser.uid}/racks/${fileName}`);  // パスを修正
+      
+      // メタデータを追加
+      const metadata = {
+        contentType: file.type,
+        customMetadata: {
+          'uploadedBy': currentUser.uid,
+          'originalName': file.name
+        }
+      };
+
+      console.log('アップロード開始:', storageRef.fullPath)
+      // Firebase Storageにアップロード
+      const snapshot = await uploadBytes(storageRef, file, metadata);
+      console.log('アップロード成功:', snapshot.ref.fullPath)
+      const imageUrl = await getDownloadURL(snapshot.ref);
+      console.log('ダウンロードURL取得:', imageUrl)
+
       const formData = new FormData()
       formData.append("name", newHangerName)
-      formData.append("image", fileInputRef.current.files[0])
-
-      console.log('Sending request:', {
-        name: newHangerName,
-        imageType: fileInputRef.current.files[0].type,
-        imageSize: fileInputRef.current.files[0].size
-      })
+      formData.append("imageUrl", imageUrl)  // 画像URLを送信
+      formData.append("userId", currentUser.uid)
 
       const response = await fetch("/api/racks/create", {
         method: "POST",
         body: formData,
-        credentials: "include",
       })
 
       const data = await response.json()

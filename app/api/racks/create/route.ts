@@ -21,14 +21,16 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const name = formData.get('name') as string;
     const image = formData.get('image') as File;
+    const userIdFormData = formData.get('userId') as string;
 
-    if (!name || !image) {
+    if (!name || !image || !userIdFormData) {
       return NextResponse.json(
         { 
           error: '必要な情報が不足しています',
           details: {
             name: name ? '✓' : '×',
-            image: image ? '✓' : '×'
+            image: image ? '✓' : '×',
+            userId: userIdFormData ? '✓' : '×'
           }
         },
         { status: 400 }

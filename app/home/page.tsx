@@ -2,12 +2,13 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Volume2, VolumeX, User, LogOut, Scroll, Info, Footprints, Settings } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-mobile"
+import { toast } from "@/components/ui/use-toast"
 
 export default function HomePage() {
   const [isMuted, setIsMuted] = useState(false)
@@ -20,19 +21,15 @@ export default function HomePage() {
     const audioElement = new Audio("/home.mp3")
     audioElement.loop = true
     audioElement.volume = 0.7
+    audioElement.preload = "auto" // プリロードを設定
     setAudio(audioElement)
 
-    try {
-      audioElement.play().catch((error) => {
-        console.log("Auto-play was prevented:", error)
-      })
-    } catch (error) {
-      console.log("Audio play error:", error)
-    }
-
+    // 初期状態では再生を試みない
     return () => {
-      audioElement.pause()
-      audioElement.src = ""
+      if (audioElement) {
+        audioElement.pause()
+        audioElement.src = ""
+      }
     }
   }, [])
 
@@ -43,29 +40,53 @@ export default function HomePage() {
 
       // ミュート解除時に再生を試みる
       if (!isMuted && audio.paused) {
-        try {
-          audio.play().catch((error) => {
+        const playPromise = audio.play()
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
             console.log("Play on unmute failed:", error)
+            // エラーが発生した場合、ユーザーに通知
+            toast({
+              title: "音楽の再生",
+              description: "画面をタップすると音楽が再生されます",
+              duration: 3000,
+            })
           })
-        } catch (error) {
-          console.log("Play error:", error)
         }
       }
     }
   }, [isMuted, audio])
 
   // 画面タップで再生を試みる関数
-  const tryPlayAudio = () => {
+  const tryPlayAudio = useCallback(() => {
     if (audio && audio.paused && !isMuted) {
-      try {
-        audio.play().catch((error) => {
+      const playPromise = audio.play()
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
           console.log("Play on screen tap failed:", error)
+          toast({
+            title: "音楽の再生",
+            description: "ブラウザの設定で音声の自動再生が制限されている可能性があります",
+            duration: 5000,
+          })
         })
-      } catch (error) {
-        console.log("Play error:", error)
       }
     }
-  }
+  }, [audio, isMuted])
+
+  // 初回レンダリング時にユーザーに通知
+  useEffect(() => {
+    const showAudioNotification = () => {
+      toast({
+        title: "🎵 音楽の再生",
+        description: "画面をタップすると音楽が再生されます。音量にご注意ください。",
+        duration: 7000,
+      })
+    }
+    
+    // 少し遅延させて通知を表示
+    const timer = setTimeout(showAudioNotification, 1000)
+    return () => clearTimeout(timer)
+  }, [])
 
   // Toggle mute
   const toggleMute = () => {
