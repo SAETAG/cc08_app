@@ -8,10 +8,7 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import { ArrowLeft, PlayCircle, Shirt, Plus, Home } from "lucide-react"
 
-const initialHangers = [
-  { id: "1", name: "寝室クローゼットのハンガーラック", image: "/organized-walk-in-closet.png", stepsGenerated: true },
-  { id: "2", name: "リビング収納のハンガーポール", image: "/clothes-rack-with-assorted-clothing.png", stepsGenerated: false },
-]
+const initialHangers = []
 
 export default function HangerListPage() {
   const [hangers, setHangers] = useState(initialHangers)
@@ -26,7 +23,7 @@ export default function HangerListPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div className="min-h-screen w-full bg-blue-950 text-amber-300 flex flex-col items-center p-4 relative overflow-hidden">
       {/* Magical floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 20 }).map((_, i) => (

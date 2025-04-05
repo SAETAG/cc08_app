@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -11,21 +10,19 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Upload, Camera, X, ArrowLeft, Home } from "lucide-react"
 import Image from "next/image"
+import { toast } from "@/components/ui/use-toast"
 
 export default function HangerRegisterPage() {
   const router = useRouter()
   const [newHangerName, setNewHangerName] = useState("")
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0]
+      setPreviewImage(URL.createObjectURL(selectedFile))
     }
   }
 
@@ -33,23 +30,72 @@ export default function HangerRegisterPage() {
     alert("カメラ機能は実アプリで実装されます")
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!newHangerName.trim()) {
-      alert("ハンガーラックの名前を入力してください")
+      toast({
+        title: "エラー",
+        description: "ハンガーラックの名前を入力してください",
+        variant: "destructive",
+      })
       return
     }
 
-    const newRackId = Date.now().toString() // 仮のID
-    // Firestore に保存する処理をここに追加（省略）
+    if (!fileInputRef.current?.files?.[0]) {
+      toast({
+        title: "エラー",
+        description: "画像をアップロードするか、カメラで撮影してください",
+        variant: "destructive",
+      })
+      return
+    }
 
-    router.push(`/castle/hanger`)
+    setIsLoading(true)
+    try {
+      const formData = new FormData()
+      formData.append("name", newHangerName)
+      formData.append("image", fileInputRef.current.files[0])
+
+      console.log('Sending request:', {
+        name: newHangerName,
+        imageType: fileInputRef.current.files[0].type,
+        imageSize: fileInputRef.current.files[0].size
+      })
+
+      const response = await fetch("/api/racks/create", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      })
+
+      const data = await response.json()
+      
+      if (!response.ok) {
+        console.error('API Error:', data)
+        throw new Error(data.error + (data.details ? `\n${JSON.stringify(data.details, null, 2)}` : ''))
+      }
+
+      toast({
+        title: "成功",
+        description: "ハンガーラックを登録しました",
+      })
+      
+      router.push("/castle/hanger")
+    } catch (error) {
+      console.error('Request failed:', error)
+      toast({
+        title: "エラー",
+        description: error instanceof Error ? error.message : "登録に失敗しました。もう一度お試しください。",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
-      {/* Magical floating particles */}
+    <div className="min-h-screen w-full bg-blue-950 text-amber-300 flex flex-col items-center p-4 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 20 }).map((_, i) => (
           <motion.div
@@ -68,19 +114,18 @@ export default function HangerRegisterPage() {
             }}
             transition={{
               duration: Math.random() * 10 + 10,
-              repeat: Number.POSITIVE_INFINITY,
+              repeat: Infinity,
               repeatType: "loop",
             }}
           />
         ))}
       </div>
 
-      {/* Light effects */}
-      <div className="absolute left-1/4 top-1/4 w-32 h-32 rounded-full bg-amber-500/20 blur-2xl animate-pulse"></div>
+      <div className="absolute left-1/4 top-1/4 w-32 h-32 rounded-full bg-amber-500/20 blur-2xl animate-pulse" />
       <div
         className="absolute right-1/4 top-1/4 w-32 h-32 rounded-full bg-amber-500/20 blur-2xl animate-pulse"
         style={{ animationDelay: "1s" }}
-      ></div>
+      />
 
       <div className="w-full max-w-2xl z-10 mt-8">
         <div className="flex justify-between items-center mb-6">
@@ -107,11 +152,10 @@ export default function HangerRegisterPage() {
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <Card className="relative overflow-hidden bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6">
-            {/* Decorative corners */}
-            <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500"></div>
-            <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-500"></div>
-            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-amber-500"></div>
-            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-amber-500"></div>
+            <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500" />
+            <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-500" />
+            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-amber-500" />
+            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-amber-500" />
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
@@ -130,9 +174,16 @@ export default function HangerRegisterPage() {
 
               <div className="space-y-2">
                 <Label className="text-amber-300 text-lg">画像</Label>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                  className="hidden"
+                />
                 {previewImage ? (
                   <div className="relative w-full h-64 border-2 border-dashed border-amber-500/30 rounded-md overflow-hidden">
-                    <Image src={previewImage || "/placeholder.svg"} alt="Preview" fill className="object-cover" />
+                    <Image src={previewImage} alt="Preview" fill className="object-cover" />
                     <button
                       type="button"
                       onClick={() => setPreviewImage(null)}
@@ -169,44 +220,19 @@ export default function HangerRegisterPage() {
                         カメラ
                       </motion.button>
                     </div>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
                   </div>
                 )}
               </div>
 
-              <div className="pt-4 flex justify-center">
-                <motion.button
-                  type="submit"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white text-xl font-medium py-4 px-8 rounded-lg shadow-lg border border-amber-400/30 relative overflow-hidden group w-full"
-                >
-                  <span className="relative z-10">登録</span>
-                  <motion.span
-                    className="absolute inset-0 bg-gradient-to-r from-amber-500/80 to-amber-400/80"
-                    initial={{ x: "-100%" }}
-                    whileHover={{ x: "100%" }}
-                    transition={{ duration: 1 }}
-                  />
-                  <motion.span
-                    className="absolute -inset-1 opacity-0 group-hover:opacity-30"
-                    animate={{
-                      boxShadow: [
-                        "inset 0 0 10px 5px rgba(251,191,36,0.1)",
-                        "inset 0 0 20px 10px rgba(251,191,36,0.2)",
-                        "inset 0 0 10px 5px rgba(251,191,36,0.1)",
-                      ],
-                    }}
-                    transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-                  />
-                </motion.button>
-              </div>
+              <motion.button
+                type="submit"
+                disabled={isLoading}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white py-3 px-4 rounded-md shadow-md border border-amber-400/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "登録中..." : "登録する"}
+              </motion.button>
             </form>
           </Card>
         </motion.div>
@@ -214,4 +240,3 @@ export default function HangerRegisterPage() {
     </div>
   )
 }
-
