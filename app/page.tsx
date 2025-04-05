@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button"
 import { Sparkles } from "lucide-react"
 import { useRouter } from "next/navigation" // ページ遷移に必要
 import Cookies from 'js-cookie'
+import { db, firebaseAuth } from "@/lib/firebase"
+import { doc, setDoc, Timestamp } from "firebase/firestore"
+import { signInAnonymously } from "firebase/auth"
 
 export default function Home() {
   const [loading, setLoading] = useState(false) // ログイン処理のローディング管理
@@ -50,10 +53,14 @@ export default function Home() {
     setError(null)
 
     try {
-      // カスタムIDを取得または生成
+      // ① Firebase匿名認証
+      const firebaseCredential = await signInAnonymously(firebaseAuth)
+      console.log("✅ Firebase anonymous login success:", firebaseCredential.user.uid)
+
+      // ② カスタムIDを取得または生成（PlayFab用）
       const customId = getOrCreateUserId()
 
-      // サーバーサイドAPIにPOSTリクエストを送信
+      // ③ PlayFabログイン
       const res = await fetch("/api/login", {
         method: "POST",
         headers: {
@@ -67,21 +74,42 @@ export default function Home() {
       const data = await res.json()
 
       if (res.ok) {
-        // ログイン成功時に既存ユーザーか新規ユーザーかで遷移先を決定
+        // ④ Firestoreにユーザー情報を保存（Firebase認証済みなのでセキュリティルールが有効）
+        try {
+          const userDocRef = doc(db, "users", firebaseCredential.user.uid);
+          const userData = {
+            userId: customId, // PlayFabのカスタムID
+            firebaseUid: firebaseCredential.user.uid,
+            username: "冒険者",
+            createdAt: Timestamp.now()
+          };
+          
+          await setDoc(userDocRef, userData);
+          console.log("✅ Firestore user document created successfully");
+        } catch (firestoreError: any) {
+          console.error("Firestore error:", {
+            code: firestoreError.code,
+            message: firestoreError.message,
+            details: firestoreError
+          });
+          setError(`データの保存に失敗しました: ${firestoreError.message}`);
+          return;
+        }
+
+        // ⑤ ログイン成功時の画面遷移
         if (!data.result.data.NewlyCreated) {
-          // 既存ユーザーの場合
           router.push("/home")
         } else {
-          // 新規ユーザーの場合
           router.push("/prologue")
         }
       } else {
-        setError(data.message || "ログイン失敗") // エラーメッセージ表示
+        setError(data.message || "ログイン失敗")
       }
 
       console.log("PlayFab response:", data.result)
-    } catch (error) {
-      setError("ログイン中にエラーが発生しました")
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setError(`ログイン中にエラーが発生しました: ${error.message}`)
     } finally {
       setLoading(false)
     }

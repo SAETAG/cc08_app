@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import { Volume2, VolumeX } from "lucide-react"
+import { firebaseAuth, db } from "@/lib/firebase"
+import { doc, updateDoc } from "firebase/firestore"
+import { onAuthStateChanged } from "firebase/auth"
 
 export default function CreateNamePage() {
   const [name, setName] = useState("")
@@ -14,6 +17,18 @@ export default function CreateNamePage() {
   const [loading, setLoading] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const router = useRouter()
+
+  // Firebase認証状態の監視
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
+      if (!user) {
+        // 未認証の場合はトップページにリダイレクト
+        router.push("/")
+      }
+    })
+
+    return () => unsubscribe()
+  }, [router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,6 +48,13 @@ export default function CreateNamePage() {
     setLoading(true)
 
     try {
+      // 現在のユーザーを取得
+      const currentUser = firebaseAuth.currentUser
+      if (!currentUser) {
+        throw new Error("認証されていません")
+      }
+
+      // PlayFabの表示名を更新
       const res = await fetch("/api/update-display-name", {
         method: "POST",
         headers: {
@@ -49,6 +71,14 @@ export default function CreateNamePage() {
       if (!res.ok) {
         throw new Error(data.message || "名前の更新に失敗しました")
       }
+
+      // Firestoreのユーザー情報を更新
+      const userDocRef = doc(db, "users", currentUser.uid)
+      await updateDoc(userDocRef, {
+        username: name
+      })
+
+      console.log("✅ Username updated in Firestore")
 
       // 更新成功時はホームページに遷移
       router.push("/home")

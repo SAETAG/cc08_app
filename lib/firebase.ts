@@ -6,6 +6,7 @@ import { initializeApp, getApps, getApp } from "firebase/app"
 // Firebase Services
 import { getFirestore } from "firebase/firestore"
 import { getStorage } from "firebase/storage"
+import { getAuth } from "firebase/auth"
 
 // ✅ Firebase config from .env.local
 const firebaseConfig = {
@@ -20,6 +21,8 @@ const firebaseConfig = {
 // ✅ Firebase App 初期化（再初期化を防ぐ）
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)
 
-// ✅ Firestore と Storage をエクスポート
+// ✅ Firestore と Storage と Auth をエクスポート
+export const firebaseApp = app
 export const db = getFirestore(app)
 export const storage = getStorage(app)
+export const firebaseAuth = getAuth(app)
