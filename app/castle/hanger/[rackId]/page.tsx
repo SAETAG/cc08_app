@@ -290,9 +290,38 @@ export default function HangerDungeonPage() {
                   <Sparkles className="w-5 h-5 mr-2" />
                   整理収納の方向性
                 </h3>
-                <p className="text-amber-300/80">
-                  {hangerData.organizationDirection || "方向性を分析中..."}
-                </p>
+                <div className="relative">
+                  <div className="bg-blue-900/50 rounded-lg p-4 border border-amber-500/30 relative">
+                    <div className="absolute -bottom-4 -left-4 w-16 h-16">
+                      <Image
+                        src="/cow-fairy.webp"
+                        alt="モーちゃん"
+                        width={64}
+                        height={64}
+                        className="rounded-full border-2 border-amber-500/50"
+                      />
+                    </div>
+                    <div className="text-amber-300/80 pl-16">
+                      {hangerData.organizationDirection || (
+                        <div className="flex items-center">
+                          <motion.span
+                            animate={{ opacity: [0.5, 1, 0.5] }}
+                            transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+                          >
+                            モーちゃんが分析中...
+                          </motion.span>
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                            className="ml-2"
+                          >
+                            <Sparkles className="h-4 w-4 text-amber-400" />
+                          </motion.div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </Card>
