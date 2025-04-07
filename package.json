@@ -57,6 +57,7 @@
     "lucide-react": "^0.454.0",
     "next": "15.1.0",
     "next-themes": "^0.4.4",
+    "openai": "^4.92.1",
     "playfab-sdk": "^2.171.250328",
     "react": "^18.0.0",
     "react-confetti": "^6.4.0",
