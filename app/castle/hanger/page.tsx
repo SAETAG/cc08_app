@@ -29,7 +29,7 @@ export default function HangerList() {
   const router = useRouter()
 
   const startAdventure = (rackId: string) => {
-    router.push(`/castle/hanger/${rackId}/analyze`)
+    router.push(`/castle/hanger/${rackId}/generate`)
   }
 
   useEffect(() => {

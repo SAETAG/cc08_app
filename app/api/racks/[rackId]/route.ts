@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { dbAdmin, verifyTokenOrThrow } from "@/lib/firebaseAdmin"
+import { dbAdmin, verifyTokenOrThrow } from "@/app/lib/firebaseAdmin"
 
 export async function GET(
   req: NextRequest,
