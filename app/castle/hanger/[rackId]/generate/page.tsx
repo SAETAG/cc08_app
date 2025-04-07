@@ -24,31 +24,34 @@ export default function GenerateDungeonPage() {
   const { currentUser } = useAuth()
   const rackId = params.rackId as string
   
-  console.log("Current rackId:", rackId);
-  console.log("Current params:", params);
-  
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const [isGenerating, setIsGenerating] = useState(true)
   const [showCompletionMessage, setShowCompletionMessage] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [hasGenerated, setHasGenerated] = useState(false)
+  const [isInitialMount, setIsInitialMount] = useState(true)  // 初回マウントフラグを追加
+
+  // 初回マウント時のみ実行
+  useEffect(() => {
+    setIsInitialMount(false);
+  }, []);
 
   // OpenAI APIを呼び出してダンジョンを生成
   useEffect(() => {
-    const generateDungeon = async () => {
-      if (!currentUser) {
-        setError("ユーザーが認証されていません");
-        return;
-      }
+    let isSubscribed = true;
 
-      if (!rackId) {
-        setError("ハンガーラックIDが指定されていません");
+    const generateDungeon = async () => {
+      // 初回マウント時または既に生成済みの場合は処理をスキップ
+      if (isInitialMount || !currentUser || !rackId || hasGenerated) {
+        if (!currentUser) setError("ユーザーが認証されていません");
+        if (!rackId) setError("ハンガーラックIDが指定されていません");
         return;
       }
 
       try {
+        setHasGenerated(true);
         const token = await currentUser.getIdToken();
-        console.log("Sending request to OpenAI API with rackId:", rackId);
         
         const response = await fetch('/api/openai', {
           method: 'POST',
@@ -63,26 +66,22 @@ export default function GenerateDungeonPage() {
           })
         });
 
-        console.log("API Response status:", response.status);
+        if (!isSubscribed) return;
         
         if (!response.ok) {
           const errorText = await response.text();
-          console.error("API Error Response:", errorText);
-          
-          // OpenAIのクォータエラーの場合、より分かりやすいメッセージを表示
           if (errorText.includes("quota") || errorText.includes("429")) {
             throw new Error("OpenAIのAPIクォータを超過しました。管理者にお問い合わせください。");
           }
-          
           throw new Error(`APIエラー: ${response.status} ${errorText}`);
         }
 
         const data = await response.json();
-        console.log("API Response data:", data);
+        if (!isSubscribed) return;
         
-        // 生成完了を通知
         setProgress(100);
       } catch (err) {
+        if (!isSubscribed) return;
         console.error("Error generating dungeon:", err);
         setError(err instanceof Error ? err.message : "エラーが発生しました");
         setIsGenerating(false);
@@ -90,47 +89,47 @@ export default function GenerateDungeonPage() {
     };
 
     generateDungeon();
-  }, [currentUser, rackId]);
+    return () => {
+      isSubscribed = false;
+    };
+  }, [currentUser, rackId, hasGenerated, isInitialMount]);  // isInitialMountを依存配列に追加
 
-  // メッセージを順番に切り替える
+  // アニメーション関連のuseEffectをまとめる
   useEffect(() => {
-    if (isGenerating && progress < 100) {
-      const messageInterval = setInterval(() => {
-        setCurrentMessageIndex((prev) => (prev + 1) % generationMessages.length)
-      }, 3000)
-      
-      return () => clearInterval(messageInterval)
-    }
-  }, [isGenerating, progress])
+    if (!isGenerating || progress >= 100) return;
 
-  // 進行状況を更新する
-  useEffect(() => {
-    if (isGenerating && progress < 100) {
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          const newProgress = prev + Math.random() * 5
-          return newProgress > 100 ? 100 : newProgress
-        })
-      }, 800)
-      
-      return () => clearInterval(progressInterval)
-    }
-  }, [isGenerating, progress])
+    // メッセージ切り替え用のインターバル
+    const messageInterval = setInterval(() => {
+      setCurrentMessageIndex((prev) => (prev + 1) % generationMessages.length);
+    }, 3000);
+
+    // プログレスバー更新用のインターバル
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => {
+        const newProgress = prev + Math.random() * 5;
+        return newProgress > 100 ? 100 : newProgress;
+      });
+    }, 800);
+
+    return () => {
+      clearInterval(messageInterval);
+      clearInterval(progressInterval);
+    };
+  }, [isGenerating, progress]);
 
   // 生成完了時の処理
   useEffect(() => {
     if (progress >= 100) {
-      setIsGenerating(false)
-      setShowCompletionMessage(true)
+      setIsGenerating(false);
+      setShowCompletionMessage(true);
       
-      // 完了メッセージを表示した後、次のページに遷移
       const redirectTimer = setTimeout(() => {
-        router.push(`/castle/hanger/${rackId}`)
-      }, 2000)
+        router.push(`/castle/hanger/${rackId}`);
+      }, 2000);
       
-      return () => clearTimeout(redirectTimer)
+      return () => clearTimeout(redirectTimer);
     }
-  }, [progress, rackId, router])
+  }, [progress, rackId, router]);
 
   if (error) {
     return (
