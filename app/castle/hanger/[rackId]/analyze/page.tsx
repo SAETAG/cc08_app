@@ -229,17 +229,17 @@ export default function HangerAnalyzePage() {
           <Button
             onClick={handleGetAdvice}
             disabled={isLoading}
-            className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white border border-amber-400/30 px-6 py-6 rounded-lg shadow-lg flex items-center gap-2 group transition-all duration-300 disabled:opacity-70"
+            className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white border border-amber-400/30 px-8 py-6 rounded-lg shadow-lg flex items-center gap-3 group transition-all duration-300 disabled:opacity-70 w-full max-w-md"
           >
             {isLoading ? (
               <>
-                <Loader2 className="h-5 w-5 animate-spin" />
-                <span className="text-lg">アドバイスを取得中...</span>
+                <Loader2 className="h-6 w-6 animate-spin" />
+                <span className="text-xl">アドバイスを取得中...</span>
               </>
             ) : (
               <>
-                <MessageCircle className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                <span className="text-lg">モーちゃんに現状分析と整理収納アドバイスをもらう</span>
+                <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" />
+                <span className="text-xl font-medium">モーちゃんに現状分析と整理収納アドバイスをもらう</span>
               </>
             )}
           </Button>
@@ -342,10 +342,10 @@ export default function HangerAnalyzePage() {
         >
           <Button
             disabled={true}
-            className="bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-600 hover:to-purple-500 text-white border border-purple-400/30 px-8 py-6 rounded-lg shadow-lg flex items-center gap-3 group transition-all duration-300 disabled:opacity-70"
+            className="bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-600 hover:to-purple-500 text-white border border-purple-400/30 px-8 py-6 rounded-lg shadow-lg flex items-center gap-3 group transition-all duration-300 disabled:opacity-70 w-full max-w-md"
           >
             <Wand2 className="h-6 w-6 group-hover:animate-pulse" />
-            <span className="text-xl font-medium">ダンジョン生成</span>
+            <span className="text-xl font-medium">ダンジョン（片付けステップ）生成</span>
             <motion.span
               className="absolute -inset-1 opacity-0 group-hover:opacity-30 rounded-lg"
               animate={{
