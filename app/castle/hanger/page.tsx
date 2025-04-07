@@ -206,7 +206,7 @@ export default function HangerList() {
                         className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white py-1.5 px-3 rounded-md shadow-md border border-amber-400/30 flex items-center justify-center gap-1.5 group"
                       >
                         <PlayCircle className="h-4 w-4 group-hover:animate-pulse" />
-                        <span>冒険を始める</span>
+                        <span>冒険ストーリーを生成する</span>
                       </motion.button>
                     </div>
                   </div>

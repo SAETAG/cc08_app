@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { Loader2, Sparkles, Wand2 } from 'lucide-react'
+import { useAuth } from '@/app/contexts/AuthContext'
 
 // 生成メッセージの配列
 const generationMessages = [
@@ -20,12 +21,76 @@ const generationMessages = [
 export default function GenerateDungeonPage() {
   const params = useParams()
   const router = useRouter()
+  const { currentUser } = useAuth()
   const rackId = params.rackId as string
+  
+  console.log("Current rackId:", rackId);
+  console.log("Current params:", params);
   
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const [isGenerating, setIsGenerating] = useState(true)
   const [showCompletionMessage, setShowCompletionMessage] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // OpenAI APIを呼び出してダンジョンを生成
+  useEffect(() => {
+    const generateDungeon = async () => {
+      if (!currentUser) {
+        setError("ユーザーが認証されていません");
+        return;
+      }
+
+      if (!rackId) {
+        setError("ハンガーラックIDが指定されていません");
+        return;
+      }
+
+      try {
+        const token = await currentUser.getIdToken();
+        console.log("Sending request to OpenAI API with rackId:", rackId);
+        
+        const response = await fetch('/api/openai', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            mode: "hanger",
+            prompt: "ハンガーラックの整理収納のための冒険ストーリーを生成してください",
+            rackId: rackId
+          })
+        });
+
+        console.log("API Response status:", response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("API Error Response:", errorText);
+          
+          // OpenAIのクォータエラーの場合、より分かりやすいメッセージを表示
+          if (errorText.includes("quota") || errorText.includes("429")) {
+            throw new Error("OpenAIのAPIクォータを超過しました。管理者にお問い合わせください。");
+          }
+          
+          throw new Error(`APIエラー: ${response.status} ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log("API Response data:", data);
+        
+        // 生成完了を通知
+        setProgress(100);
+      } catch (err) {
+        console.error("Error generating dungeon:", err);
+        setError(err instanceof Error ? err.message : "エラーが発生しました");
+        setIsGenerating(false);
+      }
+    };
+
+    generateDungeon();
+  }, [currentUser, rackId]);
 
   // メッセージを順番に切り替える
   useEffect(() => {
@@ -66,6 +131,23 @@ export default function GenerateDungeonPage() {
       return () => clearTimeout(redirectTimer)
     }
   }, [progress, rackId, router])
+
+  if (error) {
+    return (
+      <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+        <div className="z-10 text-center">
+          <h2 className="text-2xl font-bold text-red-400 mb-4">エラーが発生しました</h2>
+          <p className="text-amber-300/80 mb-6">{error}</p>
+          <button
+            onClick={() => router.push(`/castle/hanger/${rackId}`)}
+            className="bg-amber-500 hover:bg-amber-400 text-white py-2 px-4 rounded-md"
+          >
+            戻る
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
