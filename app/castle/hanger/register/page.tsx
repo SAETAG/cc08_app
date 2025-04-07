@@ -33,13 +33,39 @@ export default function HangerRegisterPage() {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         console.log('認証済みユーザー:', user.uid)
-        setCurrentUser(user)
-        document.cookie = `userId=${user.uid}; path=/; max-age=3600; SameSite=Strict`
+        try {
+          // トークンを更新
+          const token = await user.getIdToken(true)
+          console.log('認証トークン更新:', token.substring(0, 20) + '...')
+          setCurrentUser(user)
+          document.cookie = `userId=${user.uid}; path=/; max-age=3600; SameSite=Strict`
+        } catch (error) {
+          console.error('トークン更新エラー:', error)
+          // 匿名認証を試みる
+          try {
+            const userCredential = await signInAnonymously(auth)
+            console.log('匿名認証成功:', userCredential.user.uid)
+            const token = await userCredential.user.getIdToken()
+            console.log('認証トークン取得:', token.substring(0, 20) + '...')
+            setCurrentUser(userCredential.user)
+            document.cookie = `userId=${userCredential.user.uid}; path=/; max-age=3600; SameSite=Strict`
+          } catch (anonError) {
+            console.error('匿名認証エラー:', anonError)
+            toast({
+              title: "エラー",
+              description: "認証に失敗しました。再度お試しください。",
+              variant: "destructive",
+            })
+            router.push('/')
+          }
+        }
       } else {
         console.log('匿名認証を試みます...')
         try {
           const userCredential = await signInAnonymously(auth)
           console.log('匿名認証成功:', userCredential.user.uid)
+          const token = await userCredential.user.getIdToken()
+          console.log('認証トークン取得:', token.substring(0, 20) + '...')
           setCurrentUser(userCredential.user)
           document.cookie = `userId=${userCredential.user.uid}; path=/; max-age=3600; SameSite=Strict`
         } catch (error) {
@@ -105,34 +131,45 @@ export default function HangerRegisterPage() {
         throw new Error('ユーザーIDが見つかりません。再度ログインしてください。')
       }
 
+      // トークンを更新
+      const token = await currentUser.getIdToken(true)
+      console.log('アップロード前のトークン更新:', token.substring(0, 20) + '...')
+
       console.log('現在のユーザーID:', currentUser.uid)
-      const file = fileInputRef.current.files[0];
-      const fileName = `${Date.now()}_${file.name}`;
-      const storageRef = ref(storage, `users/${currentUser.uid}/racks/${fileName}`);  // パスを修正
-      
+      const file = fileInputRef.current.files[0]
+      const fileName = `${Date.now()}_${file.name}`
+      const storageRef = ref(storage, `images/${currentUser.uid}/${fileName}`)  // パスを変更
+
       // メタデータを追加
       const metadata = {
         contentType: file.type,
         customMetadata: {
-          'uploadedBy': currentUser.uid,
-          'originalName': file.name
-        }
-      };
+          uploadedBy: currentUser.uid,
+          originalName: file.name,
+        },
+      }
 
-      console.log('アップロード開始:', storageRef.fullPath)
+      console.log("アップロード開始:", storageRef.fullPath)
       // Firebase Storageにアップロード
-      const snapshot = await uploadBytes(storageRef, file, metadata);
-      console.log('アップロード成功:', snapshot.ref.fullPath)
-      const imageUrl = await getDownloadURL(snapshot.ref);
-      console.log('ダウンロードURL取得:', imageUrl)
+      const snapshot = await uploadBytes(storageRef, file, metadata)
+      console.log("アップロード成功:", snapshot.ref.fullPath)
+      const imageUrl = await getDownloadURL(snapshot.ref)
+      console.log("ダウンロードURL取得:", imageUrl)
 
+      // FormDataとして送信
       const formData = new FormData()
       formData.append("name", newHangerName)
-      formData.append("imageUrl", imageUrl)  // 画像URLを送信
-      formData.append("userId", currentUser.uid)
+      formData.append("imageUrl", imageUrl)
+
+      // 認証トークンを取得
+      const idToken = await currentUser.getIdToken()
+      console.log('認証トークン取得:', idToken.substring(0, 20) + '...')
 
       const response = await fetch("/api/racks/create", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${idToken}`
+        },
         body: formData,
       })
 
