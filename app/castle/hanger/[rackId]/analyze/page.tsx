@@ -7,55 +7,28 @@ import Image from "next/image"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Sparkles, MessageCircle, Wand2, Loader2 } from "lucide-react"
+import { ArrowLeft, Sparkles, MessageCircle, Wand2, Loader2, Home } from "lucide-react"
+import { useAuth } from '@/app/contexts/AuthContext'
 
-// Mock data - replace with actual data fetching
-const getHangerData = (id: string) => {
-  return {
-    id,
-    name: id === "1" ? "寝室クローゼットのハンガーラック" : "リビング収納のハンガーポール",
-    image: id === "1" ? "/organized-walk-in-closet.png" : "/clothes-rack-with-assorted-clothing.png",
-  }
-}
-
-// Mock advice from Mo-chan
-const getMoAdvice = () => {
-  return [
-    {
-      type: "analysis",
-      content:
-        "現在のクローゼットは、色別に整理されていますが、スペースの活用が十分ではありません。また、季節外れの衣類が混在しているようです。",
-    },
-    {
-      type: "advice",
-      content: "1. 衣類を季節ごとにグループ化し、現在の季節のアイテムを手の届きやすい位置に配置しましょう。",
-    },
-    {
-      type: "advice",
-      content: "2. ハンガーの向きを統一すると、視覚的な整理感が増し、衣類を取り出しやすくなります。",
-    },
-    {
-      type: "advice",
-      content: "3. 使用頻度の低いアイテムは、収納ボックスに入れるか、クローゼットの上段に移動させましょう。",
-    },
-    {
-      type: "advice",
-      content: "4. 同じカテゴリーのアイテム（シャツ、パンツなど）をまとめることで、探しやすくなります。",
-    },
-    {
-      type: "conclusion",
-      content:
-        "これらの改善を行うことで、クローゼットのスペースを最大30%効率化でき、日常の服選びがスムーズになります。",
-    },
-  ]
+interface Rack {
+  id: string;
+  name: string;
+  imageUrl: string;
+  createdAt: {
+    seconds: number;
+    nanoseconds: number;
+  };
 }
 
 export default function HangerAnalyzePage() {
+  const { currentUser } = useAuth()
   const params = useParams()
   const router = useRouter()
   const rackId = params.rackId as string
 
-  const [hangerData, setHangerData] = useState<any>(null)
+  const [rack, setRack] = useState<Rack | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [showAdvice, setShowAdvice] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [advice, setAdvice] = useState<any[]>([])
@@ -63,22 +36,69 @@ export default function HangerAnalyzePage() {
   const [isGeneratingDungeon, setIsGeneratingDungeon] = useState(false)
 
   useEffect(() => {
-    // Simulate fetching data
-    setHangerData(getHangerData(rackId))
-  }, [rackId])
+    const fetchRack = async () => {
+      if (!currentUser) {
+        console.log('No user found')
+        return
+      }
 
-  const handleGetAdvice = () => {
+      try {
+        console.log('Fetching rack with ID:', rackId)
+        const token = await currentUser.getIdToken()
+        console.log('Got token:', token.substring(0, 10) + '...')
+        
+        const response = await fetch(`/api/racks/${rackId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+
+        console.log('Response status:', response.status)
+        const data = await response.json()
+        console.log('Response data:', data)
+
+        if (!response.ok) {
+          throw new Error(data.error || 'ハンガーラックの取得に失敗しました')
+        }
+
+        setRack(data.rack)
+      } catch (err) {
+        console.error('Error fetching rack:', err)
+        setError(err instanceof Error ? err.message : 'エラーが発生しました')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchRack()
+  }, [currentUser, rackId])
+
+  const handleGetAdvice = async () => {
     setIsLoading(true)
     setShowAdvice(false)
 
-    // Simulate API call
-    setTimeout(() => {
-      const moAdvice = getMoAdvice()
-      setAdvice(moAdvice)
-      setIsLoading(false)
+    try {
+      const token = await currentUser?.getIdToken()
+      const response = await fetch(`/api/racks/${rackId}/advice`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('アドバイスの取得に失敗しました')
+      }
+
+      const data = await response.json()
+      setAdvice(data.advice)
       setShowAdvice(true)
       setTypingIndex(0)
-    }, 1500)
+    } catch (err) {
+      console.error('Error fetching advice:', err)
+      setError(err instanceof Error ? err.message : 'エラーが発生しました')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -92,25 +112,37 @@ export default function HangerAnalyzePage() {
 
   const handleGenerateDungeon = () => {
     setIsGeneratingDungeon(true)
-
-    // Simulate dungeon generation
-    setTimeout(() => {
-      // In a real app, this would navigate to the generated dungeon
-      router.push(`/castle/hanger/${rackId}/dungeon`)
-    }, 2000)
   }
 
-  if (!hangerData) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-blue-950 text-amber-300">
-        <Loader2 className="h-8 w-8 animate-spin" />
-        <span className="ml-2">読み込み中...</span>
+      <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex items-center justify-center relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+        <p className="text-center z-10">読み込み中...</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex items-center justify-center relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+        <p className="text-center text-red-500 z-10">{error}</p>
+      </div>
+    )
+  }
+
+  if (!rack) {
+    return (
+      <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex items-center justify-center relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+        <p className="text-center z-10">ハンガーラックが見つかりません</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div 
+      className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80"
+      onClick={(e) => e.stopPropagation()}
+    >
       {/* Magical floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 20 }).map((_, i) => (
@@ -144,20 +176,29 @@ export default function HangerAnalyzePage() {
         style={{ animationDelay: "1s" }}
       ></div>
 
-      <div className="w-full max-w-4xl z-10 mt-8">
-        <Link
-          href="/closet/hanger/register"
-          className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors mb-6"
-        >
-          <ArrowLeft className="mr-2 h-5 w-5" />
-          <span>ハンガーラック一覧に戻る</span>
-        </Link>
+      <div className="w-full max-w-5xl z-10 mt-8">
+        <div className="flex justify-between items-center mb-6">
+          <Link
+            href="/castle/hanger"
+            className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors"
+          >
+            <ArrowLeft className="mr-2 h-5 w-5" />
+            <span>ハンガーラック一覧に戻る</span>
+          </Link>
+
+          <Link
+            href="/castle"
+            className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors"
+          >
+            <Home className="mr-2 h-5 w-5" />
+            <span>クローゼット城に戻る</span>
+          </Link>
+        </div>
 
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-amber-400 tracking-wider">{hangerData.name}</h1>
-          <p className="text-lg text-amber-300/80">
-            現状分析と整理収納アドバイスを取得して、クローゼットの冒険を最適化しましょう
-          </p>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-amber-400 tracking-wider">
+            {rack.name}の分析とダンジョン生成
+          </h1>
         </motion.div>
 
         <motion.div
@@ -166,7 +207,7 @@ export default function HangerAnalyzePage() {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <Card className="relative overflow-hidden bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-4">
+          <div className="relative overflow-hidden bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-4">
             {/* Decorative corners */}
             <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500"></div>
             <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-500"></div>
@@ -174,9 +215,9 @@ export default function HangerAnalyzePage() {
             <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-amber-500"></div>
 
             <div className="relative aspect-video w-full overflow-hidden rounded-md">
-              <Image src={hangerData.image || "/placeholder.svg"} alt={hangerData.name} fill className="object-cover" />
+              <Image src={rack.imageUrl} alt={rack.name} fill className="object-cover pointer-events-none" />
             </div>
-          </Card>
+          </div>
         </motion.div>
 
         <motion.div
@@ -300,32 +341,22 @@ export default function HangerAnalyzePage() {
           className="flex justify-center"
         >
           <Button
-            onClick={handleGenerateDungeon}
-            disabled={isGeneratingDungeon}
+            disabled={true}
             className="bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-600 hover:to-purple-500 text-white border border-purple-400/30 px-8 py-6 rounded-lg shadow-lg flex items-center gap-3 group transition-all duration-300 disabled:opacity-70"
           >
-            {isGeneratingDungeon ? (
-              <>
-                <Loader2 className="h-6 w-6 animate-spin" />
-                <span className="text-xl">ダンジョン生成中...</span>
-              </>
-            ) : (
-              <>
-                <Wand2 className="h-6 w-6 group-hover:animate-pulse" />
-                <span className="text-xl font-medium">ダンジョン生成</span>
-                <motion.span
-                  className="absolute -inset-1 opacity-0 group-hover:opacity-30 rounded-lg"
-                  animate={{
-                    boxShadow: [
-                      "0 0 10px 5px rgba(168,85,247,0.2)",
-                      "0 0 20px 10px rgba(168,85,247,0.4)",
-                      "0 0 10px 5px rgba(168,85,247,0.2)",
-                    ],
-                  }}
-                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-                />
-              </>
-            )}
+            <Wand2 className="h-6 w-6 group-hover:animate-pulse" />
+            <span className="text-xl font-medium">ダンジョン生成</span>
+            <motion.span
+              className="absolute -inset-1 opacity-0 group-hover:opacity-30 rounded-lg"
+              animate={{
+                boxShadow: [
+                  "0 0 10px 5px rgba(168,85,247,0.2)",
+                  "0 0 20px 10px rgba(168,85,247,0.4)",
+                  "0 0 10px 5px rgba(168,85,247,0.2)",
+                ],
+              }}
+              transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+            />
           </Button>
         </motion.div>
       </div>
