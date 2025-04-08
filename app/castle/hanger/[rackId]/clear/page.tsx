@@ -113,34 +113,27 @@ export default function DungeonClearPage() {
           const newY = symbol.y + symbol.speedY
           const newRotation = symbol.rotation + symbol.rotationSpeed
 
-          // 画面外に出たら上に戻す
+          // 画面外に出たら削除
           if (newY > canvas.height + 50) {
-            return {
-              ...symbol,
-              x: Math.random() * canvas.width,
-              y: -50 - Math.random() * 100,
-              rotation: Math.random() * 360,
-            }
+            return null
           }
-
-          // 左右の画面外に出たら反対側から出てくる
-          let adjustedX = newX
-          if (newX < -50) adjustedX = canvas.width + 25
-          if (newX > canvas.width + 50) adjustedX = -25
 
           return {
             ...symbol,
-            x: adjustedX,
+            x: newX,
             y: newY,
             rotation: newRotation,
           }
-        }),
+        }).filter(Boolean), // nullの要素を除外
       )
 
       // 全てのシンボルを描画
       fallingSymbols.forEach(drawSymbol)
 
-      requestAnimationFrame(animate)
+      // シンボルが残っている場合のみアニメーションを継続
+      if (fallingSymbols.length > 0) {
+        requestAnimationFrame(animate)
+      }
     })
 
     return () => {
@@ -203,7 +196,7 @@ export default function DungeonClearPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
       {/* ハートと星のエフェクトのキャンバス */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-10" />
 
@@ -250,28 +243,37 @@ export default function DungeonClearPage() {
       {/* ナビゲーションリンク */}
       <AnimatePresence>
         {showButtons && (
-          <motion.div
-            className="absolute top-8 left-8 z-20 flex gap-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Link
-              href={`/castle/hanger/${rackId}`}
-              className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors bg-blue-900/50 px-3 py-2 rounded-md"
+          <>
+            <motion.div
+              className="absolute top-8 left-8 z-20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
             >
-              <ArrowLeft className="mr-2 h-5 w-5" />
-              <span>ダンジョンマップに戻る</span>
-            </Link>
+              <Link
+                href={`/castle/hanger/${rackId}`}
+                className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors bg-blue-900/50 px-3 py-2 rounded-md"
+              >
+                <ArrowLeft className="mr-2 h-5 w-5" />
+                <span>ダンジョンマップに戻る</span>
+              </Link>
+            </motion.div>
 
-            <Link
-              href="/castle"
-              className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors bg-blue-900/50 px-3 py-2 rounded-md"
+            <motion.div
+              className="fixed top-8 right-8 z-20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
             >
-              <Home className="mr-2 h-5 w-5" />
-              <span>クローゼット城に戻る</span>
-            </Link>
-          </motion.div>
+              <Link
+                href="/castle"
+                className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors bg-blue-900/50 px-3 py-2 rounded-md"
+              >
+                <Home className="mr-2 h-5 w-5" />
+                <span>クローゼット城に戻る</span>
+              </Link>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
@@ -354,10 +356,13 @@ export default function DungeonClearPage() {
               transition={{ duration: 0.5 }}
               className="mb-16"
             >
-              <div className="flex items-center justify-center gap-4 bg-gradient-to-r from-amber-900/30 to-amber-800/30 px-10 py-6 rounded-xl border-2 border-amber-500/30 relative overflow-hidden">
-                <Star className="h-12 w-12 text-amber-400" />
+              <div className="w-[500px] flex flex-col items-center justify-center gap-4 bg-gradient-to-r from-amber-900/30 to-amber-800/30 px-12 py-8 rounded-xl border-2 border-amber-500/30 relative overflow-hidden">
+                <div className="flex items-center gap-4 mb-2">
+                  <Star className="h-12 w-12 text-amber-400" />
+                  <h2 className="text-3xl font-bold text-amber-300">獲得経験値</h2>
+                </div>
+
                 <div className="text-center">
-                  <div className="text-amber-300/80 text-xl mb-1">獲得経験値</div>
                   <motion.div
                     className="text-5xl font-bold text-amber-300"
                     animate={{
@@ -373,36 +378,34 @@ export default function DungeonClearPage() {
                   </motion.div>
                 </div>
 
-                {/* 光るエフェクト */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-t from-amber-500/5 to-transparent"
-                  animate={{ opacity: [0.1, 0.3, 0.1] }}
-                  transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
-                />
-
-                {/* 星のエフェクト */}
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute"
-                    style={{
-                      left: `${Math.random() * 100}%`,
-                      top: `${Math.random() * 100}%`,
-                    }}
+                <motion.button
+                  onClick={handleReceiveExp}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white text-xl font-medium py-3 px-8 rounded-lg shadow-lg border border-amber-400/30 relative overflow-hidden group mt-4"
+                >
+                  <span className="relative z-10 flex items-center gap-3">
+                    <Star className="h-5 w-5" />
+                    経験値を受け取る
+                  </span>
+                  <motion.span
+                    className="absolute inset-0 bg-gradient-to-r from-amber-500/80 to-amber-400/80"
+                    initial={{ x: "-100%" }}
+                    whileHover={{ x: "100%" }}
+                    transition={{ duration: 1 }}
+                  />
+                  <motion.span
+                    className="absolute -inset-1 opacity-0 group-hover:opacity-30"
                     animate={{
-                      scale: [0, 1, 0],
-                      opacity: [0, 1, 0],
+                      boxShadow: [
+                        "inset 0 0 10px 5px rgba(251,191,36,0.1)",
+                        "inset 0 0 20px 10px rgba(251,191,36,0.2)",
+                        "inset 0 0 10px 5px rgba(251,191,36,0.1)",
+                      ],
                     }}
-                    transition={{
-                      duration: 2,
-                      repeat: Number.POSITIVE_INFINITY,
-                      delay: i * 0.3,
-                      repeatDelay: Math.random() * 2,
-                    }}
-                  >
-                    <Sparkles className="h-3 w-3 text-amber-400/70" />
-                  </motion.div>
-                ))}
+                    transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                  />
+                </motion.button>
               </div>
             </motion.div>
           )}
@@ -435,100 +438,31 @@ export default function DungeonClearPage() {
                   transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
                 />
 
-                <div className="bg-gradient-to-r from-purple-900/50 to-purple-800/50 px-12 py-8 rounded-xl border-2 border-purple-500/40 relative overflow-hidden">
+                <div className="w-[500px] flex flex-col items-center justify-center gap-4 bg-gradient-to-r from-purple-900/50 to-purple-800/50 px-12 py-8 rounded-xl border-2 border-purple-500/40 relative overflow-hidden">
                   <div className="flex items-center gap-4 mb-2">
                     <span className="text-3xl">👑</span>
                     <h2 className="text-3xl font-bold text-purple-300">王の間解放</h2>
                   </div>
 
-                  <motion.p
-                    className="text-s text-purple-200 font-medium"
-                    animate={{
-                      textShadow: [
-                        "0 0 5px rgba(147,51,234,0.5)",
-                        "0 0 10px rgba(147,51,234,0.7)",
-                        "0 0 5px rgba(147,51,234,0.5)",
-                      ],
-                    }}
-                    transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-                  >
-                    ※他のダンジョンを先にクリアしていたら、既に王の間は解放されています
-                  </motion.p>
-
-                  {/* 光るエフェクト */}
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-t from-purple-500/5 to-transparent"
-                    animate={{ opacity: [0.1, 0.3, 0.1] }}
-                    transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
-                  />
-
-                  {/* 装飾的な角 */}
-                  <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-purple-400/40"></div>
-                  <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-purple-400/40"></div>
-                  <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-purple-400/40"></div>
-                  <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-purple-400/40"></div>
-
-                  {/* 星のエフェクト */}
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute"
-                      style={{
-                        left: `${Math.random() * 100}%`,
-                        top: `${Math.random() * 100}%`,
-                      }}
+                  <div className="text-center">
+                    <motion.p
+                      className="text-s text-purple-200 font-medium"
                       animate={{
-                        scale: [0, 1, 0],
-                        opacity: [0, 1, 0],
+                        textShadow: [
+                          "0 0 5px rgba(147,51,234,0.5)",
+                          "0 0 10px rgba(147,51,234,0.7)",
+                          "0 0 5px rgba(147,51,234,0.5)",
+                        ],
                       }}
-                      transition={{
-                        duration: 2,
-                        repeat: Number.POSITIVE_INFINITY,
-                        delay: i * 0.3,
-                        repeatDelay: Math.random() * 2,
-                      }}
+                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
                     >
-                      <span className="text-lg">✨</span>
-                    </motion.div>
-                  ))}
+                      <span className="text-sm text-purple-300/70 block">
+                        ※他のダンジョンを先にクリア済の場合、その時点で既に解放済
+                      </span>
+                    </motion.p>
+                  </div>
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* 経験値を受け取るボタン */}
-        <AnimatePresence>
-          {showButtons && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-              <motion.button
-                onClick={handleReceiveExp}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white text-2xl font-medium py-5 px-12 rounded-lg shadow-lg border border-amber-400/30 relative overflow-hidden group"
-              >
-                <span className="relative z-10 flex items-center gap-3">
-                  <Star className="h-6 w-6" />
-                  経験値を受け取る
-                </span>
-                <motion.span
-                  className="absolute inset-0 bg-gradient-to-r from-amber-500/80 to-amber-400/80"
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: "100%" }}
-                  transition={{ duration: 1 }}
-                />
-                <motion.span
-                  className="absolute -inset-1 opacity-0 group-hover:opacity-30"
-                  animate={{
-                    boxShadow: [
-                      "inset 0 0 10px 5px rgba(251,191,36,0.1)",
-                      "inset 0 0 20px 10px rgba(251,191,36,0.2)",
-                      "inset 0 0 10px 5px rgba(251,191,36,0.1)",
-                    ],
-                  }}
-                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-                />
-              </motion.button>
             </motion.div>
           )}
         </AnimatePresence>
