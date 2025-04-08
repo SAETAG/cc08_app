@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^3.9.1",
@@ -55,7 +56,7 @@
     "input-otp": "1.4.1",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.454.0",
-    "next": "15.1.0",
+    "next": "^15.2.3",
     "next-themes": "^0.4.4",
     "openai": "^4.92.1",
     "playfab-sdk": "^2.171.250328",

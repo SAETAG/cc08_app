@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardMedia, Typography, Grid, Container, Box } from '@mui/material'
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { ArrowLeft, PlayCircle, Shirt, Plus, Home } from "lucide-react"
+import { ArrowLeft, PlayCircle, Shirt, Plus, Home, Sparkles } from "lucide-react"
 import { useAuth } from '@/app/contexts/AuthContext'
 
 const initialHangers = []
@@ -19,6 +19,7 @@ interface Rack {
     seconds: number;
     nanoseconds: number;
   };
+  stepsGenerated: boolean;
 }
 
 export default function HangerList() {
@@ -27,10 +28,6 @@ export default function HangerList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-
-  const startAdventure = (rackId: string) => {
-    router.push(`/castle/hanger/${rackId}/generate`)
-  }
 
   useEffect(() => {
     console.log('Auth state:', { currentUser, authLoading });
@@ -198,16 +195,58 @@ export default function HangerList() {
                       <span>作成日: {createdAtDate.toLocaleDateString()}</span>
                     </div>
 
-                    <div className="mt-auto space-y-2">
-                      <motion.button
-                        onClick={() => startAdventure(rack.id)}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white py-1.5 px-3 rounded-md shadow-md border border-amber-400/30 flex items-center justify-center gap-1.5 group"
-                      >
-                        <PlayCircle className="h-4 w-4 group-hover:animate-pulse" />
-                        <span>冒険ストーリーを生成する</span>
-                      </motion.button>
+                    <div className="flex justify-center mt-6">
+                      {rack.stepsGenerated ? (
+                        <Link
+                          href={`/castle/hanger/${rack.id}`}
+                          className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white text-base font-medium py-2 px-6 rounded-lg shadow-lg border border-purple-400/30 relative overflow-hidden group flex items-center gap-2"
+                        >
+                          <Sparkles className="h-5 w-5" />
+                          <span className="relative z-10">冒険を再開する</span>
+                          <motion.span
+                            className="absolute inset-0 bg-gradient-to-r from-purple-500/80 to-purple-400/80"
+                            initial={{ x: "-100%" }}
+                            whileHover={{ x: "100%" }}
+                            transition={{ duration: 1 }}
+                          />
+                          <motion.div
+                            className="absolute -inset-1 opacity-0 group-hover:opacity-30"
+                            animate={{
+                              boxShadow: [
+                                "inset 0 0 10px 5px rgba(168,85,247,0.1)",
+                                "inset 0 0 20px 10px rgba(168,85,247,0.2)",
+                                "inset 0 0 10px 5px rgba(168,85,247,0.1)",
+                              ],
+                            }}
+                            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                          />
+                        </Link>
+                      ) : (
+                        <Link
+                          href={`/castle/hanger/${rack.id}/generate`}
+                          className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white text-base font-medium py-2 px-6 rounded-lg shadow-lg border border-amber-400/30 relative overflow-hidden group flex items-center gap-2"
+                        >
+                          <Sparkles className="h-5 w-5" />
+                          <span className="relative z-10">冒険ストーリーを生成する</span>
+                          <motion.span
+                            className="absolute inset-0 bg-gradient-to-r from-amber-500/80 to-amber-400/80"
+                            initial={{ x: "-100%" }}
+                            whileHover={{ x: "100%" }}
+                            transition={{ duration: 1 }}
+                          />
+                          <motion.div
+                            className="absolute -inset-1 opacity-0 group-hover:opacity-30"
+                            animate={{
+                              boxShadow: [
+                                "inset 0 0 10px 5px rgba(251,191,36,0.1)",
+                                "inset 0 0 20px 10px rgba(251,191,36,0.2)",
+                                "inset 0 0 10px 5px rgba(251,191,36,0.1)",
+                              ],
+                            }}
+                            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                          />
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>

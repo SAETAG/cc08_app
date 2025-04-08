@@ -79,6 +79,22 @@ export default function GenerateDungeonPage() {
         const data = await response.json();
         if (!isSubscribed) return;
         
+        // ハンガーラックのstepsGeneratedをtrueに更新
+        const updateResponse = await fetch(`/api/racks/${rackId}/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            stepsGenerated: true
+          })
+        });
+
+        if (!updateResponse.ok) {
+          throw new Error('ハンガーラックの更新に失敗しました');
+        }
+        
         setProgress(100);
       } catch (err) {
         if (!isSubscribed) return;
