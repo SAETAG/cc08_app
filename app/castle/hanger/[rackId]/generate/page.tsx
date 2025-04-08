@@ -143,8 +143,8 @@ export default function GenerateDungeonPage() {
     }, 3000);
 
     // プログレスバー更新用のインターバル
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
+      const progressInterval = setInterval(() => {
+        setProgress((prev) => {
         const newProgress = prev + Math.random() * 5;
         return newProgress > 100 ? 100 : newProgress;
       });

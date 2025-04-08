@@ -199,7 +199,7 @@ export default function HangerRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center">
+    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center bg-no-repeat flex justify-center items-start px-4 py-8">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 20 }).map((_, i) => (
           <motion.div
@@ -231,7 +231,7 @@ export default function HangerRegisterPage() {
         style={{ animationDelay: "1s" }}
       />
 
-      <div className="w-full max-w-2xl z-10 mt-8">
+      <div className="w-full max-w-2xl z-10 relative">
         <div className="flex justify-between items-center mb-6">
           <Link
             href="/castle/hanger"
@@ -286,8 +286,8 @@ export default function HangerRegisterPage() {
                   className="hidden"
                 />
                 {previewImage ? (
-                  <div className="relative w-full h-64 border-2 border-dashed border-amber-500/30 rounded-md overflow-hidden">
-                    <Image src={previewImage} alt="Preview" fill className="object-cover" />
+                  <div className="relative w-full h-64 border-2 border-dashed border-amber-500/30 rounded-md overflow-hidden bg-blue-950/30">
+                    <Image src={previewImage} alt="Preview" fill className="object-contain" />
                     <button
                       type="button"
                       onClick={() => setPreviewImage(null)}
