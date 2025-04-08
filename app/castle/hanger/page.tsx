@@ -77,7 +77,7 @@ export default function HangerList() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex items-center justify-center relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex items-center justify-center relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
         <p className="text-center z-10">認証情報を読み込み中...</p>
       </div>
     );
@@ -85,7 +85,7 @@ export default function HangerList() {
 
   if (loading) {
     return (
-      <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex items-center justify-center relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex items-center justify-center relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
         <p className="text-center z-10">読み込み中...</p>
       </div>
     );
@@ -93,14 +93,14 @@ export default function HangerList() {
 
   if (error) {
     return (
-      <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex items-center justify-center relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex items-center justify-center relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
         <p className="text-center text-red-500 z-10">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen w-full bg-[url('/abstract-geometric-shapes.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
       {/* Magical floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 20 }).map((_, i) => (

@@ -199,7 +199,7 @@ export default function HangerRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-blue-950 text-amber-300 flex flex-col items-center p-4 relative overflow-hidden">
+    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 20 }).map((_, i) => (
           <motion.div
