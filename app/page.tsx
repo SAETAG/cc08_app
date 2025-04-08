@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Sparkles } from "lucide-react"
 import { useRouter } from "next/navigation" // ページ遷移に必要
 import Cookies from 'js-cookie'
+import { db, firebaseAuth } from "@/lib/firebase"
+import { doc, setDoc, Timestamp } from "firebase/firestore"
+import { signInAnonymously } from "firebase/auth"
+import { ensureFirebaseAuth, loginToPlayFabWithFirebase, saveUserToFirestore, savePlayFabSession } from "@/lib/auth"
 
 export default function Home() {
   const [loading, setLoading] = useState(false) // ログイン処理のローディング管理
@@ -18,70 +22,44 @@ export default function Home() {
     setIsClient(true)
   }, [])
 
-  // カスタムIDの生成（8文字のランダムな文字列）
-  const generateCustomId = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < 8; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  };
-
-  // ユーザーIDの取得または新規作成
-  const getOrCreateUserId = () => {
-    const USER_ID_COOKIE = 'user_id';
-    let userId = Cookies.get(USER_ID_COOKIE);
-
-    if (!userId) {
-      userId = generateCustomId();
-      Cookies.set(USER_ID_COOKIE, userId, {
-        expires: 365,
-        secure: true,
-        sameSite: 'strict'
-      });
-    }
-
-    return userId;
-  };
-
   const handleLogin = async () => {
     setLoading(true)
     setError(null)
 
     try {
-      // カスタムIDを取得または生成
-      const customId = getOrCreateUserId()
-
-      // サーバーサイドAPIにPOSTリクエストを送信
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          customId,
-        }),
-      })
-
-      const data = await res.json()
-
-      if (res.ok) {
-        // ログイン成功時に既存ユーザーか新規ユーザーかで遷移先を決定
-        if (!data.result.data.NewlyCreated) {
-          // 既存ユーザーの場合
-          router.push("/home")
-        } else {
-          // 新規ユーザーの場合
-          router.push("/prologue")
-        }
-      } else {
-        setError(data.message || "ログイン失敗") // エラーメッセージ表示
+      // ① Firebase匿名認証の確認と必要に応じてログイン
+      const firebaseUser = await ensureFirebaseAuth()
+      console.log("✅ Firebase user:", firebaseUser.uid)
+      
+      // ② Firebase IDトークンの取得
+      const idToken = await firebaseUser.getIdToken()
+      console.log("✅ Firebase ID token length:", idToken.length)
+      
+      // ③ PlayFabにFirebase IDトークンでログイン
+      const playFabData = await loginToPlayFabWithFirebase(idToken)
+      console.log("✅ PlayFab response:", playFabData)
+      
+      if (!playFabData.success) {
+        throw new Error(playFabData.error || "PlayFabログインに失敗しました")
       }
-
-      console.log("PlayFab response:", data.result)
-    } catch (error) {
-      setError("ログイン中にエラーが発生しました")
+      
+      const { PlayFabId, SessionTicket, NewlyCreated } = playFabData.result.data
+      
+      // ④ PlayFabのセッション情報をCookieに保存
+      savePlayFabSession(PlayFabId, SessionTicket)
+      
+      // ⑤ Firestoreにユーザーデータを保存
+      await saveUserToFirestore(firebaseUser, PlayFabId)
+      
+      // ⑥ 適切な画面へ遷移
+      if (NewlyCreated) {
+        router.push("/prologue")
+      } else {
+        router.push("/home")
+      }
+    } catch (error: any) {
+      console.error("Login error:", error)
+      setError(`ログイン中にエラーが発生しました: ${error.message}`)
     } finally {
       setLoading(false)
     }

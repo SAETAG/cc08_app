@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import { Volume2, VolumeX } from "lucide-react"
+import { firebaseAuth } from "@/lib/firebase"
+import { onAuthStateChanged } from "firebase/auth"
 
 export default function CreateNamePage() {
   const [name, setName] = useState("")
@@ -14,6 +16,18 @@ export default function CreateNamePage() {
   const [loading, setLoading] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const router = useRouter()
+
+  // Firebase認証状態の監視
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
+      if (!user) {
+        // 未認証の場合はトップページにリダイレクト
+        router.push("/")
+      }
+    })
+
+    return () => unsubscribe()
+  }, [router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,7 +47,17 @@ export default function CreateNamePage() {
     setLoading(true)
 
     try {
-      const res = await fetch("/api/update-display-name", {
+      // 現在のユーザーを取得
+      const currentUser = firebaseAuth.currentUser
+      if (!currentUser) {
+        throw new Error("認証されていません")
+      }
+
+      // IDトークンを取得
+      const token = await currentUser.getIdToken()
+
+      // PlayFabの表示名を更新
+      const playFabRes = await fetch("/api/update-display-name", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,11 +68,30 @@ export default function CreateNamePage() {
         }),
       })
 
-      const data = await res.json()
+      const playFabData = await playFabRes.json()
 
-      if (!res.ok) {
-        throw new Error(data.message || "名前の更新に失敗しました")
+      if (!playFabRes.ok) {
+        throw new Error(playFabData.message || "名前の更新に失敗しました")
       }
+
+      // Firestoreのユーザー情報を更新
+      const userRes = await fetch("/api/users/update-username", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          username: name
+        })
+      })
+
+      if (!userRes.ok) {
+        const errorData = await userRes.json()
+        throw new Error(errorData.message || "ユーザー名の更新に失敗しました")
+      }
+
+      console.log("✅ Username updated successfully")
 
       // 更新成功時はホームページに遷移
       router.push("/home")
@@ -143,13 +186,6 @@ export default function CreateNamePage() {
               {loading ? "更新中..." : "完了！"}
             </Button>
           </form>
-
-          <Button
-            onClick={() => router.push("/home")}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-indigo-500 text-lg sm:text-xl transition-colors duration-200"
-          >
-            ホーム画面へ
-          </Button>
         </div>
       </div>
     </div>

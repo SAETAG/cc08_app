@@ -1,0 +1,48 @@
+[debug] [2025-04-05T21:47:31.585Z] ----------------------------------------------------------------------
+[debug] [2025-04-05T21:47:31.592Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\saeko\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only storage
+[debug] [2025-04-05T21:47:31.593Z] CLI Version:   14.1.0
+[debug] [2025-04-05T21:47:31.593Z] Platform:      win32
+[debug] [2025-04-05T21:47:31.593Z] Node Version:  v22.12.0
+[debug] [2025-04-05T21:47:31.594Z] Time:          Sat Apr 05 2025 22:47:31 GMT+0100 (英国夏時間)
+[debug] [2025-04-05T21:47:31.594Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-04-05T21:47:32.136Z] Object "/storage" in "firebase.json" is missing required property: {"missingProperty":"rules"}
+[debug] [2025-04-05T21:47:32.136Z] Field "/storage" in "firebase.json" is possibly invalid: must be array
+[debug] [2025-04-05T21:47:32.136Z] Field "/storage" in "firebase.json" is possibly invalid: must match a schema in anyOf
+[debug] [2025-04-05T21:47:32.147Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-04-05T21:47:32.148Z] > authorizing via signed-in user (saeko.96@gmail.com)
+[debug] [2025-04-05T21:47:32.148Z] [iam] checking project closetchronicle-dev for permissions ["firebase.projects.get","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]
+[debug] [2025-04-05T21:47:32.151Z] Checked if tokens are valid: true, expires at: 1743892748713
+[debug] [2025-04-05T21:47:32.151Z] Checked if tokens are valid: true, expires at: 1743892748713
+[debug] [2025-04-05T21:47:32.153Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/closetchronicle-dev:testIamPermissions [none]
+[debug] [2025-04-05T21:47:32.153Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/closetchronicle-dev:testIamPermissions x-goog-quota-user=projects/closetchronicle-dev
+[debug] [2025-04-05T21:47:32.154Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/closetchronicle-dev:testIamPermissions {"permissions":["firebase.projects.get","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]}
+[debug] [2025-04-05T21:47:32.873Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/closetchronicle-dev:testIamPermissions 200
+[debug] [2025-04-05T21:47:32.874Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/closetchronicle-dev:testIamPermissions {"permissions":["firebase.projects.get","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]}
+[info] 
+[info] === Deploying to 'closetchronicle-dev'...
+[info] 
+[info] i  deploying storage 
+[info] i  storage: ensuring required API firebasestorage.googleapis.com is enabled... 
+[debug] [2025-04-05T21:47:32.882Z] Checked if tokens are valid: true, expires at: 1743892748713
+[debug] [2025-04-05T21:47:32.882Z] Checked if tokens are valid: true, expires at: 1743892748713
+[debug] [2025-04-05T21:47:32.882Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/closetchronicle-dev/services/firebasestorage.googleapis.com [none]
+[debug] [2025-04-05T21:47:32.882Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/closetchronicle-dev/services/firebasestorage.googleapis.com x-goog-quota-user=projects/closetchronicle-dev
+[debug] [2025-04-05T21:47:33.648Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/closetchronicle-dev/services/firebasestorage.googleapis.com 200
+[debug] [2025-04-05T21:47:33.649Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/closetchronicle-dev/services/firebasestorage.googleapis.com [omitted]
+[info] +  storage: required API firebasestorage.googleapis.com is enabled 
+[debug] [2025-04-05T21:47:33.649Z] Checked if tokens are valid: true, expires at: 1743892748713
+[debug] [2025-04-05T21:47:33.649Z] Checked if tokens are valid: true, expires at: 1743892748713
+[debug] [2025-04-05T21:47:33.649Z] >>> [apiv2][query] GET https://firebasestorage.googleapis.com/v1alpha/projects/closetchronicle-dev/defaultBucket [none]
+[debug] [2025-04-05T21:47:33.988Z] <<< [apiv2][status] GET https://firebasestorage.googleapis.com/v1alpha/projects/closetchronicle-dev/defaultBucket 200
+[debug] [2025-04-05T21:47:33.988Z] <<< [apiv2][body] GET https://firebasestorage.googleapis.com/v1alpha/projects/closetchronicle-dev/defaultBucket {"name":"projects/closetchronicle-dev/defaultBucket","location":"US-CENTRAL1","bucket":{"name":"projects/closetchronicle-dev/buckets/closetchronicle-dev.firebasestorage.app"},"storageClass":"REGIONAL"}
+[debug] [2025-04-05T21:47:34.030Z] TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received undefined
+    at Object.isAbsolute (node:path:434:5)
+    at Config.path (C:\Users\saeko\AppData\Roaming\npm\node_modules\firebase-tools\lib\config.js:130:18)
+    at RulesDeploy.addFile (C:\Users\saeko\AppData\Roaming\npm\node_modules\firebase-tools\lib\rulesDeploy.js:37:46)
+    at default_1 (C:\Users\saeko\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\storage\prepare.js:39:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async chain (C:\Users\saeko\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\index.js:40:9)
+    at async deploy (C:\Users\saeko\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\index.js:117:5)
+[error] 
+[error] Error: An unexpected error has occurred.

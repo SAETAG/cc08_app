@@ -2,12 +2,13 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Volume2, VolumeX, User, LogOut, Scroll, Info, Footprints, Settings } from "lucide-react"
+import { Volume2, VolumeX, User, LogOut, Scroll, Info, Footprints, Settings, Castle, Mountain, Trees, Home, BookOpen } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-mobile"
+import { toast } from "@/components/ui/use-toast"
 
 export default function HomePage() {
   const [isMuted, setIsMuted] = useState(false)
@@ -20,19 +21,15 @@ export default function HomePage() {
     const audioElement = new Audio("/home.mp3")
     audioElement.loop = true
     audioElement.volume = 0.7
+    audioElement.preload = "auto" // プリロードを設定
     setAudio(audioElement)
 
-    try {
-      audioElement.play().catch((error) => {
-        console.log("Auto-play was prevented:", error)
-      })
-    } catch (error) {
-      console.log("Audio play error:", error)
-    }
-
+    // 初期状態では再生を試みない
     return () => {
-      audioElement.pause()
-      audioElement.src = ""
+      if (audioElement) {
+        audioElement.pause()
+        audioElement.src = ""
+      }
     }
   }, [])
 
@@ -43,29 +40,53 @@ export default function HomePage() {
 
       // ミュート解除時に再生を試みる
       if (!isMuted && audio.paused) {
-        try {
-          audio.play().catch((error) => {
+        const playPromise = audio.play()
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
             console.log("Play on unmute failed:", error)
+            // エラーが発生した場合、ユーザーに通知
+            toast({
+              title: "音楽の再生",
+              description: "画面をタップすると音楽が再生されます",
+              duration: 3000,
+            })
           })
-        } catch (error) {
-          console.log("Play error:", error)
         }
       }
     }
   }, [isMuted, audio])
 
   // 画面タップで再生を試みる関数
-  const tryPlayAudio = () => {
+  const tryPlayAudio = useCallback(() => {
     if (audio && audio.paused && !isMuted) {
-      try {
-        audio.play().catch((error) => {
+      const playPromise = audio.play()
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
           console.log("Play on screen tap failed:", error)
+          toast({
+            title: "音楽の再生",
+            description: "ブラウザの設定で音声の自動再生が制限されている可能性があります",
+            duration: 5000,
+          })
         })
-      } catch (error) {
-        console.log("Play error:", error)
       }
     }
-  }
+  }, [audio, isMuted])
+
+  // 初回レンダリング時にユーザーに通知
+  useEffect(() => {
+    const showAudioNotification = () => {
+      toast({
+        title: "🎵 音楽の再生",
+        description: "画面をタップすると音楽が再生されます。音量にご注意ください。",
+        duration: 7000,
+      })
+    }
+    
+    // 少し遅延させて通知を表示
+    const timer = setTimeout(showAudioNotification, 1000)
+    return () => clearTimeout(timer)
+  }, [])
 
   // Toggle mute
   const toggleMute = () => {
@@ -73,7 +94,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-teal-950 flex flex-col" onClick={tryPlayAudio}>
+    <div className="min-h-screen w-full bg-[url('/map.png')] bg-cover bg-center text-amber-300 flex flex-col relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-teal-950/60" onClick={tryPlayAudio}>
       {/* Header */}
       <header className="bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900 p-3 flex justify-between items-center border-b-2 border-yellow-500 shadow-md relative">
         {/* Decorative corners */}
@@ -116,7 +137,7 @@ export default function HomePage() {
       </header>
 
       {/* Current Quest Bar */}
-      <div className="bg-gradient-to-r from-teal-800 via-purple-800 to-teal-800 border-b-2 border-yellow-500 p-2 px-4 flex items-center justify-between shadow-md">
+      <div className="bg-gradient-to-r from-teal-800 via-purple-800 to-teal-800 border-b-2 border-yellow-500 p-2 px-4 flex items-center justify-between shadow-md relative z-10">
         <div className="flex items-center space-x-2">
           <Scroll className="h-5 w-5 text-yellow-300" />
           <span className="text-yellow-300 font-bold text-sm sm:text-base drop-shadow-[0_0_3px_rgba(250,204,21,0.5)]">
@@ -136,67 +157,86 @@ export default function HomePage() {
       <main className="flex-1 flex flex-col relative">
         {/* Map area */}
         <div className="flex-1 p-3 relative">
-          <div className="relative w-full h-[calc(100vh-8rem)] rounded-lg overflow-hidden border-2 border-purple-400 shadow-lg">
-            {/* Map background */}
-            <div className="absolute inset-0">
-              <Image src="/map.png" alt="クローゼット王国の地図" fill className="object-cover" priority />
-            </div>
-
-            {/* Decorative corners */}
-            <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-purple-400 z-10"></div>
-            <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-purple-400 z-10"></div>
-            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-purple-400 z-10"></div>
-            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-purple-400 z-10"></div>
-
+          <div className="relative w-full h-[calc(100vh-8rem)]">
             {/* RPG Map Layout */}
             <div className="absolute inset-0 flex items-center justify-center">
               {/* 知識の湖 - 画面左上 */}
               <Link
                 href="/lake"
-                className="absolute top-[20%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
+                className="absolute top-[20%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
-                <div className="relative w-40 h-16 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg border-4 border-yellow-500 cursor-pointer flex items-center justify-center">
-                  <p className="text-white text-base font-bold">知識の湖</p>
+                <div className="relative">
+                  <div className="w-16 h-16 bg-blue-400/90 rounded-full flex items-center justify-center shadow-lg">
+                    <BookOpen className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-blue-400/90"></div>
+                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-black/70 backdrop-blur-sm rounded-lg p-2 text-center">
+                    <p className="text-white text-sm font-bold">知識の湖</p>
+                  </div>
                 </div>
               </Link>
 
               {/* パーティーの洞窟 - 画面右上 */}
               <Link
                 href="/cave"
-                className="absolute top-[20%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
+                className="absolute top-[20%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
-                <div className="relative w-40 h-16 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg border-4 border-yellow-500 cursor-pointer flex items-center justify-center">
-                  <p className="text-white text-base font-bold">パーティーの洞窟</p>
+                <div className="relative">
+                  <div className="w-16 h-16 bg-purple-400/90 rounded-full flex items-center justify-center shadow-lg">
+                    <Mountain className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-purple-400/90"></div>
+                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-black/70 backdrop-blur-sm rounded-lg p-2 text-center">
+                    <p className="text-white text-sm font-bold">パーティーの洞窟</p>
+                  </div>
                 </div>
               </Link>
 
               {/* クローゼット城 - 画面中央 */}
               <Link
-                href="/closet"
-                className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
+                href="/castle"
+                className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
-                <div className="relative w-48 h-20 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg border-4 border-yellow-500 cursor-pointer flex items-center justify-center">
-                  <p className="text-white text-lg font-bold">クローゼット城</p>
+                <div className="relative">
+                  <div className="w-32 h-32 bg-amber-400/90 rounded-full flex items-center justify-center shadow-lg">
+                    <Castle className="w-16 h-16 text-white" />
+                  </div>
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[16px] border-r-[16px] border-t-[32px] border-l-transparent border-r-transparent border-t-amber-400/90"></div>
+                  <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 w-40 bg-black/70 backdrop-blur-sm rounded-lg p-2 text-center">
+                    <p className="text-white text-base font-bold">クローゼット城</p>
+                  </div>
                 </div>
               </Link>
 
               {/* 審判の森 - 画面左下 */}
               <Link
                 href="/forest"
-                className="absolute top-[80%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
+                className="absolute top-[80%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
-                <div className="relative w-40 h-16 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg border-4 border-yellow-500 cursor-pointer flex items-center justify-center">
-                  <p className="text-white text-base font-bold">審判の森</p>
+                <div className="relative">
+                  <div className="w-16 h-16 bg-green-400/90 rounded-full flex items-center justify-center shadow-lg">
+                    <Trees className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-green-400/90"></div>
+                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-black/70 backdrop-blur-sm rounded-lg p-2 text-center">
+                    <p className="text-white text-sm font-bold">審判の森</p>
+                  </div>
                 </div>
               </Link>
 
-              {/* モーモーショップ - 画面右下 */}
+              {/* 勇者の家 - 画面右下 */}
               <Link
                 href="/shop"
-                className="absolute top-[80%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10"
+                className="absolute top-[80%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
-                <div className="relative w-40 h-16 bg-black bg-opacity-30 backdrop-blur-sm rounded-lg border-4 border-yellow-500 cursor-pointer flex items-center justify-center">
-                  <p className="text-white text-base font-bold">勇者の家</p>
+                <div className="relative">
+                  <div className="w-16 h-16 bg-red-400/90 rounded-full flex items-center justify-center shadow-lg">
+                    <Home className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-red-400/90"></div>
+                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-black/70 backdrop-blur-sm rounded-lg p-2 text-center">
+                    <p className="text-white text-sm font-bold">勇者の家</p>
+                  </div>
                 </div>
               </Link>
             </div>
