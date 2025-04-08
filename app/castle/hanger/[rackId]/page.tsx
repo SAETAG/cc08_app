@@ -125,6 +125,17 @@ const getLevelBadgeColor = (level: number, isCompleted: boolean, isCurrent: bool
   }
 }
 
+// ゴール解放状態を判定する関数を追加
+const isGoalUnlocked = (stepStatus: { [key: number]: boolean }, totalSteps: number): boolean => {
+  // 全てのステージが完了しているかチェック
+  for (let i = 1; i <= totalSteps; i++) {
+    if (!stepStatus[i]) {
+      return false
+    }
+  }
+  return true
+}
+
 export default function HangerDungeonPage() {
   const params = useParams()
   const router = useRouter()
@@ -136,6 +147,7 @@ export default function HangerDungeonPage() {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
   const [stepStatus, setStepStatus] = useState<{ [key: number]: boolean }>({})
   const [isLoading, setIsLoading] = useState(true)
+  const [isGoalAvailable, setIsGoalAvailable] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchStepStatus = async () => {
@@ -173,7 +185,7 @@ export default function HangerDungeonPage() {
                 // 完了したステージのみtrueを設定
                 if (value === true || value === "true") {
                   initialStatus[stepNumber] = true
-                  // 次のステージを解放（trueではなく、undefinedで設定）
+                  // 次のステージを解放（falseで設定）
                   if (stepNumber < rackData.adventures.length) {
                     initialStatus[stepNumber + 1] = false
                   }
@@ -184,6 +196,9 @@ export default function HangerDungeonPage() {
 
           console.log("Setting step status:", initialStatus)
           setStepStatus(initialStatus)
+
+          // ゴール解放状態を更新
+          setIsGoalAvailable(isGoalUnlocked(initialStatus, rackData.adventures.length))
         }
       } catch (error) {
         console.error("Error fetching step status:", error)
@@ -607,15 +622,39 @@ export default function HangerDungeonPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: rackData.adventures?.length * 0.1 }}
-                whileHover={currentStepIndex >= rackData.adventures?.length ? { y: -5 } : {}}
-                className={currentStepIndex >= rackData.adventures?.length ? "cursor-pointer" : "cursor-not-allowed"}
-                onClick={() =>
-                  currentStepIndex >= rackData.adventures?.length && router.push(`/castle/hanger/${params.rackId}/complete`)
-                }
+                whileHover={isGoalAvailable ? { y: -5 } : {}}
+                className={isGoalAvailable ? "cursor-pointer" : "cursor-not-allowed"}
+                onClick={async () => {
+                  if (isGoalAvailable) {
+                    try {
+                      // PlayFabにデータを保存
+                      const response = await fetch("/api/updateUserData", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          key: `rack_${params.rackId}_status`,
+                          value: true
+                        }),
+                      })
+
+                      if (!response.ok) {
+                        const error = await response.json()
+                        throw new Error(error.error || "データの更新に失敗しました")
+                      }
+
+                      router.push(`/castle/hanger/${params.rackId}/clear`)
+                    } catch (error) {
+                      console.error("Error updating rack status:", error)
+                      alert(error instanceof Error ? error.message : "エラーが発生しました")
+                    }
+                  }
+                }}
               >
                 <Card
                   className={`relative overflow-hidden bg-gradient-to-b ${
-                    currentStepIndex >= rackData.adventures?.length
+                    isGoalAvailable
                       ? "from-amber-500/90 to-amber-600/90 border-2 border-amber-300/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
                       : "from-slate-700/90 to-slate-800/90 border-2 border-slate-600/50 opacity-70"
                   } h-[100px] flex flex-row transition-all duration-300`}
@@ -623,38 +662,38 @@ export default function HangerDungeonPage() {
                   {/* Decorative corners */}
                   <div
                     className={`absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 ${
-                      currentStepIndex >= rackData.adventures?.length ? "border-amber-300" : "border-slate-600"
+                      isGoalAvailable ? "border-amber-300" : "border-slate-600"
                     }`}
                   ></div>
                   <div
                     className={`absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 ${
-                      currentStepIndex >= rackData.adventures?.length ? "border-amber-300" : "border-slate-600"
+                      isGoalAvailable ? "border-amber-300" : "border-slate-600"
                     }`}
                   ></div>
                   <div
                     className={`absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 ${
-                      currentStepIndex >= rackData.adventures?.length ? "border-amber-300" : "border-slate-600"
+                      isGoalAvailable ? "border-amber-300" : "border-slate-600"
                     }`}
                   ></div>
                   <div
                     className={`absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 ${
-                      currentStepIndex >= rackData.adventures?.length ? "border-amber-300" : "border-slate-600"
+                      isGoalAvailable ? "border-amber-300" : "border-slate-600"
                     }`}
                   ></div>
 
                   {/* ゴール表示（左側） */}
                   <div
                     className={`flex items-center justify-center ${
-                      currentStepIndex >= rackData.adventures?.length ? "bg-amber-500" : "bg-slate-700"
+                      isGoalAvailable ? "bg-amber-500" : "bg-slate-700"
                     } w-[80px] h-full border-r-2 ${
-                      currentStepIndex >= rackData.adventures?.length ? "border-amber-300/50" : "border-slate-600/50"
+                      isGoalAvailable ? "border-amber-300/50" : "border-slate-600/50"
                     }`}
                   >
                     <div className="text-center">
                       <div className="text-xs text-white/80 font-medium mb-1">GOAL</div>
                       <Trophy
                         className={`h-8 w-8 ${
-                          currentStepIndex >= rackData.adventures?.length ? "text-white" : "text-slate-400"
+                          isGoalAvailable ? "text-white" : "text-slate-400"
                         } mx-auto`}
                       />
                     </div>
@@ -665,18 +704,20 @@ export default function HangerDungeonPage() {
                     <div className="flex items-center">
                       <h3
                         className={`text-xl font-bold ${
-                          currentStepIndex >= rackData.adventures?.length ? "text-amber-400" : "text-slate-400"
+                          isGoalAvailable ? "text-white" : "text-slate-400"
                         }`}
                       >
                         ダンジョンクリア！
                       </h3>
                     </div>
 
-                    <div className="text-amber-300/90 text-sm mt-2">特別な報酬を獲得できます</div>
+                    <div className={`text-sm mt-2 ${isGoalAvailable ? "text-white/80" : "text-amber-300/90"}`}>
+                      特別な報酬を獲得できます
+                    </div>
 
                     {/* ステータスアイコン（右側） */}
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      {currentStepIndex >= rackData.adventures?.length ? (
+                      {isGoalAvailable ? (
                         <div className="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center">
                           <motion.div
                             animate={{ scale: [1, 1.1, 1] }}
@@ -693,7 +734,7 @@ export default function HangerDungeonPage() {
                     </div>
 
                     {/* 光るエフェクト（クリア時） */}
-                    {currentStepIndex >= rackData.adventures?.length && (
+                    {isGoalAvailable && (
                       <motion.div
                         className="absolute inset-0 z-0"
                         animate={{

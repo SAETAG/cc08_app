@@ -327,7 +327,7 @@ export default function DungeonClearPage() {
               className="mb-12 text-center"
             >
               <motion.h1
-                className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-500 to-amber-300"
+                className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-500 to-amber-300"
                 animate={{
                   backgroundPosition: ["0% center", "100% center", "0% center"],
                   textShadow: [
@@ -438,11 +438,11 @@ export default function DungeonClearPage() {
                 <div className="bg-gradient-to-r from-purple-900/50 to-purple-800/50 px-12 py-8 rounded-xl border-2 border-purple-500/40 relative overflow-hidden">
                   <div className="flex items-center gap-4 mb-2">
                     <span className="text-3xl">👑</span>
-                    <h2 className="text-3xl font-bold text-purple-300">特別な報酬</h2>
+                    <h2 className="text-3xl font-bold text-purple-300">王の間解放</h2>
                   </div>
 
                   <motion.p
-                    className="text-2xl text-purple-200 font-medium"
+                    className="text-s text-purple-200 font-medium"
                     animate={{
                       textShadow: [
                         "0 0 5px rgba(147,51,234,0.5)",
@@ -452,7 +452,7 @@ export default function DungeonClearPage() {
                     }}
                     transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
                   >
-                    王の間が解放されました
+                    ※他のダンジョンを先にクリアしていたら、既に王の間は解放されています
                   </motion.p>
 
                   {/* 光るエフェクト */}

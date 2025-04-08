@@ -1,65 +1,68 @@
-import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
+import { NextResponse } from "next/server"
+import { PlayFabAdmin } from "playfab-sdk"
 
-const PLAYFAB_TITLE_ID = process.env.PLAYFAB_TITLE_ID
-const PLAYFAB_SECRET_KEY = process.env.PLAYFAB_DEV_SECRET
+const titleId = process.env.PLAYFAB_TITLE_ID || ""
+const secretKey = process.env.PLAYFAB_DEV_SECRET || ""
+
+PlayFabAdmin.settings.titleId = titleId
+PlayFabAdmin.settings.developerSecretKey = secretKey
 
 export async function POST(request: Request) {
   try {
     const cookieStore = await cookies()
-    const playFabId = cookieStore.get('playfab_id')?.value
+    const playfabId = cookieStore.get("playfab_id")?.value
 
-    if (!playFabId) {
-      console.error("PlayFabID not found in cookies:", cookieStore.getAll())
+    if (!playfabId) {
       return NextResponse.json(
-        { error: "PlayFabIDが見つかりません" },
+        { error: "PlayFab IDが見つかりません" },
         { status: 401 }
       )
     }
 
-    const { rackId, stageNumber } = await request.json()
-    
-    if (!rackId || !stageNumber) {
+    const body = await request.json()
+    const { key, value } = body
+
+    if (!key || value === undefined) {
       return NextResponse.json(
         { error: "必要なパラメータが不足しています" },
         { status: 400 }
       )
     }
 
-    const key = `rack_${rackId}_stage_${stageNumber}_status`
-    
-    // PlayFab Admin API を使用してユーザーデータを更新
-    const response = await fetch(
-      `https://${PLAYFAB_TITLE_ID}.playfabapi.com/Admin/UpdateUserData`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-SecretKey": PLAYFAB_SECRET_KEY || "",
+    return new Promise((resolve) => {
+      PlayFabAdmin.UpdateUserData({
+        PlayFabId: playfabId,
+        Data: {
+          [key]: value.toString()
         },
-        body: JSON.stringify({
-          PlayFabId: playFabId,
-          Data: {
-            [key]: "true"
-          }
-        }),
-      }
-    )
+        Permission: "Public"
+      }, (error, result) => {
+        if (error) {
+          console.error("Error updating user data:", error)
+          resolve(
+            NextResponse.json(
+              { error: "データの更新に失敗しました" },
+              { status: 500 }
+            )
+          )
+          return
+        }
 
-    const data = await response.json()
-
-    if (!response.ok) {
-      console.error("PlayFab API Error:", data)
-      return NextResponse.json(
-        { error: "データの更新に失敗しました" },
-        { status: 500 }
-      )
-    }
-
-    console.log("Successfully updated PlayFab data for user:", playFabId)
-    return NextResponse.json({ success: true })
+        resolve(
+          NextResponse.json(
+            { 
+              code: 200,
+              status: "OK",
+              data: result.data
+            },
+            { status: 200 }
+          )
+        )
+      })
+    })
   } catch (error) {
-    console.error("Error updating user data:", error)
+    console.error("Error in updateUserData:", error)
     return NextResponse.json(
       { error: "サーバーエラーが発生しました" },
       { status: 500 }
