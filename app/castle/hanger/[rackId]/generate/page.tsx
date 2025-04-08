@@ -50,8 +50,8 @@ export default function GenerateDungeonPage() {
       }
 
       try {
-        setHasGenerated(true);
         const token = await currentUser.getIdToken();
+        console.log('Starting generation with token:', token ? 'exists' : 'missing');
         
         const response = await fetch('/api/openai', {
           method: 'POST',
@@ -79,28 +79,51 @@ export default function GenerateDungeonPage() {
         const data = await response.json();
         if (!isSubscribed) return;
         
+        console.log('OpenAI API response:', data);
+        
         // ハンガーラックのstepsGeneratedをtrueに更新
-        const updateResponse = await fetch(`/api/racks/${rackId}/update`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            stepsGenerated: true
-          })
-        });
+        try {
+          console.log('Updating stepsGenerated to true for rackId:', rackId);
+          
+          const updateUrl = `/api/racks/${rackId}/update`;
+          console.log('Making POST request to:', updateUrl);
+          
+          const updateResponse = await fetch(updateUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              stepsGenerated: true
+            })
+          });
 
-        if (!updateResponse.ok) {
-          throw new Error('ハンガーラックの更新に失敗しました');
+          if (!updateResponse.ok) {
+            const errorText = await updateResponse.text();
+            console.error('Update failed:', errorText);
+            throw new Error(`ハンガーラックの更新に失敗しました: ${errorText}`);
+          }
+
+          const updateData = await updateResponse.json();
+          console.log('Update successful:', updateData);
+          
+          // 全ての処理が成功した後にhasGeneratedをtrueに設定
+          setHasGenerated(true);
+          setProgress(100);
+          
+        } catch (updateError) {
+          console.error('Error updating rack:', updateError);
+          throw new Error('ハンガーラックの更新中にエラーが発生しました');
         }
         
-        setProgress(100);
       } catch (err) {
         if (!isSubscribed) return;
-        console.error("Error generating dungeon:", err);
+        console.error("Error in generation process:", err);
         setError(err instanceof Error ? err.message : "エラーが発生しました");
         setIsGenerating(false);
+        // エラーが発生した場合はhasGeneratedをfalseに戻す
+        setHasGenerated(false);
       }
     };
 

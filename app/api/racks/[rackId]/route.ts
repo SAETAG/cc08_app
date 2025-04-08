@@ -10,8 +10,11 @@ export async function GET(
     const authHeader = req.headers.get("Authorization")
     const uid = await verifyTokenOrThrow(authHeader ?? "")
 
+    // パラメータを正しく取得（awaitを追加）
+    const { rackId } = await params
+
     // ハンガーラックのデータを取得
-    const rackDoc = await dbAdmin.collection("users").doc(uid).collection("racks").doc(params.rackId).get()
+    const rackDoc = await dbAdmin.collection("users").doc(uid).collection("racks").doc(rackId).get()
 
     if (!rackDoc.exists) {
       return NextResponse.json(

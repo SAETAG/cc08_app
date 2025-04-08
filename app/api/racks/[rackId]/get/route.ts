@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
 import { dbAdmin, verifyTokenOrThrow } from '@/app/lib/firebaseAdmin'
 
-export async function POST(
+export async function GET(
   req: Request,
   { params }: { params: { rackId: string } }
 ) {
   try {
-    console.log('Update request received');
+    console.log('Rack data request received');
     
     // トークン検証
     const authHeader = req.headers.get("Authorization")
@@ -18,46 +18,49 @@ export async function POST(
       return new NextResponse('Unauthorized', { status: 401 })
     }
 
-    const { stepsGenerated } = await req.json()
-    console.log('Request body:', { stepsGenerated });
-    
-    // パラメータを取得
     const rackId = params.rackId
     console.log('Rack ID:', rackId);
 
-    if (!rackId) {
-      console.error('Bad Request: No rack ID');
-      return new NextResponse('Bad Request: No rack ID', { status: 400 });
-    }
-
     try {
-      // ハンガーラックの更新
+      // ハンガーラックのデータを取得
       const rackRef = dbAdmin.collection('users').doc(uid).collection('racks').doc(rackId)
-      console.log('Updating rack:', rackRef.path);
-      
-      // 更新前のデータを確認
       const rackDoc = await rackRef.get()
+
       if (!rackDoc.exists) {
         console.error('Rack not found:', rackRef.path);
         return new NextResponse('Rack not found', { status: 404 })
       }
 
-      console.log('Current rack data:', rackDoc.data());
+      // アドベンチャー情報を取得
+      const adventuresRef = rackDoc.ref.collection('adventures')
+      const adventuresSnapshot = await adventuresRef.get()
       
-      // 更新を実行
-      const updateData = {
-        stepsGenerated: stepsGenerated,
-        updatedAt: new Date()
-      };
-      console.log('Updating with data:', updateData);
-      
-      await rackRef.update(updateData);
-      console.log('Update successful');
+      const adventures = adventuresSnapshot.docs.map(doc => {
+        const data = doc.data();
+        try {
+          const parsedContent = JSON.parse(data.content);
+          return {
+            id: doc.id,
+            ...data,
+            organizationDirection: parsedContent.organizationDirection
+          };
+        } catch (error) {
+          console.error('Error parsing adventure content:', error);
+          return {
+            id: doc.id,
+            ...data
+          };
+        }
+      });
 
-      // 更新後のデータを取得して返す
-      const updatedRack = await rackRef.get()
-      const rackData = updatedRack.data()
-      console.log('Updated rack data:', rackData);
+      const rackData = {
+        ...rackDoc.data(),
+        adventures,
+        currentStepIndex: 0,
+        progress: 0
+      }
+      
+      console.log('Rack data:', rackData);
       
       return NextResponse.json(rackData)
     } catch (dbError) {
@@ -65,7 +68,7 @@ export async function POST(
       return new NextResponse('Database operation failed', { status: 500 })
     }
   } catch (error) {
-    console.error('[RACK_UPDATE] Unexpected error:', error);
+    console.error('[RACK_GET] Unexpected error:', error);
     return new NextResponse('Internal Error', { status: 500 })
   }
 } 

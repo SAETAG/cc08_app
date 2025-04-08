@@ -6,8 +6,10 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
-import { ArrowLeft, CheckCircle2, Star, Lock, ChevronRight, Trophy, Shirt, Sparkles, Home } from "lucide-react"
+import { ArrowLeft, CheckCircle2, Star, Lock, ChevronRight, Trophy, Shirt, Sparkles, Home, Wand2 } from "lucide-react"
 import { useAuth } from "@/app/contexts/AuthContext"
+import { Button } from "@/components/ui/button"
+import { firebaseAuth } from "@/lib/firebase"
 
 // ステップの型定義
 interface Step {
@@ -26,6 +28,26 @@ interface HangerRack {
   steps: Step[]
   progress: number // 進行度（%）
   organizationDirection?: string // 整理収納の方向性
+}
+
+interface Adventure {
+  id: string;
+  organizationDirection: string;
+  stepNumber: number;
+  dungeonName: string;
+  createdAt: any;
+  isCompleted: boolean;
+  reward: number;
+}
+
+interface RackData {
+  name: string;
+  imageUrl: string;
+  stepsGenerated: boolean;
+  adventures: Adventure[];
+  progress: number;
+  currentStepIndex: number;
+  organizationDirection?: string;
 }
 
 // レベルに応じた背景色のグラデーションを取得する関数
@@ -117,74 +139,104 @@ export default function HangerDungeonPage() {
   const router = useRouter()
   const rackId = params.rackId as string
   const { currentUser } = useAuth()
-
-  const [hangerData, setHangerData] = useState<HangerRack | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [currentStepIndex, setCurrentStepIndex] = useState(0)
+  const [rackData, setRackData] = useState<RackData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
 
   useEffect(() => {
-    const fetchHangerData = async () => {
-      if (!currentUser) return
-
+    const fetchRackData = async () => {
       try {
-        const token = await currentUser.getIdToken()
-        const response = await fetch(`/api/racks/${rackId}`, {
+        const token = await currentUser?.getIdToken()
+        const response = await fetch(`/api/racks/${rackId}/get`, {
           headers: {
-            'Authorization': `Bearer ${token}`
+            "Authorization": `Bearer ${token}`
           }
         })
 
         if (!response.ok) {
-          throw new Error('ハンガーラックの取得に失敗しました')
+          throw new Error("ハンガーラックの取得に失敗しました")
         }
 
         const data = await response.json()
-        setHangerData({
-          id: data.rack.id,
-          name: data.rack.name,
-          image: data.rack.imageUrl,
-          steps: data.rack.steps || [],
-          progress: data.rack.progress || 0,
-          organizationDirection: data.rack.organizationDirection || ""
-        })
+        console.log("APIレスポンス:", data)
+        
+        // contentをパースしてadventuresを更新
+        if (data.adventures && data.adventures.length > 0) {
+          try {
+            console.log("パース前のcontent:", data.adventures[0].content)
+            const parsedContent = JSON.parse(data.adventures[0].content)
+            console.log("パース後のcontent:", parsedContent)
+            
+            // organizationDirectionを直接設定
+            data.organizationDirection = parsedContent.organizationDirection
+            
+            if (parsedContent.steps) {
+              data.adventures = parsedContent.steps.map((step: any) => ({
+                id: `${data.adventures[0].id}-step-${step.stepNumber}`,
+                organizationDirection: parsedContent.organizationDirection || "",
+                stepNumber: step.stepNumber,
+                dungeonName: step.dungeonName,
+                createdAt: data.adventures[0].createdAt,
+                isCompleted: false,
+                reward: 100
+              }))
+            }
+          } catch (parseError) {
+            console.error("JSONパースエラー:", parseError)
+            // パースに失敗した場合は空の配列を設定
+            data.adventures = []
+          }
+        }
 
-        // 現在のステップインデックスを計算（最初の未完了ステップ）
-        const currentIndex = (data.rack.steps || []).findIndex((step: Step) => !step.isCompleted)
-        setCurrentStepIndex(currentIndex !== -1 ? currentIndex : (data.rack.steps || []).length)
-
+        // progressが未定義の場合は0を設定
+        data.progress = data.progress || 0
+        // currentStepIndexを0に設定してSTAGE1をアンロック
+        data.currentStepIndex = 0
+        setRackData(data)
+        setCurrentStepIndex(0)
       } catch (error) {
-        console.error('Error fetching hanger data:', error)
+        console.error("Error fetching rack data:", error)
+        setError(error instanceof Error ? error.message : "エラーが発生しました")
       } finally {
-        setIsLoading(false)
+        setLoading(false)
       }
     }
 
-    fetchHangerData()
+    fetchRackData()
   }, [rackId, currentUser])
 
   const handleStepClick = (stepIndex: number, stepId: string) => {
-    // 完了済みのステップか現在のステップのみクリック可能
-    if (stepIndex <= currentStepIndex) {
+    // STAGE1は常にクリック可能、それ以外は完了済みのステップか現在のステップのみクリック可能
+    if (stepIndex === 0 || stepIndex <= currentStepIndex) {
       router.push(`/castle/hanger/${rackId}/${stepId}`)
     }
   }
 
-  if (isLoading || !hangerData) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-blue-950 text-amber-300">
-        <div className="flex flex-col items-center">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-            className="mb-4"
-          >
-            <Sparkles className="h-12 w-12 text-amber-400" />
-          </motion.div>
-          <p className="text-xl">ダンジョンマップを読み込み中...</p>
-        </div>
+      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+        <div className="animate-spin text-4xl">🌟</div>
+        <p className="mt-4">読み込み中...</p>
       </div>
     )
   }
+
+  if (error || !rackData) {
+    return (
+      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+        <p className="text-red-400">{error || "データの取得に失敗しました"}</p>
+        <Button
+          onClick={() => router.push("/home")}
+          className="mt-4 bg-amber-600 hover:bg-amber-700"
+        >
+          ホームに戻る
+        </Button>
+      </div>
+    )
+  }
+
+  const latestAdventure = rackData.adventures?.[0]
 
   return (
     <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
@@ -243,7 +295,7 @@ export default function HangerDungeonPage() {
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <Shirt className="h-6 w-6 text-amber-400" />
-            <h1 className="text-3xl md:text-4xl font-bold text-amber-400 tracking-wider">{hangerData.name}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-amber-400 tracking-wider">{rackData.name}</h1>
           </div>
 
           <div className="flex justify-between items-center">
@@ -255,11 +307,11 @@ export default function HangerDungeonPage() {
                 <motion.div
                   className="h-full bg-gradient-to-r from-amber-500 to-amber-400"
                   initial={{ width: "0%" }}
-                  animate={{ width: `${hangerData.progress}%` }}
+                  animate={{ width: `${rackData.progress}%` }}
                   transition={{ type: "spring", bounce: 0.2, duration: 1 }}
                 />
               </div>
-              <span className="text-amber-300 font-medium">{hangerData.progress}%</span>
+              <span className="text-amber-300 font-medium">{rackData.progress}%</span>
             </div>
           </div>
         </motion.div>
@@ -277,8 +329,8 @@ export default function HangerDungeonPage() {
               {/* 写真 */}
               <div className="relative h-64 rounded-lg overflow-hidden">
                 <Image
-                  src={hangerData.image}
-                  alt={hangerData.name}
+                  src={rackData.imageUrl}
+                  alt={rackData.name}
                   fill
                   className="object-cover"
                 />
@@ -302,7 +354,23 @@ export default function HangerDungeonPage() {
                       />
                     </div>
                     <div className="text-amber-300/80 pl-16">
-                      {hangerData.organizationDirection || (
+                      {rackData.stepsGenerated ? (
+                        <div className="flex items-center">
+                          <motion.span
+                            animate={{ opacity: [0.5, 1, 0.5] }}
+                            transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+                          >
+                            {latestAdventure?.organizationDirection || "モーちゃんが分析中..."}
+                          </motion.span>
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                            className="ml-2"
+                          >
+                            <Sparkles className="h-4 w-4 text-amber-400" />
+                          </motion.div>
+                        </div>
+                      ) : (
                         <div className="flex items-center">
                           <motion.span
                             animate={{ opacity: [0.5, 1, 0.5] }}
@@ -341,142 +409,157 @@ export default function HangerDungeonPage() {
 
             {/* ダンジョンカードのグリッド */}
             <div className="grid grid-cols-1 gap-4">
-              {hangerData.steps.map((step, index) => {
-                // ステップの状態を判定
-                const isCompleted = step.isCompleted
-                const isCurrent = index === currentStepIndex
-                const isLocked = index > currentStepIndex
-                const level = index + 1
+              {rackData.stepsGenerated ? (
+                rackData.adventures?.map((adventure) => {
+                  // ステップの状態を判定
+                  const isCompleted = adventure.isCompleted
+                  const isCurrent = adventure.stepNumber === currentStepIndex
+                  const isLocked = adventure.stepNumber > currentStepIndex
+                  const level = adventure.stepNumber
 
-                // レベルに応じたスタイルを取得
-                const bgGradient = getLevelGradient(level, isCompleted, isCurrent, isLocked)
-                const borderColor = getLevelBorder(level, isCompleted, isCurrent, isLocked)
-                const badgeColor = getLevelBadgeColor(level, isCompleted, isCurrent, isLocked)
+                  // レベルに応じたスタイルを取得
+                  const bgGradient = getLevelGradient(level, isCompleted, isCurrent, isLocked)
+                  const borderColor = getLevelBorder(level, isCompleted, isCurrent, isLocked)
+                  const badgeColor = getLevelBadgeColor(level, isCompleted, isCurrent, isLocked)
 
-                return (
-                  <motion.div
-                    key={step.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={!isLocked ? { y: -5 } : {}}
-                    onClick={() => handleStepClick(index, step.id)}
-                    className={`cursor-pointer ${isLocked ? "cursor-not-allowed" : ""}`}
-                  >
-                    <Card
-                      className={`relative overflow-hidden bg-gradient-to-b ${bgGradient} border-2 ${borderColor} h-[100px] flex flex-row transition-all duration-300 ${
-                        isLocked ? "opacity-70" : "shadow-[0_0_15px_rgba(251,191,36,0.2)]"
-                      }`}
+                  return (
+                    <motion.div
+                      key={adventure.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: adventure.stepNumber * 0.1 }}
+                      whileHover={!isLocked ? { y: -5 } : {}}
+                      onClick={() => handleStepClick(adventure.stepNumber, adventure.id)}
+                      className={`cursor-pointer ${isLocked ? "cursor-not-allowed" : ""}`}
                     >
-                      {/* Decorative corners */}
-                      <div
-                        className={`absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
-                      ></div>
-                      <div
-                        className={`absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
-                      ></div>
-                      <div
-                        className={`absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
-                      ></div>
-                      <div
-                        className={`absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
-                      ></div>
-
-                      {/* レベル表示（左側） */}
-                      <div
-                        className={`flex items-center justify-center ${badgeColor} w-[80px] h-full border-r-2 ${borderColor}`}
+                      <Card
+                        className={`relative overflow-hidden bg-gradient-to-b ${bgGradient} border-2 ${borderColor} h-[100px] flex flex-row transition-all duration-300 ${
+                          isLocked ? "opacity-70" : "shadow-[0_0_15px_rgba(251,191,36,0.2)]"
+                        }`}
                       >
-                        <div className="text-center">
-                          <div className="text-xs text-white/80 font-medium mb-1">STAGE</div>
-                          <div className="text-3xl font-bold text-white">{level}</div>
-                        </div>
-                      </div>
+                        {/* Decorative corners */}
+                        <div
+                          className={`absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
+                        ></div>
+                        <div
+                          className={`absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
+                        ></div>
+                        <div
+                          className={`absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
+                        ></div>
+                        <div
+                          className={`absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
+                        ></div>
 
-                      {/* メインコンテンツ */}
-                      <div className="p-3 flex-1 flex flex-col justify-center relative">
-                        <div className="flex items-center">
-                          <h3
-                            className={`text-xl font-bold ${
-                              isCompleted ? "text-amber-400" : isCurrent ? "text-amber-300" : "text-slate-400"
-                            }`}
-                          >
-                            {step.title}
-                          </h3>
-                        </div>
-
-                        <div className="flex items-center mt-2">
-                          {/* 報酬表示 */}
-                          <div
-                            className={`flex items-center gap-1 ${
-                              isCompleted ? "text-amber-400" : "text-amber-300/60"
-                            }`}
-                          >
-                            <Star className="h-4 w-4" />
-                            <span className="text-sm font-medium">{step.reward} pts</span>
+                        {/* レベル表示（左側） */}
+                        <div
+                          className={`flex items-center justify-center ${badgeColor} w-[80px] h-full border-r-2 ${borderColor}`}
+                        >
+                          <div className="text-center">
+                            <div className="text-xs text-white/80 font-medium mb-1">STAGE</div>
+                            <div className="text-3xl font-bold text-white">{level}</div>
                           </div>
                         </div>
 
-                        {/* ステータスアイコン（右側） */}
-                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                          {isCompleted ? (
-                            <div className="w-14 h-14 rounded-full bg-green-500/20 flex items-center justify-center">
-                              <motion.div
-                                animate={{ scale: [1, 1.1, 1] }}
-                                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-                              >
-                                <CheckCircle2 className="h-10 w-10 text-green-400" />
-                              </motion.div>
+                        {/* メインコンテンツ */}
+                        <div className="p-3 flex-1 flex flex-col justify-center relative">
+                          <div className="flex items-center">
+                            <h3
+                              className={`text-xl font-bold ${
+                                isCompleted ? "text-amber-400" : isCurrent ? "text-amber-300" : "text-slate-400"
+                              }`}
+                            >
+                              {adventure.dungeonName}
+                            </h3>
+                          </div>
+
+                          <div className="flex items-center mt-2">
+                            {/* 報酬表示 */}
+                            <div
+                              className={`flex items-center gap-1 ${
+                                isCompleted ? "text-amber-400" : "text-amber-300/60"
+                              }`}
+                            >
+                              <Star className="h-4 w-4" />
+                              <span className="text-sm font-medium">{adventure.reward} pts</span>
                             </div>
-                          ) : isCurrent ? (
-                            <div className="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center">
-                              <motion.div
-                                animate={{ x: [0, 5, 0] }}
-                                transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
-                              >
-                                <ChevronRight className="h-10 w-10 text-amber-400" />
-                              </motion.div>
-                            </div>
-                          ) : (
-                            <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
-                              <Lock className="h-8 w-8 text-slate-500" />
-                            </div>
+                          </div>
+
+                          {/* ステータスアイコン（右側） */}
+                          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                            {isCompleted ? (
+                              <div className="w-14 h-14 rounded-full bg-green-500/20 flex items-center justify-center">
+                                <motion.div
+                                  animate={{ scale: [1, 1.1, 1] }}
+                                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                                >
+                                  <CheckCircle2 className="h-10 w-10 text-green-400" />
+                                </motion.div>
+                              </div>
+                            ) : isCurrent ? (
+                              <div className="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center">
+                                <motion.div
+                                  animate={{ x: [0, 5, 0] }}
+                                  transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+                                >
+                                  <ChevronRight className="h-10 w-10 text-amber-400" />
+                                </motion.div>
+                              </div>
+                            ) : (
+                              <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
+                                <Lock className="h-8 w-8 text-slate-500" />
+                              </div>
+                            )}
+                          </div>
+
+                          {/* 光るエフェクト（現在のステップ） */}
+                          {isCurrent && (
+                            <motion.div
+                              className="absolute inset-0 z-0"
+                              animate={{
+                                boxShadow: [
+                                  "inset 0 0 5px 2px rgba(251,191,36,0.1)",
+                                  "inset 0 0 15px 5px rgba(251,191,36,0.2)",
+                                  "inset 0 0 5px 2px rgba(251,191,36,0.1)",
+                                ],
+                              }}
+                              transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                            />
                           )}
                         </div>
-
-                        {/* 光るエフェクト（現在のステップ） */}
-                        {isCurrent && (
-                          <motion.div
-                            className="absolute inset-0 z-0"
-                            animate={{
-                              boxShadow: [
-                                "inset 0 0 5px 2px rgba(251,191,36,0.1)",
-                                "inset 0 0 15px 5px rgba(251,191,36,0.2)",
-                                "inset 0 0 5px 2px rgba(251,191,36,0.1)",
-                              ],
-                            }}
-                            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-                          />
-                        )}
-                      </div>
-                    </Card>
-                  </motion.div>
-                )
-              })}
+                      </Card>
+                    </motion.div>
+                  )
+                })
+              ) : (
+                <div className="space-y-4">
+                  <p className="text-lg">
+                    モーちゃんがあなたのハンガーラックを分析して、整理収納の冒険を提案します！
+                  </p>
+                  <Button
+                    onClick={() => router.push(`/castle/hanger/${params.rackId}/generate`)}
+                    className="w-full bg-amber-600 hover:bg-amber-700 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-2"
+                  >
+                    <Wand2 className="h-5 w-5" />
+                    <span>冒険ストーリーを生成する</span>
+                  </Button>
+                </div>
+              )}
 
               {/* ゴール地点 */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: hangerData.steps.length * 0.1 }}
-                whileHover={currentStepIndex >= hangerData.steps.length ? { y: -5 } : {}}
-                className={currentStepIndex >= hangerData.steps.length ? "cursor-pointer" : "cursor-not-allowed"}
+                transition={{ delay: rackData.adventures?.length * 0.1 }}
+                whileHover={currentStepIndex >= rackData.adventures?.length ? { y: -5 } : {}}
+                className={currentStepIndex >= rackData.adventures?.length ? "cursor-pointer" : "cursor-not-allowed"}
                 onClick={() =>
-                  currentStepIndex >= hangerData.steps.length && router.push(`/castle/hanger/${rackId}/complete`)
+                  currentStepIndex >= rackData.adventures?.length && router.push(`/castle/hanger/${params.rackId}/complete`)
                 }
               >
                 <Card
                   className={`relative overflow-hidden bg-gradient-to-b ${
-                    currentStepIndex >= hangerData.steps.length
+                    currentStepIndex >= rackData.adventures?.length
                       ? "from-amber-500/90 to-amber-600/90 border-2 border-amber-300/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
                       : "from-slate-700/90 to-slate-800/90 border-2 border-slate-600/50 opacity-70"
                   } h-[100px] flex flex-row transition-all duration-300`}
@@ -484,38 +567,38 @@ export default function HangerDungeonPage() {
                   {/* Decorative corners */}
                   <div
                     className={`absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 ${
-                      currentStepIndex >= hangerData.steps.length ? "border-amber-300" : "border-slate-600"
+                      currentStepIndex >= rackData.adventures?.length ? "border-amber-300" : "border-slate-600"
                     }`}
                   ></div>
                   <div
                     className={`absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 ${
-                      currentStepIndex >= hangerData.steps.length ? "border-amber-300" : "border-slate-600"
+                      currentStepIndex >= rackData.adventures?.length ? "border-amber-300" : "border-slate-600"
                     }`}
                   ></div>
                   <div
                     className={`absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 ${
-                      currentStepIndex >= hangerData.steps.length ? "border-amber-300" : "border-slate-600"
+                      currentStepIndex >= rackData.adventures?.length ? "border-amber-300" : "border-slate-600"
                     }`}
                   ></div>
                   <div
                     className={`absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 ${
-                      currentStepIndex >= hangerData.steps.length ? "border-amber-300" : "border-slate-600"
+                      currentStepIndex >= rackData.adventures?.length ? "border-amber-300" : "border-slate-600"
                     }`}
                   ></div>
 
                   {/* ゴール表示（左側） */}
                   <div
                     className={`flex items-center justify-center ${
-                      currentStepIndex >= hangerData.steps.length ? "bg-amber-500" : "bg-slate-700"
+                      currentStepIndex >= rackData.adventures?.length ? "bg-amber-500" : "bg-slate-700"
                     } w-[80px] h-full border-r-2 ${
-                      currentStepIndex >= hangerData.steps.length ? "border-amber-300/50" : "border-slate-600/50"
+                      currentStepIndex >= rackData.adventures?.length ? "border-amber-300/50" : "border-slate-600/50"
                     }`}
                   >
                     <div className="text-center">
                       <div className="text-xs text-white/80 font-medium mb-1">GOAL</div>
                       <Trophy
                         className={`h-8 w-8 ${
-                          currentStepIndex >= hangerData.steps.length ? "text-white" : "text-slate-400"
+                          currentStepIndex >= rackData.adventures?.length ? "text-white" : "text-slate-400"
                         } mx-auto`}
                       />
                     </div>
@@ -526,7 +609,7 @@ export default function HangerDungeonPage() {
                     <div className="flex items-center">
                       <h3
                         className={`text-xl font-bold ${
-                          currentStepIndex >= hangerData.steps.length ? "text-amber-400" : "text-slate-400"
+                          currentStepIndex >= rackData.adventures?.length ? "text-amber-400" : "text-slate-400"
                         }`}
                       >
                         ダンジョンクリア！
@@ -537,7 +620,7 @@ export default function HangerDungeonPage() {
 
                     {/* ステータスアイコン（右側） */}
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      {currentStepIndex >= hangerData.steps.length ? (
+                      {currentStepIndex >= rackData.adventures?.length ? (
                         <div className="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center">
                           <motion.div
                             animate={{ scale: [1, 1.1, 1] }}
@@ -554,7 +637,7 @@ export default function HangerDungeonPage() {
                     </div>
 
                     {/* 光るエフェクト（クリア時） */}
-                    {currentStepIndex >= hangerData.steps.length && (
+                    {currentStepIndex >= rackData.adventures?.length && (
                       <motion.div
                         className="absolute inset-0 z-0"
                         animate={{

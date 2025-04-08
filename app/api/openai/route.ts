@@ -125,11 +125,15 @@ ${imageDescription}
       "description": "string",
       "hint": "string"
     }
-    // ...（10～15ステップ）
   ]
 }
 
-余計な文章やコメントは入れず、上記JSON構造のみを出力してください.`;
+【重要】
+・必ず有効なJSON形式で出力すること
+・各ステップの最後にカンマを付けること
+・最後のステップの後にはカンマを付けないこと
+・余計な文章やコメントは入れないこと
+・必ずJSONの閉じカッコ（}）で終わること`;
         
         
         
@@ -166,7 +170,8 @@ ${imageDescription}
       model: "gpt-3.5-turbo",
       messages: messages as any,
       temperature: 0.7,
-      max_tokens: 1500,
+      max_tokens: 2000,
+      response_format: { type: "json_object" },
     }).catch(error => {
       console.error("OpenAI API Error Details:", {
         status: error.status,
@@ -189,6 +194,28 @@ ${imageDescription}
       return NextResponse.json({ error: "OpenAIから有効なレスポンスが得られませんでした" }, { status: 500 });
     }
 
+    // JSONの完全性を確認
+    let validatedResponse = responseMessage;
+    try {
+      const parsedResponse = JSON.parse(responseMessage);
+      if (!parsedResponse.organizationDirection || !parsedResponse.steps || !Array.isArray(parsedResponse.steps)) {
+        throw new Error("Invalid JSON structure");
+      }
+      
+      // 各ステップの完全性を確認
+      parsedResponse.steps.forEach((step: any, index: number) => {
+        if (!step.stepNumber || !step.dungeonName || !step.title || !step.description || !step.hint) {
+          throw new Error(`Incomplete step at index ${index}`);
+        }
+      });
+
+      // JSONの再構築（余分な空白や改行を削除）
+      validatedResponse = JSON.stringify(parsedResponse, null, 2);
+    } catch (parseError) {
+      console.error("JSON validation error:", parseError);
+      return NextResponse.json({ error: "生成されたJSONが不完全です" }, { status: 500 });
+    }
+
     // -------------------------
     // 6. 生成結果のFirebaseへの保存（hangerモードのみ）
     // -------------------------
@@ -201,7 +228,7 @@ ${imageDescription}
         const saveData = {
           userId: uid,
           rackId: rackId,
-          content: responseMessage,
+          content: validatedResponse,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         };
         console.log("Saving data:", saveData);
@@ -216,7 +243,7 @@ ${imageDescription}
     // -------------------------
     // 7. 結果の返却
     // -------------------------
-    return NextResponse.json({ result: responseMessage }, { status: 200 });
+    return NextResponse.json({ result: validatedResponse }, { status: 200 });
   } catch (error) {
     console.error("Error with OpenAI API:", error);
     if (error instanceof Error) {

@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import { Volume2, VolumeX } from "lucide-react"
-import { firebaseAuth, db } from "@/lib/firebase"
-import { doc, updateDoc } from "firebase/firestore"
+import { firebaseAuth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 
 export default function CreateNamePage() {
@@ -54,8 +53,11 @@ export default function CreateNamePage() {
         throw new Error("認証されていません")
       }
 
+      // IDトークンを取得
+      const token = await currentUser.getIdToken()
+
       // PlayFabの表示名を更新
-      const res = await fetch("/api/update-display-name", {
+      const playFabRes = await fetch("/api/update-display-name", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,19 +68,30 @@ export default function CreateNamePage() {
         }),
       })
 
-      const data = await res.json()
+      const playFabData = await playFabRes.json()
 
-      if (!res.ok) {
-        throw new Error(data.message || "名前の更新に失敗しました")
+      if (!playFabRes.ok) {
+        throw new Error(playFabData.message || "名前の更新に失敗しました")
       }
 
       // Firestoreのユーザー情報を更新
-      const userDocRef = doc(db, "users", currentUser.uid)
-      await updateDoc(userDocRef, {
-        username: name
+      const userRes = await fetch("/api/users/update-username", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          username: name
+        })
       })
 
-      console.log("✅ Username updated in Firestore")
+      if (!userRes.ok) {
+        const errorData = await userRes.json()
+        throw new Error(errorData.message || "ユーザー名の更新に失敗しました")
+      }
+
+      console.log("✅ Username updated successfully")
 
       // 更新成功時はホームページに遷移
       router.push("/home")
