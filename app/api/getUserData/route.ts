@@ -1,58 +1,126 @@
 import { NextResponse } from 'next/server';
-import { PlayFabServer } from 'playfab-sdk';
+import { PlayFabAdmin } from 'playfab-sdk';
 import { cookies } from 'next/headers';
 
-export async function GET() {
+// PlayFabの設定
+PlayFabAdmin.settings.titleId = process.env.PLAYFAB_TITLE_ID!;
+PlayFabAdmin.settings.developerSecretKey = process.env.PLAYFAB_DEV_SECRET!;
+
+// PlayFabのレスポンス型定義
+interface PlayFabResult {
+  data: {
+    Data?: {
+      [key: string]: {
+        Value: string;
+      };
+    };
+  };
+}
+
+export async function GET(request: Request) {
   try {
-    // クッキーからセッションチケットを取得
+    const { searchParams } = new URL(request.url);
+    const keys = searchParams.get("keys")?.split(",") || [];
+
+    // クッキーからPlayFabIDを取得
     const cookieStore = await cookies();
-    const rawSessionTicket = cookieStore.get('session_ticket')?.value;
-    console.log('Raw session ticket from cookie:', rawSessionTicket);
+    const playFabId = cookieStore.get('playfab_id')?.value;
 
-    if (!rawSessionTicket) {
-      return NextResponse.json({ error: 'Session ticket not found' }, { status: 400 });
+    if (!playFabId) {
+      return NextResponse.json(
+        { error: "PlayFab ID not found in cookies" },
+        { status: 400 }
+      );
     }
 
-    // セッションチケットを二重デコード
-    const decodedOnce = decodeURIComponent(rawSessionTicket);
-    const sessionTicket = decodeURIComponent(decodedOnce);
-
-    // PlayFabの設定
-    const titleId = process.env.PLAYFAB_TITLE_ID;
-    const secretKey = process.env.PLAYFAB_DEV_SECRET;
-
-    if (!titleId || !secretKey) {
-      throw new Error('PlayFab credentials are not set');
-    }
-
-    // PlayFabServerの初期化
-    PlayFabServer.settings.titleId = titleId;
-    PlayFabServer.settings.developerSecretKey = secretKey;
-
-    // セッションチケットからPlayFabIDを抽出
-    const playFabId = sessionTicket.split('-')[0];
-
-    // PlayFabからステージクリアデータを取得
-    const result = await new Promise((resolve, reject) => {
-      PlayFabServer.GetUserData({
-        PlayFabId: playFabId,
-        Keys: ["stage1_cleared", "stage1_problems", "stage1_ideals", "stage2_cleared", "stage3_cleared", "stage4_cleared", "stage5_cleared", "stage6_cleared", "stage7_cleared", "stage8_cleared", "stage9_cleared", "stage10_cleared", "stage11_cleared", "stage11_feelings", "stage12_cleared", "stage13_cleared"]
-      }, (error, result) => {
-        if (error) {
-          console.error("PlayFab error:", error)
-          reject(error)
-        } else {
-          console.log("PlayFab GetUserData result:", result)
-          resolve(result)
+    const result = await new Promise<PlayFabResult>((resolve, reject) => {
+      PlayFabAdmin.GetUserData(
+        {
+          PlayFabId: playFabId,
+          Keys: keys,
+        },
+        (error, result) => {
+          if (error) {
+            console.error("PlayFab error:", error);
+            reject(error);
+          } else {
+            resolve(result as PlayFabResult);
+          }
         }
-      })
-    })
+      );
+    });
 
-    return NextResponse.json(result)
+    return NextResponse.json(result);
   } catch (error) {
-    console.error("Error getting user data:", error);
+    console.error("Error fetching user data:", error);
     return NextResponse.json(
-      { error: 'Failed to get user data' },
+      { error: "Failed to fetch user data" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    // クッキーからPlayFabIDを取得
+    const cookieStore = await cookies();
+    const playFabId = cookieStore.get('playfab_id')?.value;
+
+    if (!playFabId) {
+      return NextResponse.json(
+        { error: "PlayFab ID not found in cookies" },
+        { status: 400 }
+      );
+    }
+
+    // リクエストボディからキーの配列を取得
+    const { keys } = await request.json();
+    
+    if (!keys || !Array.isArray(keys)) {
+      return NextResponse.json(
+        { error: "Keys array is required" },
+        { status: 400 }
+      );
+    }
+
+    const result = await new Promise<PlayFabResult>((resolve, reject) => {
+      PlayFabAdmin.GetUserData(
+        {
+          PlayFabId: playFabId,
+          Keys: keys,
+        },
+        (error, result) => {
+          if (error) {
+            console.error("PlayFab error:", error);
+            reject(error);
+          } else {
+            resolve(result as PlayFabResult);
+          }
+        }
+      );
+    });
+
+    // データを整形して返す
+    const formattedData: { [key: string]: any } = {};
+    if (result.data?.Data) {
+      Object.entries(result.data.Data).forEach(([key, value]) => {
+        try {
+          formattedData[key] = JSON.parse(value.Value);
+        } catch {
+          formattedData[key] = value.Value;
+        }
+      });
+    }
+
+    return NextResponse.json({
+      code: 200,
+      status: "OK",
+      data: formattedData
+    });
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

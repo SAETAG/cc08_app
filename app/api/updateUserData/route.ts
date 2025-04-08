@@ -1,135 +1,68 @@
-import { PlayFabServer } from 'playfab-sdk'
-import { cookies } from 'next/headers'
+import { NextResponse } from "next/server"
+import { cookies } from "next/headers"
 
-// Cookie取得用のヘルパー関数
-function getCookie(name: string, cookieString: string): string | undefined {
-  const match = cookieString.match(new RegExp(`(^| )${name}=([^;]+)`))
-  return match ? match[2] : undefined
-}
+const PLAYFAB_TITLE_ID = process.env.PLAYFAB_TITLE_ID
+const PLAYFAB_SECRET_KEY = process.env.PLAYFAB_DEV_SECRET
 
 export async function POST(request: Request) {
   try {
-    // リクエストボディをログ出力
-    const body = await request.json()
-    console.log("Request body:", body)
-    const { stageId, problems, ideals } = body
+    const cookieStore = await cookies()
+    const playFabId = cookieStore.get('playfab_id')?.value
 
-    const cookies = request.headers.get("cookie")
-    if (!cookies) {
-      console.log("No cookies found in request")
-      return Response.json({ error: "No cookies found" }, { status: 401 })
-    }
-
-    const rawSessionTicket = getCookie("session_ticket", cookies)
-    if (!rawSessionTicket) {
-      console.log("No session ticket found in cookies")
-      return Response.json({ error: "No session ticket found" }, { status: 401 })
-    }
-
-    const decodedOnce = decodeURIComponent(rawSessionTicket)
-    const sessionTicket = decodeURIComponent(decodedOnce)
-    console.log("Session ticket after double decode:", sessionTicket)
-
-    // PlayFabの初期化と設定値の確認
-    const titleId = process.env.PLAYFAB_TITLE_ID
-    const secretKey = process.env.PLAYFAB_DEV_SECRET
-    console.log("PlayFab Title ID:", titleId)
-    console.log("PlayFab Secret Key exists:", !!secretKey)
-
-    if (!titleId || !secretKey) {
-      console.error("PlayFab credentials are missing")
-      return Response.json({ error: "PlayFab credentials are missing" }, { status: 500 })
-    }
-
-    PlayFabServer.settings.titleId = titleId
-    PlayFabServer.settings.developerSecretKey = secretKey
-
-    // セッションチケットからPlayFabIDを抽出
-    const playFabId = sessionTicket.split('-')[0]
-    console.log("PlayFab ID:", playFabId)
-
-    const updateRequest = {
-      PlayFabId: playFabId,
-      Data: {
-        ...(stageId === 1 ? {
-          stage1_cleared: "true",
-          stage1_problems: problems,
-          stage1_ideals: ideals
-        } : {}),
-        ...(stageId === 2 ? {
-          stage2_cleared: "true"
-        } : {}),
-        ...(stageId === 3 ? {
-          stage3_cleared: "true"
-        } : {}),
-        ...(stageId === 4 ? {
-          stage4_cleared: "true"
-        } : {}),
-        ...(stageId === 5 ? {
-          stage5_cleared: "true"
-        } : {}),
-        ...(stageId === 6 ? {
-          stage6_cleared: "true"
-        } : {}),
-        ...(stageId === 7 ? {
-          stage7_cleared: "true"
-        } : {}),
-        ...(stageId === 8 ? {
-          stage8_cleared: "true"
-        } : {}),
-        ...(stageId === 9 ? {
-          stage9_cleared: "true"
-        } : {}),
-        ...(stageId === 10 ? {
-          stage10_cleared: "true"
-        } : {}),
-        ...(stageId === 11 ? {
-          stage11_cleared: "true",
-          stage11_feelings: body.feelings
-        } : {}),
-        ...(stageId === 12 ? {
-          stage12_cleared: "true"
-        } : {}),
-        ...(stageId === 13 ? {
-          stage13_cleared: "true"
-        } : {}),
-        ...(stageId === 14 ? {
-          stage14_cleared: "true"
-        } : {})
-      }
-    }
-    console.log("Update request:", updateRequest)
-
-    const result = await new Promise((resolve, reject) => {
-      PlayFabServer.UpdateUserData(
-        updateRequest,
-        (error: any, result: any) => {
-          if (error) {
-            console.error("PlayFab error details:", {
-              errorCode: error.errorCode,
-              errorMessage: error.errorMessage,
-              errorDetails: error.errorDetails,
-              status: error.status
-            })
-            reject(error)
-          } else {
-            console.log("PlayFab success:", result)
-            resolve(result)
-          }
-        }
+    if (!playFabId) {
+      console.error("PlayFabID not found in cookies:", cookieStore.getAll())
+      return NextResponse.json(
+        { error: "PlayFabIDが見つかりません" },
+        { status: 401 }
       )
-    })
-
-    return Response.json(result)
-  } catch (error) {
-    console.error("Error in updateUserData:", error)
-    if (error instanceof Error) {
-      return Response.json({ 
-        error: "Internal server error", 
-        details: error.message,
-        stack: error.stack 
-      }, { status: 500 })
     }
-    return Response.json({ error: "Internal server error" }, { status: 500 })
+
+    const { rackId, stageNumber } = await request.json()
+    
+    if (!rackId || !stageNumber) {
+      return NextResponse.json(
+        { error: "必要なパラメータが不足しています" },
+        { status: 400 }
+      )
+    }
+
+    const key = `rack_${rackId}_stage_${stageNumber}_status`
+    
+    // PlayFab Admin API を使用してユーザーデータを更新
+    const response = await fetch(
+      `https://${PLAYFAB_TITLE_ID}.playfabapi.com/Admin/UpdateUserData`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-SecretKey": PLAYFAB_SECRET_KEY || "",
+        },
+        body: JSON.stringify({
+          PlayFabId: playFabId,
+          Data: {
+            [key]: "true"
+          }
+        }),
+      }
+    )
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      console.error("PlayFab API Error:", data)
+      return NextResponse.json(
+        { error: "データの更新に失敗しました" },
+        { status: 500 }
+      )
+    }
+
+    console.log("Successfully updated PlayFab data for user:", playFabId)
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error("Error updating user data:", error)
+    return NextResponse.json(
+      { error: "サーバーエラーが発生しました" },
+      { status: 500 }
+    )
   }
 } 
