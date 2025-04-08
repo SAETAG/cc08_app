@@ -38,4 +38,76 @@ export async function GET(
       { status: 500 }
     )
   }
+}
+
+export async function POST(
+  req: Request,
+  { params }: { params: { rackId: string } }
+) {
+  try {
+    console.log('Update request received');
+    
+    // トークン検証
+    const authHeader = req.headers.get("Authorization")
+    const uid = await verifyTokenOrThrow(authHeader ?? "")
+    console.log('User ID:', uid);
+
+    if (!uid) {
+      console.error('Unauthorized: No user ID');
+      return new NextResponse('Unauthorized', { status: 401 })
+    }
+
+    const { stepsGenerated } = await req.json()
+    console.log('Request body:', { stepsGenerated });
+    
+    // パラメータを取得
+    const { rackId } = params
+    console.log('Rack ID:', rackId);
+
+    if (!rackId) {
+      console.error('Bad Request: No rack ID');
+      return new NextResponse('Bad Request: No rack ID', { status: 400 });
+    }
+
+    try {
+      // ハンガーラックの更新
+      const rackRef = dbAdmin.collection('users').doc(uid).collection('racks').doc(rackId)
+      console.log('Updating rack:', rackRef.path);
+      
+      // 更新前のデータを確認
+      const rackDoc = await rackRef.get()
+      if (!rackDoc.exists) {
+        console.error('Rack not found:', rackRef.path);
+        return new NextResponse('Rack not found', { status: 404 })
+      }
+
+      const currentData = rackDoc.data();
+      console.log('Current rack data:', currentData);
+      console.log('Current stepsGenerated value:', currentData?.stepsGenerated);
+      
+      // 更新を実行
+      const updateData = {
+        stepsGenerated: stepsGenerated,
+        updatedAt: new Date()
+      };
+      console.log('Updating with data:', updateData);
+      
+      await rackRef.update(updateData);
+      console.log('Update operation completed');
+
+      // 更新後のデータを取得して返す
+      const updatedRack = await rackRef.get()
+      const rackData = updatedRack.data()
+      console.log('Updated rack data:', rackData);
+      console.log('New stepsGenerated value:', rackData?.stepsGenerated);
+      
+      return NextResponse.json(rackData)
+    } catch (dbError) {
+      console.error('Database operation failed:', dbError);
+      return new NextResponse('Database operation failed', { status: 500 })
+    }
+  } catch (error) {
+    console.error('[RACK_UPDATE] Unexpected error:', error);
+    return new NextResponse('Internal Error', { status: 500 })
+  }
 } 

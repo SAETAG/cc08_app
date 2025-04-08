@@ -70,22 +70,47 @@ export default function GenerateDungeonPage() {
         
         if (!response.ok) {
           const errorText = await response.text();
+          console.error('OpenAI API error response:', errorText);
           if (errorText.includes("quota") || errorText.includes("429")) {
             throw new Error("OpenAIのAPIクォータを超過しました。管理者にお問い合わせください。");
           }
           throw new Error(`APIエラー: ${response.status} ${errorText}`);
         }
 
-        const data = await response.json();
-        if (!isSubscribed) return;
+        // レスポンスのテキストを取得
+        const responseText = await response.text();
+        console.log('Raw OpenAI API response:', responseText);
+
+        // JSONとしてパース
+        let data;
+        try {
+          data = JSON.parse(responseText);
+          console.log('Parsed OpenAI API response:', data);
+
+          // レスポンスの構造を検証
+          if (!data.result) {
+            throw new Error('OpenAI APIのレスポンスに"result"フィールドがありません');
+          }
+
+          // resultフィールドの中身を検証
+          const parsedResult = JSON.parse(data.result);
+          if (!parsedResult.organizationDirection || !Array.isArray(parsedResult.steps)) {
+            throw new Error('OpenAI APIのレスポンスの形式が不正です');
+          }
+
+          console.log('Validated response structure:', parsedResult);
+        } catch (parseError) {
+          console.error('Error parsing OpenAI response:', parseError);
+          throw new Error('OpenAI APIからの応答の解析に失敗しました');
+        }
         
-        console.log('OpenAI API response:', data);
+        if (!isSubscribed) return;
         
         // ハンガーラックのstepsGeneratedをtrueに更新
         try {
           console.log('Updating stepsGenerated to true for rackId:', rackId);
           
-          const updateUrl = `/api/racks/${rackId}/update`;
+          const updateUrl = `/api/racks/${rackId}`;
           console.log('Making POST request to:', updateUrl);
           
           const updateResponse = await fetch(updateUrl, {
@@ -99,14 +124,21 @@ export default function GenerateDungeonPage() {
             })
           });
 
+          console.log('Update response status:', updateResponse.status);
+          const responseText = await updateResponse.text();
+          console.log('Update response text:', responseText);
+
           if (!updateResponse.ok) {
-            const errorText = await updateResponse.text();
-            console.error('Update failed:', errorText);
-            throw new Error(`ハンガーラックの更新に失敗しました: ${errorText}`);
+            console.error('Update failed:', responseText);
+            throw new Error(`ハンガーラックの更新に失敗しました: ${responseText}`);
           }
 
-          const updateData = await updateResponse.json();
-          console.log('Update successful:', updateData);
+          try {
+            const updateData = JSON.parse(responseText);
+            console.log('Update successful:', updateData);
+          } catch (parseError) {
+            console.error('Error parsing update response:', parseError);
+          }
           
           // 全ての処理が成功した後にhasGeneratedをtrueに設定
           setHasGenerated(true);

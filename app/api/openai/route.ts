@@ -137,16 +137,27 @@ export async function POST(request: Request) {
     }
 
     // JSONの完全性を確認
-    let validatedResponse = responseMessage;
+    let validatedResponse;
     try {
+      console.log("Attempting to parse response message:", responseMessage);
       const parsedResponse = JSON.parse(responseMessage);
       
       // 必須フィールドの存在確認
       if (!parsedResponse.organizationDirection) {
+        console.error("Missing organizationDirection field");
         throw new Error("Missing organizationDirection field");
       }
       if (!Array.isArray(parsedResponse.steps) || parsedResponse.steps.length === 0) {
+        console.error("Invalid or empty steps array");
         throw new Error("Invalid or empty steps array");
+      }
+      
+      // ステップ数のバリデーション
+      const stepsCount = parsedResponse.steps.length;
+      console.log("Number of steps:", stepsCount);
+      if (stepsCount < 5) {
+        console.error("Too few steps:", stepsCount);
+        throw new Error("生成されたステップ数が少なすぎます");
       }
       
       // 各ステップの完全性を確認
@@ -154,17 +165,20 @@ export async function POST(request: Request) {
         const requiredFields = ['stepNumber', 'dungeonName', 'title', 'description', 'hint'];
         const missingFields = requiredFields.filter(field => !step[field]);
         if (missingFields.length > 0) {
+          console.error(`Step ${index + 1} is missing fields:`, missingFields);
           throw new Error(`Step ${index + 1} is missing required fields: ${missingFields.join(', ')}`);
         }
       });
 
       // JSONの再構築（余分な空白や改行を削除）
       validatedResponse = JSON.stringify(parsedResponse, null, 2);
+      console.log("Validated response:", validatedResponse);
     } catch (parseError) {
       console.error("JSON validation error:", parseError);
       return NextResponse.json({ 
         error: "生成されたJSONが不完全です", 
-        details: parseError instanceof Error ? parseError.message : "Unknown error" 
+        details: parseError instanceof Error ? parseError.message : "Unknown error",
+        rawResponse: responseMessage
       }, { status: 500 });
     }
 
@@ -186,6 +200,17 @@ export async function POST(request: Request) {
         console.log("Saving data:", saveData);
         await adventureRef.set(saveData);
         console.log("Successfully saved to Firebase at:", `users/${uid}/racks/${rackId}/adventures/${adventureRef.id}`);
+
+        // ハンガーラックのstepsGeneratedをtrueに更新
+        console.log("Updating stepsGenerated to true for rack:", rackId);
+        await dbAdmin
+          .collection(`users/${uid}/racks`)
+          .doc(rackId)
+          .update({
+            stepsGenerated: true,
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
+          });
+        console.log("Successfully updated stepsGenerated to true");
       } catch (firebaseError) {
         console.error("Firebase save error:", firebaseError);
         return NextResponse.json({ error: "Firebaseへの保存に失敗しました" }, { status: 500 });
