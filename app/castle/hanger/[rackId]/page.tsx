@@ -276,7 +276,7 @@ export default function HangerDungeonPage() {
       <div className="w-full max-w-5xl z-10 mt-8">
         <div className="flex justify-between items-center mb-6">
           <Link
-            href="/closet/hanger/register"
+            href="/castle/hanger"
             className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors"
           >
             <ArrowLeft className="mr-2 h-5 w-5" />
