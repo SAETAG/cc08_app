@@ -148,6 +148,7 @@ export default function HangerDungeonPage() {
   const [stepStatus, setStepStatus] = useState<{ [key: number]: boolean }>({})
   const [isLoading, setIsLoading] = useState(true)
   const [isGoalAvailable, setIsGoalAvailable] = useState<boolean>(false)
+  const [progress, setProgress] = useState<number>(0)
 
   useEffect(() => {
     const fetchStepStatus = async () => {
@@ -274,6 +275,16 @@ export default function HangerDungeonPage() {
     fetchRackData()
   }, [rackId, currentUser])
 
+  // ステップステータスが更新されたときに進行度を計算
+  useEffect(() => {
+    if (rackData?.adventures) {
+      const completedSteps = Object.values(stepStatus).filter(status => status === true).length;
+      const totalSteps = rackData.adventures.length;
+      const calculatedProgress = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0;
+      setProgress(calculatedProgress);
+    }
+  }, [stepStatus, rackData?.adventures]);
+
   const handleStepClick = (stepNumber: number) => {
     // ステップが開放されているかチェック
     if (stepStatus[stepNumber] === undefined) {
@@ -378,11 +389,11 @@ export default function HangerDungeonPage() {
                 <motion.div
                   className="h-full bg-gradient-to-r from-amber-500 to-amber-400"
                   initial={{ width: "0%" }}
-                  animate={{ width: `${rackData.progress}%` }}
+                  animate={{ width: `${progress}%` }}
                   transition={{ type: "spring", bounce: 0.2, duration: 1 }}
                 />
               </div>
-              <span className="text-amber-300 font-medium">{rackData.progress}%</span>
+              <span className="text-amber-300 font-medium">{progress}%</span>
             </div>
           </div>
         </motion.div>
