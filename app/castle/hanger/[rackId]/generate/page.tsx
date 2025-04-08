@@ -216,7 +216,8 @@ export default function GenerateDungeonPage() {
       setShowCompletionMessage(true);
       
       const redirectTimer = setTimeout(() => {
-        router.push(`/castle/hanger/${rackId}`);
+        // データを再取得するために、クエリパラメータを追加
+        router.push(`/castle/hanger/${rackId}?refresh=true`);
       }, 2000);
       
       return () => clearTimeout(redirectTimer);
