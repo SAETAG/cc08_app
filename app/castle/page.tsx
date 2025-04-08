@@ -8,42 +8,57 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { Crown, Package, Shirt, Layers, Sparkles } from "lucide-react"
 
-// Mock data - replace with actual data fetching
-const userData = {
-  hangers: { rack1: {}, rack2: {} },
-  shelves: { shelf1: {} },
-  drawers: {},
-  playFabProgress: {
-    stage1_cleared: true,
-    stage2_cleared: true,
-    stage3_cleared: true, // Changed to true to show the unlocked King's Room
-  },
-}
-
-// Mock function - replace with actual implementation
-const isAllCleared = (userData: any) => {
-  return (
-    userData.playFabProgress.stage1_cleared &&
-    userData.playFabProgress.stage2_cleared &&
-    userData.playFabProgress.stage3_cleared
-  )
-}
-
 export default function CastleLobbyPage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [kingRoomUnlocked, setKingRoomUnlocked] = useState(false)
 
   useEffect(() => {
-    // Simulate loading data
-    setTimeout(() => {
-      setIsLoaded(true)
-      setKingRoomUnlocked(isAllCleared(userData))
-    }, 500)
-  }, [])
+    const fetchStorageStatus = async () => {
+      try {
+        const keys = [
+          "rack_cf3876ec-bba8-40dc-9cbf-b3b6fd67b68d_status",
+          "rack_2_status",
+          "drawer_1_status",
+          "drawer_2_status",
+          "shelf_1_status",
+          "shelf_2_status"
+        ]
 
-  const hasHangers = Object.keys(userData.hangers).length > 0
-  const hasShelves = Object.keys(userData.shelves).length > 0
-  const hasDrawers = Object.keys(userData.drawers).length > 0
+        console.log("Fetching storage status with keys:", keys)
+
+        const response = await fetch(`/api/getUserData`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            keys: keys
+          }),
+        })
+
+        if (!response.ok) {
+          throw new Error("データの取得に失敗しました")
+        }
+
+        const result = await response.json()
+        console.log("Received data:", result)
+
+        if (result.data) {
+          const isAnyStorageCompleted = Object.values(result.data).some(
+            (value) => value === true || value === "true"
+          )
+          console.log("Storage completion status:", isAnyStorageCompleted)
+          setKingRoomUnlocked(isAnyStorageCompleted)
+        }
+      } catch (error) {
+        console.error("Error fetching storage status:", error)
+      } finally {
+        setIsLoaded(true)
+      }
+    }
+
+    fetchStorageStatus()
+  }, [])
 
   return (
     <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-green-950/80">
@@ -193,8 +208,8 @@ export default function CastleLobbyPage() {
         <RoomCard
           title="ハンガーラック収納の間"
           icon={<Shirt className="w-12 h-12" />}
-          isActive={hasHangers}
-          count={Object.keys(userData.hangers).length}
+          isActive={true}
+          count={0}
           href="/castle/hanger"
           delay={0.6}
         />
@@ -202,8 +217,8 @@ export default function CastleLobbyPage() {
         <RoomCard
           title="棚収納の間"
           icon={<Package className="w-12 h-12" />}
-          isActive={hasShelves}
-          count={Object.keys(userData.shelves).length}
+          isActive={true}
+          count={0}
           href="/castle/shelves"
           delay={0.8}
         />
@@ -211,8 +226,8 @@ export default function CastleLobbyPage() {
         <RoomCard
           title="引き出し収納の間"
           icon={<Layers className="w-12 h-12" />}
-          isActive={hasDrawers}
-          count={Object.keys(userData.drawers).length}
+          isActive={true}
+          count={0}
           href="/castle/drawers"
           delay={1.0}
         />
@@ -315,47 +330,6 @@ function RoomCard({ title, icon, isActive, count, href, delay }: RoomCardProps) 
           <h3 className={`text-xl font-bold mb-3 tracking-wide ${isActive ? "text-amber-400" : "text-slate-400"}`}>
             {title}
           </h3>
-
-          {isActive ? (
-            <div className="mt-2 text-amber-300/90">
-              <p className="flex items-center justify-center gap-1">
-                <span>登録した収納の数：</span>
-                <span className="font-semibold">{count}</span>
-              </p>
-            </div>
-          ) : (
-            <div className="mt-2 flex flex-col items-center text-slate-400">
-              <div className="flex items-center mb-3">
-                <span className="mr-2">🔒</span>
-                <span>未登録</span>
-              </div>
-
-              <motion.button
-                className="mt-3 px-4 py-2 rounded-md bg-amber-600/80 hover:bg-amber-500/90 text-amber-100 border border-amber-400/30 transition-all duration-300 transform hover:scale-105 relative overflow-hidden group"
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <span className="relative z-10">収納を登録する</span>
-                <motion.span
-                  className="absolute inset-0 bg-gradient-to-r from-amber-600/80 to-amber-500/80"
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: "100%" }}
-                  transition={{ duration: 1 }}
-                />
-                <motion.span
-                  className="absolute -inset-1 opacity-0 group-hover:opacity-30"
-                  animate={{
-                    boxShadow: [
-                      "inset 0 0 10px 5px rgba(251,191,36,0.1)",
-                      "inset 0 0 20px 10px rgba(251,191,36,0.2)",
-                      "inset 0 0 10px 5px rgba(251,191,36,0.1)",
-                    ],
-                  }}
-                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-                />
-              </motion.button>
-            </div>
-          )}
         </Card>
       </Link>
     </motion.div>
@@ -460,19 +434,10 @@ function KingRoomCard({ isUnlocked, href }: KingRoomCardProps) {
           </span>
         </h3>
 
-        {isUnlocked ? (
-          <motion.div
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-            className="mt-3 text-amber-300 relative z-10"
-          >
-            <p className="text-lg font-semibold">全ステップクリア！</p>
-            <p className="text-sm mt-1">古代の魔法が解き放たれた</p>
-          </motion.div>
-        ) : (
+        {!isUnlocked && (
           <div className="mt-3 flex flex-col items-center text-slate-400 relative z-10">
             <span className="mb-1 text-2xl">🔒</span>
-            <span>全ステップをクリアして解放</span>
+            <span>ダンジョンを１つ以上クリアしたら解放</span>
           </div>
         )}
       </Card>
