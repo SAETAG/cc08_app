@@ -175,7 +175,7 @@ export default function HangerDungeonPage() {
         if (response.ok) {
           // ステータスの初期化
           const initialStatus: { [key: number]: boolean } = {
-            1: true // 最初のステージは常に開放
+            1: false // 最初のステージはデフォルトでロック状態
           }
 
           // PlayFabのデータを反映
@@ -190,9 +190,17 @@ export default function HangerDungeonPage() {
                   if (stepNumber < rackData.adventures.length) {
                     initialStatus[stepNumber + 1] = false
                   }
+                } else {
+                  // 未完了のステージはfalseを設定
+                  initialStatus[stepNumber] = false
                 }
               }
             })
+          }
+
+          // ステージ1が未設定の場合はfalseを設定
+          if (initialStatus[1] === undefined) {
+            initialStatus[1] = false
           }
 
           console.log("Setting step status:", initialStatus)

@@ -204,8 +204,8 @@ export default function StepPage() {
                           "Content-Type": "application/json",
                         },
                         body: JSON.stringify({
-                          rackId: params.rackId,
-                          stageNumber: stepInfo.stepNumber,
+                          key: `rack_${params.rackId}_stage_${stepInfo.stepNumber}_status`,
+                          value: true
                         }),
                       })
 

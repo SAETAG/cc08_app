@@ -113,31 +113,52 @@ export default function GenerateDungeonPage() {
           const updateUrl = `/api/racks/${rackId}`;
           console.log('Making POST request to:', updateUrl);
           
-          const updateResponse = await fetch(updateUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-              stepsGenerated: true
-            })
-          });
+          // リトライメカニズムの追加
+          const maxRetries = 3;
+          let retryCount = 0;
+          let updateSuccess = false;
 
-          console.log('Update response status:', updateResponse.status);
-          const responseText = await updateResponse.text();
-          console.log('Update response text:', responseText);
+          while (retryCount < maxRetries && !updateSuccess) {
+            try {
+              const updateResponse = await fetch(updateUrl, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                  stepsGenerated: true
+                })
+              });
 
-          if (!updateResponse.ok) {
-            console.error('Update failed:', responseText);
-            throw new Error(`ハンガーラックの更新に失敗しました: ${responseText}`);
+              console.log('Update response status:', updateResponse.status);
+              const responseText = await updateResponse.text();
+              console.log('Update response text:', responseText);
+
+              if (!updateResponse.ok) {
+                throw new Error(`ハンガーラックの更新に失敗しました: ${responseText}`);
+              }
+
+              // 更新が成功したことを確認
+              const updateData = JSON.parse(responseText);
+              if (updateData?.stepsGenerated === true) {
+                updateSuccess = true;
+                console.log('Update successful:', updateData);
+              } else {
+                throw new Error('更新後のステータスが期待通りではありません');
+              }
+            } catch (retryError) {
+              console.error(`Retry ${retryCount + 1} failed:`, retryError);
+              retryCount++;
+              if (retryCount < maxRetries) {
+                // 指数バックオフで待機
+                await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+              }
+            }
           }
 
-          try {
-            const updateData = JSON.parse(responseText);
-            console.log('Update successful:', updateData);
-          } catch (parseError) {
-            console.error('Error parsing update response:', parseError);
+          if (!updateSuccess) {
+            throw new Error('最大リトライ回数を超えました');
           }
           
           // 全ての処理が成功した後にhasGeneratedをtrueに設定
