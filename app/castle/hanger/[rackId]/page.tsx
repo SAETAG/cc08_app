@@ -305,9 +305,35 @@ export default function HangerDungeonPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
-        <div className="animate-spin text-4xl">🌟</div>
-        <p className="mt-4">読み込み中...</p>
+      <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-green-950/80">
+        <div className="flex flex-col items-center gap-4">
+          <motion.div
+            className="text-2xl font-bold text-amber-400"
+            animate={{
+              opacity: [0.5, 1, 0.5],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            移動中...
+          </motion.div>
+          <motion.div
+            className="flex gap-2"
+            animate={{
+              x: [0, 20, 0],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <span className="text-4xl">👣</span>
+          </motion.div>
+        </div>
       </div>
     )
   }
@@ -424,7 +450,10 @@ export default function HangerDungeonPage() {
           </div>
 
           <div className="flex justify-between items-center">
-            <p className="text-lg text-amber-300/80">整理収納の冒険を進めましょう</p>
+            <div>
+              <p className="text-lg text-amber-300/80">整理収納の冒険を進めましょう！</p>
+              <p className="text-sm text-amber-300/60">※冒険ストーリーが生成されていない場合は、ページをリロードしてみてね</p>
+            </div>
 
             <div className="flex items-center gap-2">
               <span className="text-amber-300 font-medium">進行度:</span>
