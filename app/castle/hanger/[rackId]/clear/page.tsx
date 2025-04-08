@@ -250,13 +250,13 @@ export default function DungeonClearPage() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <Link
-                href={`/castle/hanger/${rackId}`}
+              <button
+                onClick={() => router.push(`/castle/hanger/${rackId}`)}
                 className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors bg-blue-900/50 px-3 py-2 rounded-md"
               >
                 <ArrowLeft className="mr-2 h-5 w-5" />
                 <span>ダンジョンマップに戻る</span>
-              </Link>
+              </button>
             </motion.div>
 
             <motion.div
@@ -265,13 +265,13 @@ export default function DungeonClearPage() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <Link
-                href="/castle"
+              <button
+                onClick={() => router.push('/castle')}
                 className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors bg-blue-900/50 px-3 py-2 rounded-md"
               >
                 <Home className="mr-2 h-5 w-5" />
                 <span>クローゼット城に戻る</span>
-              </Link>
+              </button>
             </motion.div>
           </>
         )}
