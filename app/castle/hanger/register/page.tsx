@@ -135,40 +135,15 @@ export default function HangerRegisterPage() {
       const token = await currentUser.getIdToken(true)
       console.log('アップロード前のトークン更新:', token.substring(0, 20) + '...')
 
-      console.log('現在のユーザーID:', currentUser.uid)
-      const file = fileInputRef.current.files[0]
-      const fileName = `${Date.now()}_${file.name}`
-      const storageRef = ref(storage, `images/${currentUser.uid}/${fileName}`)  // パスを変更
-
-      // メタデータを追加
-      const metadata = {
-        contentType: file.type,
-        customMetadata: {
-          uploadedBy: currentUser.uid,
-          originalName: file.name,
-        },
-      }
-
-      console.log("アップロード開始:", storageRef.fullPath)
-      // Firebase Storageにアップロード
-      const snapshot = await uploadBytes(storageRef, file, metadata)
-      console.log("アップロード成功:", snapshot.ref.fullPath)
-      const imageUrl = await getDownloadURL(snapshot.ref)
-      console.log("ダウンロードURL取得:", imageUrl)
-
       // FormDataとして送信
       const formData = new FormData()
       formData.append("name", newHangerName)
-      formData.append("imageUrl", imageUrl)
-
-      // 認証トークンを取得
-      const idToken = await currentUser.getIdToken()
-      console.log('認証トークン取得:', idToken.substring(0, 20) + '...')
+      formData.append("image", fileInputRef.current.files[0])
 
       const response = await fetch("/api/racks/create", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${idToken}`
+          Authorization: `Bearer ${token}`
         },
         body: formData,
       })
