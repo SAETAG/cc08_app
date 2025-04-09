@@ -303,11 +303,37 @@ export default function HangerDungeonPage() {
     router.push(`/castle/hanger/${params.rackId}/step-${stepNumber}`)
   }
 
-  if (loading) {
+  if (loading || isLoading) {
     return (
       <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
-        <div className="animate-spin text-4xl">🌟</div>
-        <p className="mt-4">読み込み中...</p>
+        <div className="flex flex-col items-center gap-4">
+          <motion.div
+            className="text-2xl font-bold"
+            animate={{
+              opacity: [0.5, 1, 0.5],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            ストーリー読み込み中...
+          </motion.div>
+          <motion.div
+            className="flex gap-2"
+            animate={{
+              x: [0, 20, 0],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <span className="text-4xl">📚</span>
+          </motion.div>
+        </div>
       </div>
     )
   }
@@ -322,41 +348,6 @@ export default function HangerDungeonPage() {
         >
           ホームに戻る
         </Button>
-      </div>
-    )
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-green-950/80">
-        <div className="flex flex-col items-center gap-4">
-          <motion.div
-            className="text-2xl font-bold"
-            animate={{
-              opacity: [0.5, 1, 0.5],
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            移動中...
-          </motion.div>
-          <motion.div
-            className="flex gap-2"
-            animate={{
-              x: [0, 20, 0],
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            <span className="text-4xl">👣</span>
-          </motion.div>
-        </div>
       </div>
     )
   }
@@ -424,7 +415,10 @@ export default function HangerDungeonPage() {
           </div>
 
           <div className="flex justify-between items-center">
-            <p className="text-lg text-amber-300/80">整理収納の冒険を進めましょう</p>
+            <div>
+              <p className="text-lg text-amber-300/80">整理収納の冒険を進めましょう</p>
+              <p className="text-sm text-amber-300/60 mt-1">※冒険ストーリーが表示されていない場合は、ページをリロードしてみてね！</p>
+            </div>
 
             <div className="flex items-center gap-2">
               <span className="text-amber-300 font-medium">進行度:</span>
@@ -465,7 +459,7 @@ export default function HangerDungeonPage() {
               <div>
                 <h3 className="text-xl font-bold text-amber-400 mb-4 flex items-center">
                   <Sparkles className="w-5 h-5 mr-2" />
-                  整理収納の方向性
+                  モーちゃんからのアドバイス
                 </h3>
                 <div className="relative">
                   <div className="bg-blue-900/50 rounded-lg p-4 border border-amber-500/30 relative">
@@ -534,142 +528,127 @@ export default function HangerDungeonPage() {
 
             {/* ダンジョンカードのグリッド */}
             <div className="grid grid-cols-1 gap-4">
-              {rackData.stepsGenerated ? (
-                rackData.adventures?.map((adventure) => {
-                  // ステップの状態を判定
-                  const isCompleted = stepStatus[adventure.stepNumber] === true
-                  const isCurrent = adventure.stepNumber === currentStepIndex
-                  const isLocked = stepStatus[adventure.stepNumber] === undefined
-                  const level = adventure.stepNumber
+              {rackData.adventures?.map((adventure) => {
+                // ステップの状態を判定
+                const isCompleted = stepStatus[adventure.stepNumber] === true
+                const isCurrent = adventure.stepNumber === currentStepIndex
+                const isLocked = stepStatus[adventure.stepNumber] === undefined
+                const level = adventure.stepNumber
 
-                  // レベルに応じたスタイルを取得
-                  const bgGradient = getLevelGradient(level, isCompleted, isCurrent, isLocked)
-                  const borderColor = getLevelBorder(level, isCompleted, isCurrent, isLocked)
-                  const badgeColor = getLevelBadgeColor(level, isCompleted, isCurrent, isLocked)
+                // レベルに応じたスタイルを取得
+                const bgGradient = getLevelGradient(level, isCompleted, isCurrent, isLocked)
+                const borderColor = getLevelBorder(level, isCompleted, isCurrent, isLocked)
+                const badgeColor = getLevelBadgeColor(level, isCompleted, isCurrent, isLocked)
 
-                  return (
-                    <motion.div
-                      key={adventure.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: adventure.stepNumber * 0.1 }}
-                      whileHover={!isLocked ? { y: -5 } : {}}
-                      onClick={() => handleStepClick(adventure.stepNumber)}
-                      className={`cursor-pointer ${isLocked ? "cursor-not-allowed" : ""}`}
+                return (
+                  <motion.div
+                    key={adventure.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: adventure.stepNumber * 0.1 }}
+                    whileHover={!isLocked ? { y: -5 } : {}}
+                    onClick={() => handleStepClick(adventure.stepNumber)}
+                    className={`cursor-pointer ${isLocked ? "cursor-not-allowed" : ""}`}
+                  >
+                    <Card
+                      className={`relative overflow-hidden bg-gradient-to-b ${bgGradient} border-2 ${borderColor} h-[100px] flex flex-row transition-all duration-300 ${
+                        isLocked ? "opacity-70" : "shadow-[0_0_15px_rgba(251,191,36,0.2)]"
+                      }`}
                     >
-                      <Card
-                        className={`relative overflow-hidden bg-gradient-to-b ${bgGradient} border-2 ${borderColor} h-[100px] flex flex-row transition-all duration-300 ${
-                          isLocked ? "opacity-70" : "shadow-[0_0_15px_rgba(251,191,36,0.2)]"
-                        }`}
-                      >
-                        {/* Decorative corners */}
-                        <div
-                          className={`absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
-                        ></div>
-                        <div
-                          className={`absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
-                        ></div>
-                        <div
-                          className={`absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
-                        ></div>
-                        <div
-                          className={`absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
-                        ></div>
+                      {/* Decorative corners */}
+                      <div
+                        className={`absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
+                      ></div>
+                      <div
+                        className={`absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
+                      ></div>
+                      <div
+                        className={`absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
+                      ></div>
+                      <div
+                        className={`absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 ${isLocked ? "border-slate-600" : "border-amber-500"}`}
+                      ></div>
 
-                        {/* レベル表示（左側） */}
-                        <div
-                          className={`flex items-center justify-center ${badgeColor} w-[80px] h-full border-r-2 ${borderColor}`}
-                        >
-                          <div className="text-center">
-                            <div className="text-xs text-white/80 font-medium mb-1">STAGE</div>
-                            <div className="text-3xl font-bold text-white">{level}</div>
+                      {/* レベル表示（左側） */}
+                      <div
+                        className={`flex items-center justify-center ${badgeColor} w-[80px] h-full border-r-2 ${borderColor}`}
+                      >
+                        <div className="text-center">
+                          <div className="text-xs text-white/80 font-medium mb-1">STAGE</div>
+                          <div className="text-3xl font-bold text-white">{level}</div>
+                        </div>
+                      </div>
+
+                      {/* メインコンテンツ */}
+                      <div className="p-3 flex-1 flex flex-col justify-center relative">
+                        <div className="flex items-center">
+                          <h3
+                            className={`text-xl font-bold ${
+                              isCompleted ? "text-amber-400" : isCurrent ? "text-amber-300" : "text-slate-400"
+                            }`}
+                          >
+                            {adventure.dungeonName}
+                          </h3>
+                        </div>
+
+                        <div className="flex items-center mt-2">
+                          {/* 報酬表示 */}
+                          <div
+                            className={`flex items-center gap-1 ${
+                              isCompleted ? "text-amber-400" : "text-amber-300/60"
+                            }`}
+                          >
+                            <Star className="h-4 w-4" />
+                            <span className="text-sm font-medium">{adventure.reward} pts</span>
                           </div>
                         </div>
 
-                        {/* メインコンテンツ */}
-                        <div className="p-3 flex-1 flex flex-col justify-center relative">
-                          <div className="flex items-center">
-                            <h3
-                              className={`text-xl font-bold ${
-                                isCompleted ? "text-amber-400" : isCurrent ? "text-amber-300" : "text-slate-400"
-                              }`}
-                            >
-                              {adventure.dungeonName}
-                            </h3>
-                          </div>
-
-                          <div className="flex items-center mt-2">
-                            {/* 報酬表示 */}
-                            <div
-                              className={`flex items-center gap-1 ${
-                                isCompleted ? "text-amber-400" : "text-amber-300/60"
-                              }`}
-                            >
-                              <Star className="h-4 w-4" />
-                              <span className="text-sm font-medium">{adventure.reward} pts</span>
+                        {/* ステータスアイコン（右側） */}
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                          {isCompleted ? (
+                            <div className="w-14 h-14 rounded-full bg-green-500/20 flex items-center justify-center">
+                              <motion.div
+                                animate={{ scale: [1, 1.1, 1] }}
+                                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                              >
+                                <CheckCircle2 className="h-10 w-10 text-green-400" />
+                              </motion.div>
                             </div>
-                          </div>
-
-                          {/* ステータスアイコン（右側） */}
-                          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                            {isCompleted ? (
-                              <div className="w-14 h-14 rounded-full bg-green-500/20 flex items-center justify-center">
-                                <motion.div
-                                  animate={{ scale: [1, 1.1, 1] }}
-                                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-                                >
-                                  <CheckCircle2 className="h-10 w-10 text-green-400" />
-                                </motion.div>
-                              </div>
-                            ) : !isLocked ? (
-                              <div className="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center">
-                                <motion.div
-                                  animate={{ x: [0, 5, 0] }}
-                                  transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
-                                >
-                                  <ChevronRight className="h-10 w-10 text-amber-400" />
-                                </motion.div>
-                              </div>
-                            ) : (
-                              <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
-                                <Lock className="h-8 w-8 text-slate-500" />
-                              </div>
-                            )}
-                          </div>
-
-                          {/* 光るエフェクト（現在のステップ） */}
-                          {isCurrent && (
-                            <motion.div
-                              className="absolute inset-0 z-0"
-                              animate={{
-                                boxShadow: [
-                                  "inset 0 0 5px 2px rgba(251,191,36,0.1)",
-                                  "inset 0 0 15px 5px rgba(251,191,36,0.2)",
-                                  "inset 0 0 5px 2px rgba(251,191,36,0.1)",
-                                ],
-                              }}
-                              transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-                            />
+                          ) : !isLocked ? (
+                            <div className="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center">
+                              <motion.div
+                                animate={{ x: [0, 5, 0] }}
+                                transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+                              >
+                                <ChevronRight className="h-10 w-10 text-amber-400" />
+                              </motion.div>
+                            </div>
+                          ) : (
+                            <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
+                              <Lock className="h-8 w-8 text-slate-500" />
+                            </div>
                           )}
                         </div>
-                      </Card>
-                    </motion.div>
-                  )
-                })
-              ) : (
-                <div className="space-y-4">
-                  <p className="text-lg">
-                    モーちゃんがあなたのハンガーラックを分析して、整理収納の冒険を提案します！
-                  </p>
-                  <Button
-                    onClick={() => router.push(`/castle/hanger/${params.rackId}/generate`)}
-                    className="w-full bg-amber-600 hover:bg-amber-700 text-white py-4 px-6 rounded-lg flex items-center justify-center gap-2"
-                  >
-                    <Wand2 className="h-5 w-5" />
-                    <span>冒険ストーリーを生成する</span>
-                  </Button>
-                </div>
-              )}
+
+                        {/* 光るエフェクト（現在のステップ） */}
+                        {isCurrent && (
+                          <motion.div
+                            className="absolute inset-0 z-0"
+                            animate={{
+                              boxShadow: [
+                                "inset 0 0 5px 2px rgba(251,191,36,0.1)",
+                                "inset 0 0 15px 5px rgba(251,191,36,0.2)",
+                                "inset 0 0 5px 2px rgba(251,191,36,0.1)",
+                              ],
+                            }}
+                            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                          />
+                        )}
+                      </div>
+                    </Card>
+                  </motion.div>
+                )
+              })}
 
               {/* ゴール地点 */}
               <motion.div
