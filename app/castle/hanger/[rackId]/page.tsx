@@ -686,9 +686,9 @@ export default function HangerDungeonPage() {
                 }}
               >
                 <Card
-                  className={`relative overflow-hidden bg-gradient-to-b ${
+                  className={`relative overflow-hidden bg-gradient-to-br ${
                     isGoalAvailable
-                      ? "from-amber-500/90 to-amber-600/90 border-2 border-amber-300/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
+                      ? "from-green-600/90 via-blue-600/90 to-purple-600/90 border-2 border-amber-300/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
                       : "from-slate-700/90 to-slate-800/90 border-2 border-slate-600/50 opacity-70"
                   } h-[100px] flex flex-row transition-all duration-300`}
                 >
@@ -717,7 +717,7 @@ export default function HangerDungeonPage() {
                   {/* ゴール表示（左側） */}
                   <div
                     className={`flex items-center justify-center ${
-                      isGoalAvailable ? "bg-amber-500" : "bg-slate-700"
+                      isGoalAvailable ? "bg-gradient-to-br from-green-500 to-purple-500" : "bg-slate-700"
                     } w-[80px] h-full border-r-2 ${
                       isGoalAvailable ? "border-amber-300/50" : "border-slate-600/50"
                     }`}
@@ -737,14 +737,14 @@ export default function HangerDungeonPage() {
                     <div className="flex items-center">
                       <h3
                         className={`text-xl font-bold ${
-                          isGoalAvailable ? "text-white" : "text-slate-400"
+                          isGoalAvailable ? "text-amber-400" : "text-slate-400"
                         }`}
                       >
                         最終ミッション！
                       </h3>
                     </div>
 
-                    <div className={`text-sm mt-2 ${isGoalAvailable ? "text-white/80" : "text-amber-300/90"}`}>
+                    <div className={`text-sm mt-2 ${isGoalAvailable ? "text-amber-300/90" : "text-amber-300/90"}`}>
                       特別な報酬を獲得できます
                     </div>
 
