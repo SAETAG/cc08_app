@@ -59,35 +59,35 @@ const getLevelGradient = (level: number, isCompleted: boolean, isCurrent: boolea
   // 完了または解放済みのステージの色を設定
   switch (level) {
     case 1:
-      return "from-pink-600/90 to-pink-500/90"
+      return "from-violet-600/90 to-violet-500/90"
     case 2:
-      return "from-fuchsia-500/90 to-fuchsia-600/90"
+      return "from-indigo-600/90 to-indigo-500/90"
     case 3:
-      return "from-fuchsia-600/90 to-fuchsia-700/90"
+      return "from-blue-600/90 to-blue-500/90"
     case 4:
-      return "from-purple-600/90 to-purple-700/90"
+      return "from-cyan-600/90 to-cyan-500/90"
     case 5:
-      return "from-violet-600/90 to-violet-700/90"
+      return "from-teal-600/90 to-teal-500/90"
     case 6:
-      return "from-indigo-600/90 to-indigo-700/90"
+      return "from-emerald-600/90 to-emerald-500/90"
     case 7:
-      return "from-blue-600/90 to-blue-700/90"
+      return "from-green-600/90 to-green-500/90"
     case 8:
-      return "from-cyan-600/90 to-cyan-700/90"
-    case 9:
-      return "from-teal-600/90 to-teal-700/90"
-    case 10:
-      return "from-emerald-600/90 to-emerald-700/90"
-    case 11:
-      return "from-green-600/90 to-green-700/90"
-    case 12:
       return "from-teal-500/90 to-teal-600/90"
-    case 13:
+    case 9:
       return "from-cyan-500/90 to-cyan-600/90"
-    case 14:
+    case 10:
       return "from-blue-500/90 to-blue-600/90"
-    case 15:
+    case 11:
       return "from-indigo-500/90 to-indigo-600/90"
+    case 12:
+      return "from-violet-500/90 to-violet-600/90"
+    case 13:
+      return "from-indigo-600/90 to-indigo-500/90"
+    case 14:
+      return "from-blue-600/90 to-blue-500/90"
+    case 15:
+      return "from-cyan-600/90 to-cyan-500/90"
     default:
       return "from-violet-500/90 to-violet-600/90"
   }
@@ -102,35 +102,35 @@ const getLevelBorder = (level: number, isCompleted: boolean, isCurrent: boolean,
   // 完了または解放済みのステージの色を設定
   switch (level) {
     case 1:
-      return "border-pink-300/50"
-    case 2:
-      return "border-fuchsia-300/50"
-    case 3:
-      return "border-fuchsia-400/50"
-    case 4:
-      return "border-purple-400/50"
-    case 5:
       return "border-violet-400/50"
-    case 6:
+    case 2:
       return "border-indigo-400/50"
-    case 7:
+    case 3:
       return "border-blue-400/50"
-    case 8:
+    case 4:
       return "border-cyan-400/50"
-    case 9:
+    case 5:
       return "border-teal-400/50"
-    case 10:
+    case 6:
       return "border-emerald-400/50"
-    case 11:
+    case 7:
       return "border-green-400/50"
-    case 12:
+    case 8:
       return "border-teal-300/50"
-    case 13:
+    case 9:
       return "border-cyan-300/50"
-    case 14:
+    case 10:
       return "border-blue-300/50"
-    case 15:
+    case 11:
       return "border-indigo-300/50"
+    case 12:
+      return "border-violet-300/50"
+    case 13:
+      return "border-indigo-400/50"
+    case 14:
+      return "border-blue-400/50"
+    case 15:
+      return "border-cyan-400/50"
     default:
       return "border-violet-300/50"
   }
@@ -145,35 +145,35 @@ const getLevelBadgeColor = (level: number, isCompleted: boolean, isCurrent: bool
   // 完了または解放済みのステージの色を設定
   switch (level) {
     case 1:
-      return "bg-pink-400"
-    case 2:
-      return "bg-fuchsia-400"
-    case 3:
-      return "bg-fuchsia-500"
-    case 4:
-      return "bg-purple-500"
-    case 5:
       return "bg-violet-500"
-    case 6:
+    case 2:
       return "bg-indigo-500"
-    case 7:
+    case 3:
       return "bg-blue-500"
-    case 8:
+    case 4:
       return "bg-cyan-500"
-    case 9:
+    case 5:
       return "bg-teal-500"
-    case 10:
+    case 6:
       return "bg-emerald-500"
-    case 11:
+    case 7:
       return "bg-green-500"
-    case 12:
+    case 8:
       return "bg-teal-400"
-    case 13:
+    case 9:
       return "bg-cyan-400"
-    case 14:
+    case 10:
       return "bg-blue-400"
-    case 15:
+    case 11:
       return "bg-indigo-400"
+    case 12:
+      return "bg-violet-400"
+    case 13:
+      return "bg-indigo-500"
+    case 14:
+      return "bg-blue-500"
+    case 15:
+      return "bg-cyan-500"
     default:
       return "bg-violet-400"
   }
