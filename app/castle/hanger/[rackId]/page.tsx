@@ -740,7 +740,7 @@ export default function HangerDungeonPage() {
                           isGoalAvailable ? "text-white" : "text-slate-400"
                         }`}
                       >
-                        ダンジョンクリア！
+                        最終ミッション！
                       </h3>
                     </div>
 

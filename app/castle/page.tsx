@@ -17,6 +17,7 @@ export default function CastleLobbyPage() {
       try {
         const keys = [
           "rack_cf3876ec-bba8-40dc-9cbf-b3b6fd67b68d_status",
+          "rack_5dc78f3d-67cf-4629-9c1d-ff7aafc6e3b4_status",
           "rack_2_status",
           "drawer_1_status",
           "drawer_2_status",
@@ -217,18 +218,18 @@ export default function CastleLobbyPage() {
         <RoomCard
           title="棚収納の間"
           icon={<Package className="w-12 h-12" />}
-          isActive={true}
+          isActive={false}
           count={0}
-          href="/castle/shelves"
+          href="#"
           delay={0.8}
         />
 
         <RoomCard
           title="引き出し収納の間"
           icon={<Layers className="w-12 h-12" />}
-          isActive={true}
+          isActive={false}
           count={0}
-          href="/castle/drawers"
+          href="#"
           delay={1.0}
         />
       </div>
@@ -330,6 +331,9 @@ function RoomCard({ title, icon, isActive, count, href, delay }: RoomCardProps) 
           <h3 className={`text-xl font-bold mb-3 tracking-wide ${isActive ? "text-amber-400" : "text-slate-400"}`}>
             {title}
           </h3>
+          {!isActive && (
+            <div className="text-slate-400 text-sm mt-2">準備中</div>
+          )}
         </Card>
       </Link>
     </motion.div>
