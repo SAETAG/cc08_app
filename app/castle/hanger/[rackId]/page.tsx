@@ -551,12 +551,9 @@ export default function HangerDungeonPage() {
                     <div className="text-amber-300/80 pl-16">
                       {rackData.stepsGenerated ? (
                         <div className="flex items-center">
-                          <motion.span
-                            animate={{ opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
-                          >
+                          <span>
                             {latestAdventure?.organizationDirection || "モーちゃんが分析中..."}
-                          </motion.span>
+                          </span>
                           <motion.div
                             animate={{ rotate: 360 }}
                             transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
@@ -567,12 +564,9 @@ export default function HangerDungeonPage() {
                         </div>
                       ) : (
                         <div className="flex items-center">
-                          <motion.span
-                            animate={{ opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
-                          >
+                          <span>
                             モーちゃんが分析中...
-                          </motion.span>
+                          </span>
                           <motion.div
                             animate={{ rotate: 360 }}
                             transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
