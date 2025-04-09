@@ -141,7 +141,7 @@ export default function StageClearPage() {
 
   // 次のステージに進む
   const goToNextStage = () => {
-    router.push(`/castle/hanger/${rackId}/clear`)
+    router.push(`/castle/hanger/${rackId}`)
   }
 
   // 経験値を獲得

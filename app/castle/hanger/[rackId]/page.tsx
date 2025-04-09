@@ -59,19 +59,37 @@ const getLevelGradient = (level: number, isCompleted: boolean, isCurrent: boolea
   // 完了または解放済みのステージの色を設定
   switch (level) {
     case 1:
-      return "from-blue-700/90 to-blue-800/90"
+      return "from-pink-600/90 to-pink-500/90"
     case 2:
-      return "from-blue-600/90 to-blue-700/90"
+      return "from-fuchsia-500/90 to-fuchsia-600/90"
     case 3:
-      return "from-indigo-600/90 to-indigo-700/90"
+      return "from-fuchsia-600/90 to-fuchsia-700/90"
     case 4:
       return "from-purple-600/90 to-purple-700/90"
     case 5:
-      return "from-purple-500/90 to-purple-600/90"
+      return "from-violet-600/90 to-violet-700/90"
     case 6:
+      return "from-indigo-600/90 to-indigo-700/90"
+    case 7:
+      return "from-blue-600/90 to-blue-700/90"
+    case 8:
+      return "from-cyan-600/90 to-cyan-700/90"
+    case 9:
+      return "from-teal-600/90 to-teal-700/90"
+    case 10:
+      return "from-emerald-600/90 to-emerald-700/90"
+    case 11:
       return "from-green-600/90 to-green-700/90"
+    case 12:
+      return "from-teal-500/90 to-teal-600/90"
+    case 13:
+      return "from-cyan-500/90 to-cyan-600/90"
+    case 14:
+      return "from-blue-500/90 to-blue-600/90"
+    case 15:
+      return "from-indigo-500/90 to-indigo-600/90"
     default:
-      return "from-amber-500/90 to-amber-600/90"
+      return "from-violet-500/90 to-violet-600/90"
   }
 }
 
@@ -84,19 +102,37 @@ const getLevelBorder = (level: number, isCompleted: boolean, isCurrent: boolean,
   // 完了または解放済みのステージの色を設定
   switch (level) {
     case 1:
-      return "border-blue-500/50"
+      return "border-pink-300/50"
     case 2:
-      return "border-blue-400/50"
+      return "border-fuchsia-300/50"
     case 3:
-      return "border-indigo-400/50"
+      return "border-fuchsia-400/50"
     case 4:
       return "border-purple-400/50"
     case 5:
-      return "border-purple-300/50"
+      return "border-violet-400/50"
     case 6:
-      return "border-green-500/50"
+      return "border-indigo-400/50"
+    case 7:
+      return "border-blue-400/50"
+    case 8:
+      return "border-cyan-400/50"
+    case 9:
+      return "border-teal-400/50"
+    case 10:
+      return "border-emerald-400/50"
+    case 11:
+      return "border-green-400/50"
+    case 12:
+      return "border-teal-300/50"
+    case 13:
+      return "border-cyan-300/50"
+    case 14:
+      return "border-blue-300/50"
+    case 15:
+      return "border-indigo-300/50"
     default:
-      return "border-amber-500/50"
+      return "border-violet-300/50"
   }
 }
 
@@ -109,31 +145,71 @@ const getLevelBadgeColor = (level: number, isCompleted: boolean, isCurrent: bool
   // 完了または解放済みのステージの色を設定
   switch (level) {
     case 1:
-      return "bg-blue-600"
+      return "bg-pink-400"
     case 2:
-      return "bg-blue-500"
+      return "bg-fuchsia-400"
     case 3:
-      return "bg-indigo-500"
+      return "bg-fuchsia-500"
     case 4:
       return "bg-purple-500"
     case 5:
-      return "bg-purple-400"
+      return "bg-violet-500"
     case 6:
+      return "bg-indigo-500"
+    case 7:
+      return "bg-blue-500"
+    case 8:
+      return "bg-cyan-500"
+    case 9:
+      return "bg-teal-500"
+    case 10:
+      return "bg-emerald-500"
+    case 11:
       return "bg-green-500"
+    case 12:
+      return "bg-teal-400"
+    case 13:
+      return "bg-cyan-400"
+    case 14:
+      return "bg-blue-400"
+    case 15:
+      return "bg-indigo-400"
     default:
-      return "bg-amber-500"
+      return "bg-violet-400"
   }
 }
 
 // ゴール解放状態を判定する関数を追加
-const isGoalUnlocked = (stepStatus: { [key: number]: boolean }, totalSteps: number): boolean => {
+const isGoalUnlocked = async (stepStatus: { [key: number]: boolean }, totalSteps: number, rackId: string): Promise<boolean> => {
   // 全てのステージが完了しているかチェック
   for (let i = 1; i <= totalSteps; i++) {
     if (!stepStatus[i]) {
       return false
     }
   }
-  return true
+
+  // 記憶の石碑のステータスを確認
+  try {
+    const response = await fetch(`/api/getUserData`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        keys: [`rack_${rackId}_memory_status`]
+      }),
+    })
+
+    const data = await response.json()
+    if (response.ok && data.data) {
+      const memoryStatus = data.data[`rack_${rackId}_memory_status`]
+      return memoryStatus === true || memoryStatus === "true"
+    }
+  } catch (error) {
+    console.error("Error checking memory status:", error)
+  }
+
+  return false
 }
 
 export default function HangerDungeonPage() {
@@ -207,7 +283,7 @@ export default function HangerDungeonPage() {
           setStepStatus(initialStatus)
 
           // ゴール解放状態を更新
-          setIsGoalAvailable(isGoalUnlocked(initialStatus, rackData.adventures.length))
+          setIsGoalAvailable(await isGoalUnlocked(initialStatus, rackData.adventures.length, params.rackId as string))
         }
       } catch (error) {
         console.error("Error fetching step status:", error)
@@ -655,63 +731,101 @@ export default function HangerDungeonPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: (rackData.adventures?.length || 0) * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="cursor-pointer"
-                onClick={() => router.push(`/castle/hanger/${params.rackId}/memory`)}
+                whileHover={stepStatus[rackData.adventures?.length || 0] ? { y: -5 } : {}}
+                className={stepStatus[rackData.adventures?.length || 0] ? "cursor-pointer" : "cursor-not-allowed"}
+                onClick={() => {
+                  if (stepStatus[rackData.adventures?.length || 0]) {
+                    router.push(`/castle/hanger/${params.rackId}/memory`)
+                  }
+                }}
               >
                 <Card
-                  className="relative overflow-hidden bg-gradient-to-br from-[#800020]/90 via-[#4B0082]/90 to-[#800020]/90 border-2 border-amber-300/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] h-[100px] flex flex-row transition-all duration-300"
+                  className={`relative overflow-hidden ${
+                    stepStatus[rackData.adventures?.length || 0]
+                      ? "bg-gradient-to-br from-[#800020]/90 via-[#4B0082]/90 to-[#800020]/90 border-2 border-amber-300/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
+                      : "bg-gradient-to-b from-slate-800/90 to-slate-900/90 border-2 border-slate-700/50"
+                  } h-[100px] flex flex-row transition-all duration-300`}
                 >
                   {/* Decorative corners */}
-                  <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-amber-300"></div>
-                  <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-amber-300"></div>
-                  <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-amber-300"></div>
-                  <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-amber-300"></div>
+                  <div className={`absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 ${
+                    stepStatus[rackData.adventures?.length || 0] ? "border-amber-300" : "border-slate-600"
+                  }`}></div>
+                  <div className={`absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 ${
+                    stepStatus[rackData.adventures?.length || 0] ? "border-amber-300" : "border-slate-600"
+                  }`}></div>
+                  <div className={`absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 ${
+                    stepStatus[rackData.adventures?.length || 0] ? "border-amber-300" : "border-slate-600"
+                  }`}></div>
+                  <div className={`absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 ${
+                    stepStatus[rackData.adventures?.length || 0] ? "border-amber-300" : "border-slate-600"
+                  }`}></div>
 
                   {/* 石碑表示（左側） */}
-                  <div className="flex items-center justify-center bg-gradient-to-br from-[#800020] to-[#4B0082] w-[80px] h-full border-r-2 border-amber-300/50">
+                  <div className={`flex items-center justify-center ${
+                    stepStatus[rackData.adventures?.length || 0]
+                      ? "bg-gradient-to-br from-[#800020] to-[#4B0082]"
+                      : "bg-slate-700"
+                  } w-[80px] h-full border-r-2 ${
+                    stepStatus[rackData.adventures?.length || 0] ? "border-amber-300/50" : "border-slate-600/50"
+                  }`}>
                     <div className="text-center">
                       <div className="text-xs text-white/80 font-medium mb-1">MEMORY</div>
-                      <Wand2 className="h-8 w-8 text-white mx-auto" />
+                      <Wand2 className={`h-8 w-8 ${
+                        stepStatus[rackData.adventures?.length || 0] ? "text-white" : "text-slate-400"
+                      } mx-auto`} />
                     </div>
                   </div>
 
                   {/* メインコンテンツ */}
                   <div className="p-3 flex-1 flex flex-col justify-center relative">
                     <div className="flex items-center">
-                      <h3 className="text-xl font-bold text-amber-400">
+                      <h3 className={`text-xl font-bold ${
+                        stepStatus[rackData.adventures?.length || 0] ? "text-amber-400" : "text-slate-400"
+                      }`}>
                         記憶の石碑
                       </h3>
                     </div>
 
-                    <div className="text-sm mt-2 text-amber-300/90">
-                      あなたの冒険の記録を残しましょう
+                    <div className={`text-sm mt-2 ${
+                      stepStatus[rackData.adventures?.length || 0] ? "text-amber-300/90" : "text-slate-400/90"
+                    }`}>
+                      {stepStatus[rackData.adventures?.length || 0] 
+                        ? "あなたの冒険の記録を残しましょう"
+                        : "最後のステージをクリアすると解放されます"}
                     </div>
 
                     {/* ステータスアイコン（右側） */}
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <div className="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center">
-                        <motion.div
-                          animate={{ scale: [1, 1.1, 1] }}
-                          transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-                        >
-                          <Wand2 className="h-10 w-10 text-amber-400" />
-                        </motion.div>
-                      </div>
+                      {stepStatus[rackData.adventures?.length || 0] ? (
+                        <div className="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center">
+                          <motion.div
+                            animate={{ scale: [1, 1.1, 1] }}
+                            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                          >
+                            <Wand2 className="h-10 w-10 text-amber-400" />
+                          </motion.div>
+                        </div>
+                      ) : (
+                        <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
+                          <Lock className="h-8 w-8 text-slate-500" />
+                        </div>
+                      )}
                     </div>
 
                     {/* 光るエフェクト */}
-                    <motion.div
-                      className="absolute inset-0 z-0"
-                      animate={{
-                        boxShadow: [
-                          "inset 0 0 10px 5px rgba(251,191,36,0.1)",
-                          "inset 0 0 20px 10px rgba(251,191,36,0.2)",
-                          "inset 0 0 10px 5px rgba(251,191,36,0.1)",
-                        ],
-                      }}
-                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-                    />
+                    {stepStatus[rackData.adventures?.length || 0] && (
+                      <motion.div
+                        className="absolute inset-0 z-0"
+                        animate={{
+                          boxShadow: [
+                            "inset 0 0 10px 5px rgba(251,191,36,0.1)",
+                            "inset 0 0 20px 10px rgba(251,191,36,0.2)",
+                            "inset 0 0 10px 5px rgba(251,191,36,0.1)",
+                          ],
+                        }}
+                        transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                      />
+                    )}
                   </div>
                 </Card>
               </motion.div>
