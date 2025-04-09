@@ -650,6 +650,72 @@ export default function HangerDungeonPage() {
                 )
               })}
 
+              {/* 記憶の石碑カード */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: (rackData.adventures?.length || 0) * 0.1 }}
+                whileHover={{ y: -5 }}
+                className="cursor-pointer"
+                onClick={() => router.push(`/castle/hanger/${params.rackId}/memory`)}
+              >
+                <Card
+                  className="relative overflow-hidden bg-gradient-to-br from-[#800020]/90 via-[#4B0082]/90 to-[#800020]/90 border-2 border-amber-300/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] h-[100px] flex flex-row transition-all duration-300"
+                >
+                  {/* Decorative corners */}
+                  <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-amber-300"></div>
+                  <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-amber-300"></div>
+                  <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-amber-300"></div>
+                  <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-amber-300"></div>
+
+                  {/* 石碑表示（左側） */}
+                  <div className="flex items-center justify-center bg-gradient-to-br from-[#800020] to-[#4B0082] w-[80px] h-full border-r-2 border-amber-300/50">
+                    <div className="text-center">
+                      <div className="text-xs text-white/80 font-medium mb-1">MEMORY</div>
+                      <Wand2 className="h-8 w-8 text-white mx-auto" />
+                    </div>
+                  </div>
+
+                  {/* メインコンテンツ */}
+                  <div className="p-3 flex-1 flex flex-col justify-center relative">
+                    <div className="flex items-center">
+                      <h3 className="text-xl font-bold text-amber-400">
+                        記憶の石碑
+                      </h3>
+                    </div>
+
+                    <div className="text-sm mt-2 text-amber-300/90">
+                      あなたの冒険の記録を残しましょう
+                    </div>
+
+                    {/* ステータスアイコン（右側） */}
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <div className="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center">
+                        <motion.div
+                          animate={{ scale: [1, 1.1, 1] }}
+                          transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                        >
+                          <Wand2 className="h-10 w-10 text-amber-400" />
+                        </motion.div>
+                      </div>
+                    </div>
+
+                    {/* 光るエフェクト */}
+                    <motion.div
+                      className="absolute inset-0 z-0"
+                      animate={{
+                        boxShadow: [
+                          "inset 0 0 10px 5px rgba(251,191,36,0.1)",
+                          "inset 0 0 20px 10px rgba(251,191,36,0.2)",
+                          "inset 0 0 10px 5px rgba(251,191,36,0.1)",
+                        ],
+                      }}
+                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                    />
+                  </div>
+                </Card>
+              </motion.div>
+
               {/* ゴール地点 */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -688,7 +754,7 @@ export default function HangerDungeonPage() {
                 <Card
                   className={`relative overflow-hidden bg-gradient-to-br ${
                     isGoalAvailable
-                      ? "from-green-600/90 via-blue-600/90 to-purple-600/90 border-2 border-amber-300/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
+                      ? "from-[#005F5F]/90 via-[#000080]/90 to-[#005F5F]/90 border-2 border-amber-300/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
                       : "from-slate-700/90 to-slate-800/90 border-2 border-slate-600/50 opacity-70"
                   } h-[100px] flex flex-row transition-all duration-300`}
                 >
@@ -717,7 +783,7 @@ export default function HangerDungeonPage() {
                   {/* ゴール表示（左側） */}
                   <div
                     className={`flex items-center justify-center ${
-                      isGoalAvailable ? "bg-gradient-to-br from-green-500 to-purple-500" : "bg-slate-700"
+                      isGoalAvailable ? "bg-gradient-to-br from-[#005F5F] to-[#000080]" : "bg-slate-700"
                     } w-[80px] h-full border-r-2 ${
                       isGoalAvailable ? "border-amber-300/50" : "border-slate-600/50"
                     }`}
@@ -740,7 +806,7 @@ export default function HangerDungeonPage() {
                           isGoalAvailable ? "text-amber-400" : "text-slate-400"
                         }`}
                       >
-                        最終ミッション！
+                        最終章📖終わりなきクロニクル
                       </h3>
                     </div>
 
