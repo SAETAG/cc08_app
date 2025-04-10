@@ -171,7 +171,7 @@ export default function HomePage() {
                   </div>
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-purple-800/90"></div>
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-purple-900/90 to-purple-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
-                    <p className="text-amber-300 text-sm font-bold">知識の湖</p>
+                    <p className="text-amber-300 text-sm font-bold">収納の湖</p>
                   </div>
                 </div>
               </Link>
@@ -219,7 +219,7 @@ export default function HomePage() {
                   </div>
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-orange-700/90"></div>
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-orange-800/90 to-orange-900/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
-                    <p className="text-amber-300 text-sm font-bold">審判の森</p>
+                    <p className="text-amber-300 text-sm font-bold">断捨離の森</p>
                   </div>
                 </div>
               </Link>
@@ -235,7 +235,7 @@ export default function HomePage() {
                   </div>
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-rose-800/90"></div>
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-rose-900/90 to-rose-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
-                    <p className="text-amber-300 text-sm font-bold">勇者の家</p>
+                    <p className="text-amber-300 text-sm font-bold">勇者の休憩所</p>
                   </div>
                 </div>
               </Link>
