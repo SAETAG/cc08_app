@@ -166,11 +166,11 @@ export default function HomePage() {
                 className="absolute top-[20%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
                 <div className="relative">
-                  <div className="w-16 h-16 bg-green-800/90 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-16 h-16 bg-purple-800/90 rounded-full flex items-center justify-center shadow-lg">
                     <BookOpen className="w-8 h-8 text-amber-300" />
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-green-800/90"></div>
-                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-green-900/90 to-green-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-purple-800/90"></div>
+                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-purple-900/90 to-purple-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
                     <p className="text-amber-300 text-sm font-bold">知識の湖</p>
                   </div>
                 </div>
@@ -182,11 +182,11 @@ export default function HomePage() {
                 className="absolute top-[20%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
                 <div className="relative">
-                  <div className="w-16 h-16 bg-green-800/90 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-16 h-16 bg-slate-800/90 rounded-full flex items-center justify-center shadow-lg">
                     <Mountain className="w-8 h-8 text-amber-300" />
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-green-800/90"></div>
-                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-green-900/90 to-green-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-slate-800/90"></div>
+                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-slate-900/90 to-slate-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
                     <p className="text-amber-300 text-sm font-bold">パーティーの洞窟</p>
                   </div>
                 </div>
@@ -198,11 +198,11 @@ export default function HomePage() {
                 className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
                 <div className="relative">
-                  <div className="w-32 h-32 bg-green-800/90 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-32 h-32 bg-blue-800/90 rounded-full flex items-center justify-center shadow-lg">
                     <Castle className="w-16 h-16 text-amber-300" />
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[16px] border-r-[16px] border-t-[32px] border-l-transparent border-r-transparent border-t-green-800/90"></div>
-                  <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 w-40 bg-gradient-to-br from-green-900/90 to-green-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[16px] border-r-[16px] border-t-[32px] border-l-transparent border-r-transparent border-t-blue-800/90"></div>
+                  <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 w-40 bg-gradient-to-br from-blue-900/90 to-blue-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
                     <p className="text-amber-300 text-base font-bold">クローゼット城</p>
                   </div>
                 </div>
@@ -214,11 +214,11 @@ export default function HomePage() {
                 className="absolute top-[80%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
                 <div className="relative">
-                  <div className="w-16 h-16 bg-green-800/90 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-16 h-16 bg-orange-700/90 rounded-full flex items-center justify-center shadow-lg">
                     <Trees className="w-8 h-8 text-amber-300" />
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-green-800/90"></div>
-                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-green-900/90 to-green-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-orange-700/90"></div>
+                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-orange-800/90 to-orange-900/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
                     <p className="text-amber-300 text-sm font-bold">審判の森</p>
                   </div>
                 </div>
@@ -230,11 +230,11 @@ export default function HomePage() {
                 className="absolute top-[80%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
                 <div className="relative">
-                  <div className="w-16 h-16 bg-green-800/90 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-16 h-16 bg-rose-800/90 rounded-full flex items-center justify-center shadow-lg">
                     <Home className="w-8 h-8 text-amber-300" />
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-green-800/90"></div>
-                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-green-900/90 to-green-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-rose-800/90"></div>
+                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-rose-900/90 to-rose-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
                     <p className="text-amber-300 text-sm font-bold">勇者の家</p>
                   </div>
                 </div>
