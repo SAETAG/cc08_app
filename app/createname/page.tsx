@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { Volume2, VolumeX } from "lucide-react"
 import { firebaseAuth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
+import Image from "next/image"
 
 export default function CreateNamePage() {
   const [name, setName] = useState("")
@@ -105,10 +106,10 @@ export default function CreateNamePage() {
 
   const toggleSound = () => {
     if (audioRef.current) {
-      if (isMuted) {
-        audioRef.current.play()
-      } else {
+      if (!isMuted) {
         audioRef.current.pause()
+      } else {
+        audioRef.current.play()
       }
       setIsMuted(!isMuted)
     }
@@ -144,19 +145,31 @@ export default function CreateNamePage() {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden bg-teal-950">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Background image with overlay */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/map.png"
+          alt="Background"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-green-900/80" />
+      </div>
+
       {/* Sound toggle button */}
       <button
         onClick={toggleSound}
-        className="absolute top-4 right-4 z-20 bg-indigo-700 hover:bg-indigo-800 text-yellow-300 p-3 rounded-full transition-colors duration-200 border border-indigo-500"
+        className="absolute top-4 right-4 z-20 bg-green-800 hover:bg-green-900 text-amber-300 p-3 rounded-full transition-colors duration-200 border border-amber-500/50"
         aria-label={isMuted ? "音楽を再生" : "音楽を停止"}
       >
-        {isMuted ? <Volume2 size={24} /> : <VolumeX size={24} />}
+        {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
       </button>
 
-      <div className="max-w-md w-full bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 bg-opacity-90 p-6 sm:p-8 rounded-xl shadow-lg border-2 border-indigo-400 z-10 relative">
+      <div className="max-w-md w-full bg-gradient-to-br from-green-900/90 to-green-950/90 p-6 sm:p-8 rounded-xl shadow-lg border-2 border-amber-500/50 z-10 relative">
         <div className="text-center space-y-6">
-          <h1 className="text-3xl sm:text-4xl font-bold text-yellow-300 tracking-tight drop-shadow-[0_0_8px_rgba(250,204,21,0.7)]">
+          <h1 className="text-3xl sm:text-4xl font-bold text-amber-300 tracking-tight drop-shadow-[0_0_8px_rgba(251,191,36,0.7)]">
             まずはあなたの名前を教えてね！
           </h1>
 
@@ -167,10 +180,10 @@ export default function CreateNamePage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="あなたの名前"
-                className="w-full bg-black bg-opacity-50 border-indigo-400 text-white placeholder:text-gray-400 focus:border-yellow-300 focus:ring-yellow-300"
+                className="w-full bg-black bg-opacity-50 border-amber-500/50 text-amber-300 placeholder:text-amber-300/50 focus:border-amber-300 focus:ring-amber-300"
                 required
               />
-              <div className="flex justify-between text-xs text-gray-300">
+              <div className="flex justify-between text-xs text-amber-300/80">
                 <span>3～25文字で英数字のみ使用可</span>
                 <span>{name.length} 文字</span>
               </div>
@@ -181,7 +194,7 @@ export default function CreateNamePage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-orange-600 hover:bg-orange-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-orange-500 text-lg sm:text-xl transition-colors duration-200"
+              className="w-full bg-[#f0c96b] hover:bg-[#e0b95b] text-green-900 drop-shadow-[0_0_5px_rgba(240,201,107,0.7)] font-medium py-4 px-8 rounded-lg border border-[#d8b85a] text-lg sm:text-xl transition-colors duration-200"
             >
               {loading ? "更新中..." : "完了！"}
             </Button>
