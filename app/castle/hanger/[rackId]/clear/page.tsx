@@ -4,8 +4,9 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { useRouter, useParams } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowLeft, Sparkles } from "lucide-react"
+import { ArrowLeft, Sparkles, Volume2, VolumeX } from "lucide-react"
 import Link from "next/link"
+import { firebaseAuth } from "@/lib/firebase"
 
 type PageParams = {
   rackId: string
@@ -20,20 +21,91 @@ export default function DungeonClearPage() {
   const [showBeforeAfter, setShowBeforeAfter] = useState(false)
   const [showCongrats, setShowCongrats] = useState(false)
   const [showButton, setShowButton] = useState(false)
+  const [isSoundOn, setIsSoundOn] = useState(true)
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null)
+  const [selectedQuotes, setSelectedQuotes] = useState<typeof wisdomQuotes>([])
+  const [beforeImageUrl, setBeforeImageUrl] = useState<string>("")
+  const [afterImageUrl, setAfterImageUrl] = useState<string>("")
 
   const dialogues = [
-    "勇者よ…",
-    "よくここまで頑張った…",
+    "勇者よ……",
+    "よくぞ、ここまで頑張った……！",
     "あなたの勇気と努力に、最大限の敬意を払う",
-    "見よ、これが冒険の軌跡…",
+    "もう今のあなたになら、分かるはずだ…",
+    "モノは、私たちを幸せにしてくれる",
+    "でも時として、私たちを振り回し、不幸にもする",
+    "それらを治めるのは、他でもない、あなただ",
+    "これからもあなたの冒険は続く",
+    "これからの旅のお供に",
+    "過去の勇者たちからの、メッセージを授けよう",
+  ]
+
+  const wisdomQuotes = [
+    { text: "すべてのモノに、理由がある。", emoji: "👘" },
+    { text: "「好き」は、片づけの最強スキル。", emoji: "🫶" },
+    { text: "未来で使うは、ほぼ使わぬ。", emoji: "🌠" },
+    { text: "一度も戦わなかった装備は、旅に必要ない。", emoji: "⚔️" },
+    { text: "とりあえず取っておく。それが魔の呪文である。", emoji: "🧛" },
+    { text: "探し物は、心の迷子でもある。", emoji: "🔍" },
+    { text: "空間の乱れは、思考の乱れ。", emoji: "🌀" },
+    { text: "収納とは、モノの定位置に与える「住所」である。", emoji: "🏰" },
+    { text: "「いつか使う」は、「今じゃない」の証明。", emoji: "⏳" },
+    { text: "捨てることは、選ぶこと。", emoji: "🎯" },
+    { text: "本当に必要なものは、案外少ない。", emoji: "💎" },
+    { text: "箱を増やせば、迷いも増える。", emoji: "📦" },
+    { text: "思い出は心に、モノは軽く。", emoji: "👒" },
+    { text: "あなたの城（部屋）は、あなたの鏡である。", emoji: "🪞" },
+    { text: "すぐに取れぬモノは、すぐに使えぬモノ。", emoji: "⏱️" },
+    { text: "モノを減らすと、時間が増える。", emoji: "⏰" },
+    { text: "「まだ使える」は、「もう使っていない」の裏返し。", emoji: "🔄" },
+    { text: "クローゼットは、あなたの冒険の準備室だ。", emoji: "👕" },
+    { text: "手放すとは、別れではなく感謝。", emoji: "🙏" },
+    { text: "「なんとなく置く」は、混沌の入口。", emoji: "🌪️" },
+    { text: "整理とは、問い直すこと。", emoji: "❓" },
+    { text: "1日15分の積み重ねが、王国を救う。", emoji: "👑" },
+    { text: "服に着られるな、服を使いこなせ。", emoji: "👗" },
+    { text: "量より質、数より意味。", emoji: "⚖️" },
+    { text: "空いたスペースには、余白の魔力が宿る。", emoji: "🌌" },
+    { text: "収納とは、心を整える術でもある。", emoji: "🧘‍♂️" },
+    { text: "さあ、今日もひとつ、「ととのえ」の一手を。", emoji: "✨" },
+    { text: "「床置き」は、一度許すと仲間を呼ぶ。", emoji: "🧟‍♂️" },
+    { text: "「とりあえず」が積もると、「もう手遅れ」になる。", emoji: "🗑️" },
+    { text: "クローゼットは、過去と未来の交差点。", emoji: "🌉" },
+    { text: "整理とは、過去への弔いと未来への準備である。", emoji: "⚰️" },
+    { text: "「片づけたい」は、「自分を整えたい」のサイン。", emoji: "💪" },
+    { text: "モノに埋もれる者、意思を失う。", emoji: "🪦" },
+    { text: "汝、ハンガーの数を超えてモノを持つべからず。", emoji: "📏" },
+    { text: "一軍だけを残せ、控えはもう来ない。", emoji: "⚽" },
+    { text: "「誰かにあげるかも」は、大体あげない。", emoji: "🙅‍♂️" },
+    { text: "「高かったから」は、すでにコスト。", emoji: "💸" },
+    { text: "君はモノを選んでいるようで、選ばれているのかもしれない。", emoji: "🎭" },
+    { text: "「片づいた」の定義は、人の数だけある。", emoji: "🙆" },
+    { text: "モノの置き場は、あなたの決断力の棚卸し。", emoji: "📚" },
+    { text: "汝の「欲しい！」は、三ヶ月で消えることもある。", emoji: "🚀" },
+    { text: "部屋はあなたの「思考のカタチ」を映す鏡である。", emoji: "🧩" },
+    { text: "その人との思い出は、モノの中にはいない。", emoji: "🕊️" },
+    { text: "モノは「気持ちの届け物」。受け取ったら、手放しても大丈夫。", emoji: "🎁" },
+    { text: "感謝は持ち続けなくていい。「ありがとう」で次に進めばいい。", emoji: "🌸" },
+    { text: "人は「モノ」を贈ったのではない、「気持ち」を贈ったのだ。", emoji: "💌" },
+    { text: "あなたが笑顔でいることが、いちばんの「お返し」になる。", emoji: "😊" },
+    { text: "手放すことは、裏切りではない。「選ぶ」という誠実さである。", emoji: "🦄" },
+    { text: "すべてを抱えたままでは、新しいものは入らない。", emoji: "🧜‍♀️" },
+    { text: "そのモノの役目は、もう終わっただけ。", emoji: "📜" },
+    { text: "「もったいない」は、使ってこそ活きる呪文。", emoji: "🧙‍♀️" },
+    { text: "「ごめんね」より、「ありがとう」。それが別れの魔法。", emoji: "🪶" },
+    { text: "モノが残っているのは、過去の自分の声がまだそこにあるから。", emoji: "👄" },
+    { text: "捨てたあとに残るのは、「後悔」ではなく、「軽さ」である。", emoji: "💃" },
+    { text: "勇気は、袋に入れて出すものではない。「選ぶ」ときに使うものだ。", emoji: "🛡️" },
+    { text: "持ちすぎる優しさは、自分を押しつぶすこともある。", emoji: "💔" },
+    { text: "「もったいない」と感じるその心、すでに素晴らしい。", emoji: "🌱" },
   ]
 
   const dungeons = [
-    { name: "クローゼットの入り口", emoji: "🗡️", color: "from-purple-600 to-purple-500" },
-    { name: "くつしたの谷", emoji: "🧤", color: "from-blue-600 to-blue-500" },
-    { name: "小物の森", emoji: "🧢", color: "from-emerald-600 to-emerald-500" },
-    { name: "カバンの洞窟", emoji: "👜", color: "from-amber-600 to-amber-500" },
-    { name: "ハンガーラックのダンジョン", emoji: "👚", color: "from-purple-600 to-purple-500" },
+    { color: "from-purple-600 to-purple-500" },
+    { color: "from-blue-600 to-blue-500" },
+    { color: "from-emerald-600 to-emerald-500" },
+    { color: "from-amber-600 to-amber-500" },
+    { color: "from-purple-600 to-purple-500" },
   ]
 
   const beforeAfterPairs = [
@@ -48,39 +120,45 @@ export default function DungeonClearPage() {
     const timer0 = setTimeout(() => setDialogueIndex(0), 1000)
 
     // Dialogue sequence
-    const timer1 = setTimeout(() => setDialogueIndex(1), 3500)
-    const timer2 = setTimeout(() => setDialogueIndex(2), 6000)
-    const timer3 = setTimeout(() => setDialogueIndex(3), 8500)
+    const timer1 = setTimeout(() => setDialogueIndex(1), 4000)
+    const timer2 = setTimeout(() => setDialogueIndex(2), 7000)
+    const timer3 = setTimeout(() => setDialogueIndex(3), 10000)
+    const timer4 = setTimeout(() => setDialogueIndex(4), 13000)
+    const timer5 = setTimeout(() => setDialogueIndex(5), 16000)
+    const timer6 = setTimeout(() => setDialogueIndex(6), 19000)
+    const timer7 = setTimeout(() => setDialogueIndex(7), 22000)
+    const timer8 = setTimeout(() => setDialogueIndex(8), 25000)
+    const timer9 = setTimeout(() => setDialogueIndex(9), 28000)
 
     // Fade out last dialogue and show dungeons
-    const timer4 = setTimeout(() => {
+    const timer10 = setTimeout(() => {
       setDialogueIndex(-1)
       setShowDungeons(true)
-    }, 11000)
+    }, 31000)
 
     // Cycle through dungeons one by one
-    const timer5 = setTimeout(() => setActiveDungeon(0), 11500)
-    const timer6 = setTimeout(() => setActiveDungeon(1), 15500)
-    const timer7 = setTimeout(() => setActiveDungeon(2), 19500)
-    const timer8 = setTimeout(() => setActiveDungeon(3), 23500)
-    const timer9 = setTimeout(() => setActiveDungeon(4), 27500)
+    const timer11 = setTimeout(() => setActiveDungeon(0), 31500)
+    const timer12 = setTimeout(() => setActiveDungeon(1), 38500)
+    const timer13 = setTimeout(() => setActiveDungeon(2), 45500)
+    const timer14 = setTimeout(() => setActiveDungeon(3), 52500)
+    const timer15 = setTimeout(() => setActiveDungeon(4), 59500)
 
     // End dungeon sequence
-    const timer10 = setTimeout(() => {
+    const timer16 = setTimeout(() => {
       setActiveDungeon(-1)
       setShowDungeons(false)
-    }, 31500)
+    }, 66500)
 
     // Show before/after
-    const timer11 = setTimeout(() => {
+    const timer17 = setTimeout(() => {
       setShowBeforeAfter(true)
-    }, 32000)
+    }, 67000)
 
     // Show congratulations
-    const timer12 = setTimeout(() => setShowCongrats(true), 36000)
+    const timer18 = setTimeout(() => setShowCongrats(true), 71000)
 
     // Show button
-    const timer13 = setTimeout(() => setShowButton(true), 38000)
+    const timer19 = setTimeout(() => setShowButton(true), 73000)
 
     return () => {
       clearTimeout(timer0)
@@ -97,11 +175,123 @@ export default function DungeonClearPage() {
       clearTimeout(timer11)
       clearTimeout(timer12)
       clearTimeout(timer13)
+      clearTimeout(timer14)
+      clearTimeout(timer15)
+      clearTimeout(timer16)
+      clearTimeout(timer17)
+      clearTimeout(timer18)
+      clearTimeout(timer19)
     }
   }, [])
 
-  const handleEndAdventure = () => {
-    router.push(`/castle/hanger/${params.rackId}`)
+  useEffect(() => {
+    // オーディオの初期化
+    const newAudio = new Audio('/endroll.mp3')
+    newAudio.loop = true
+    setAudio(newAudio)
+
+    // ページ遷移時のクリーンアップ
+    const handleRouteChange = () => {
+      if (audio) {
+        audio.pause()
+        audio.currentTime = 0
+      }
+    }
+
+    // ページ遷移イベントのリスナーを追加
+    window.addEventListener('beforeunload', handleRouteChange)
+
+    return () => {
+      if (audio) {
+        audio.pause()
+        audio.currentTime = 0
+      }
+      // イベントリスナーを削除
+      window.removeEventListener('beforeunload', handleRouteChange)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (audio) {
+      if (isSoundOn) {
+        audio.play()
+      } else {
+        audio.pause()
+      }
+    }
+  }, [isSoundOn, audio])
+
+  useEffect(() => {
+    // ランダムに5つの格言を選択
+    const shuffled = [...wisdomQuotes].sort(() => 0.5 - Math.random())
+    setSelectedQuotes(shuffled.slice(0, 5))
+  }, [])
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const idToken = await firebaseAuth.currentUser?.getIdToken()
+        if (!idToken) return
+
+        // ビフォー写真の取得
+        const beforeResponse = await fetch(`/api/racks/${params.rackId}/getbeforeimage`, {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        })
+        const beforeData = await beforeResponse.json()
+        if (beforeData.beforeImageUrl) {
+          setBeforeImageUrl(beforeData.beforeImageUrl)
+        }
+
+        // アフター写真の取得
+        const afterResponse = await fetch(`/api/racks/${params.rackId}/getafterimage`, {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        })
+        const afterData = await afterResponse.json()
+        console.log("アフター写真のレスポンス:", afterData)
+        if (afterData.afterimageUrl) {
+          setAfterImageUrl(afterData.afterimageUrl)
+        }
+      } catch (error) {
+        console.error("写真の取得に失敗しました:", error)
+      }
+    }
+
+    fetchImages()
+  }, [params.rackId])
+
+  const toggleSound = () => {
+    setIsSoundOn(!isSoundOn)
+  }
+
+  const handleEndAdventure = async () => {
+    try {
+      // PlayFabにデータを保存
+      const playfabResponse = await fetch("/api/updateUserData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          key: `rack_${params.rackId}_status`,
+          value: true
+        }),
+      })
+
+      if (!playfabResponse.ok) {
+        const error = await playfabResponse.json()
+        throw new Error(error.error || "データの更新に失敗しました")
+      }
+
+      // 成功したらクローゼット城に戻る
+      router.push("/castle")
+    } catch (error) {
+      console.error("Error updating PlayFab data:", error)
+      alert(error instanceof Error ? error.message : "エラーが発生しました")
+    }
   }
 
   return (
@@ -217,42 +407,49 @@ export default function DungeonClearPage() {
             <ArrowLeft className="mr-2 h-5 w-5" />
             <span>ハンガーラックに戻る</span>
           </Link>
+          <button
+            onClick={toggleSound}
+            className="text-amber-400 hover:text-amber-300 transition-colors p-2"
+          >
+            {isSoundOn ? <Volume2 className="h-6 w-6" /> : <VolumeX className="h-6 w-6" />}
+          </button>
         </div>
 
         <div className="relative z-30 flex flex-col items-center justify-center w-full">
           {/* Initial Mō-chan character and dialogue */}
-          {dialogueIndex >= 0 && (
-            <div className="flex flex-col items-center mb-8">
+          <AnimatePresence mode="wait">
+            {dialogueIndex >= 0 && (
               <motion.div
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
                 transition={{ duration: 1, type: "spring" }}
-                className="mb-8"
+                className="flex flex-col items-center mb-8"
               >
                 <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-amber-500 shadow-[0_0_15px_rgba(251,191,36,0.5)]">
                   <Image src="/cow-fairy.webp" alt="モーちゃん" fill className="object-contain rounded-full" priority />
                 </div>
-              </motion.div>
 
-              {/* Initial Dialogue box - styled like HangerList */}
-              <AnimatePresence mode="wait">
-                {dialogueIndex >= 0 && (
-                  <motion.div
-                    key={`dialogue-${dialogueIndex}`}
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -20, opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] rounded-xl p-6 mb-8 w-full max-w-md"
-                  >
-                    <p className="text-amber-300 text-xl font-medium text-center leading-relaxed">
-                      {dialogues[dialogueIndex]}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
+                {/* Initial Dialogue box - styled like HangerList */}
+                <AnimatePresence mode="wait">
+                  {dialogueIndex >= 0 && (
+                    <motion.div
+                      key={`dialogue-${dialogueIndex}`}
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -20, opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] rounded-xl p-6 mt-8 w-full max-w-md"
+                    >
+                      <p className="text-amber-300 text-xl font-medium text-center leading-relaxed">
+                        {dialogues[dialogueIndex]}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Full-screen dungeon cards - styled like HangerList cards */}
           {showDungeons && (
@@ -263,8 +460,8 @@ export default function DungeonClearPage() {
                     key={`dungeon-card-${activeDungeon}`}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.2 }}
-                    transition={{ duration: 1.5 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 1.5, type: "spring" }}
                     className="w-full max-w-2xl mx-auto px-4"
                   >
                     <div
@@ -318,28 +515,18 @@ export default function DungeonClearPage() {
                           transition={{ delay: 0.3, duration: 0.8, type: "spring" }}
                           className="text-8xl md:text-9xl mb-4 text-center"
                         >
-                          {dungeons[activeDungeon].emoji}
+                          {selectedQuotes[activeDungeon]?.emoji}
                         </motion.div>
 
-                        {/* Dungeon name */}
+                        {/* Quote */}
                         <motion.h2
                           initial={{ y: 20, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ delay: 0.5, duration: 0.8 }}
-                          className="text-3xl md:text-5xl font-bold text-amber-300 text-center mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
+                          className="text-2xl md:text-3xl font-bold text-amber-300 text-center mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] italic"
                         >
-                          {dungeons[activeDungeon].name}
+                          {selectedQuotes[activeDungeon]?.text}
                         </motion.h2>
-
-                        {/* Clear stamp */}
-                        <motion.div
-                          initial={{ scale: 0, rotate: 15 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ delay: 1, duration: 0.5, type: "spring" }}
-                          className="absolute top-6 right-6 bg-gradient-to-r from-amber-600 to-amber-500 text-white px-4 py-2 rounded-lg transform rotate-12 border-2 border-amber-400/50 shadow-lg"
-                        >
-                          <span className="text-xl font-bold">CLEAR!</span>
-                        </motion.div>
 
                         {/* Decorative line */}
                         <motion.div
@@ -399,7 +586,7 @@ export default function DungeonClearPage() {
                         {/* Photo directly without frame */}
                         <div className="relative h-60 w-full overflow-hidden rounded-lg">
                           <Image
-                            src={beforeAfterPairs[0].before || "/placeholder.svg"}
+                            src={beforeImageUrl || "/placeholder.svg"}
                             alt="Before"
                             fill
                             className="object-cover"
@@ -425,7 +612,7 @@ export default function DungeonClearPage() {
                         {/* Photo directly without frame */}
                         <div className="relative h-60 w-full overflow-hidden rounded-lg">
                           <Image
-                            src={beforeAfterPairs[0].after || "/placeholder.svg"}
+                            src={afterImageUrl || "/placeholder.svg"}
                             alt="After"
                             fill
                             className="object-cover"
@@ -493,7 +680,7 @@ export default function DungeonClearPage() {
                     repeatType: "reverse",
                   }}
                 >
-                  ダンジョンクリア！おめでとう！！
+                  ダンジョンクリア！おめでとう✨！
                 </motion.h1>
 
                 {/* Radial light rays */}
