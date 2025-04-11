@@ -150,7 +150,7 @@ export default function HangerList() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
       {/* Magical floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 20 }).map((_, i) => (
@@ -204,7 +204,13 @@ export default function HangerList() {
               transition={{ delay: index * 0.1 }}
               whileHover={{ y: -5 }}
             >
-              <div className="relative overflow-hidden bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] h-[280px] flex flex-col">
+              <div className="relative overflow-hidden bg-gradient-to-b from-violet-800/90 to-violet-900/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] h-[280px] flex flex-col">
+                {/* Decorative corners */}
+                <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-amber-500"></div>
+                <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-amber-500"></div>
+                <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-amber-500"></div>
+                <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-amber-500"></div>
+
                 <div className="relative h-36 w-full overflow-hidden">
                   <Image
                     src={rack.imageUrl}
@@ -213,7 +219,7 @@ export default function HangerList() {
                     priority={index === 0}
                     className="object-cover transition-transform duration-300 hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-blue-950/80 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-violet-950/80 to-transparent" />
                 </div>
 
                 <div className="p-4 relative flex-1 flex flex-col">
@@ -269,9 +275,15 @@ export default function HangerList() {
             whileHover={{ y: -5 }}
           >
             <Link href="/castle/hanger/register" className="block h-full">
-              <div className="relative overflow-hidden bg-gradient-to-b from-blue-900/80 to-blue-950/80 border-2 border-amber-500/30 shadow-[0_0_15px_rgba(251,191,36,0.15)] h-[280px] cursor-pointer hover:border-amber-500/60 transition-all duration-300 flex flex-col items-center justify-center">
+              <div className="relative overflow-hidden bg-gradient-to-b from-violet-800/80 to-violet-900/80 border-2 border-amber-500/30 shadow-[0_0_15px_rgba(251,191,36,0.15)] h-[280px] cursor-pointer hover:border-amber-500/60 transition-all duration-300 flex flex-col items-center justify-center">
+                {/* Decorative corners */}
+                <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-amber-500/30"></div>
+                <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-amber-500/30"></div>
+                <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-amber-500/30"></div>
+                <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-amber-500/30"></div>
+
                 <motion.div
-                  className="mb-6 bg-blue-900/60 rounded-full p-4 text-amber-400"
+                  className="mb-6 bg-violet-800/60 rounded-full p-4 text-amber-400"
                   whileHover={{ scale: 1.1 }}
                   animate={{
                     boxShadow: [

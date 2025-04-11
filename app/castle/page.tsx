@@ -17,10 +17,10 @@ export default function CastleLobbyPage() {
   }, [])
 
   return (
-    <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
       {/* ホームに戻るボタン */}
       <Link href="/home" className="absolute top-4 right-4 z-20">
-        <Button variant="outline" className="bg-blue-900/80 border-amber-500/50 text-amber-300 hover:bg-blue-800/90 hover:text-amber-200">
+        <Button variant="outline" className="bg-gradient-to-b from-violet-800/90 to-violet-900/90 border-amber-500/50 text-amber-300 hover:bg-violet-700/90 hover:text-amber-200">
           <Home className="w-4 h-4 mr-2" />
           ホームに戻る
         </Button>
@@ -221,7 +221,7 @@ function RoomCard({ title, icon, isActive, count, href, delay }: RoomCardProps) 
           className={`relative p-6 h-[280px] flex flex-col items-center justify-center text-center transition-all duration-300 overflow-hidden
           ${
             isActive
-              ? "bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
+              ? "bg-gradient-to-b from-violet-800/90 to-violet-900/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
               : "bg-gradient-to-b from-slate-800/80 to-slate-900/80 border-2 border-slate-700/50 opacity-70"
           }`}
         >
