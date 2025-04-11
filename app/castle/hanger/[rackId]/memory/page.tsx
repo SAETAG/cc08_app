@@ -126,7 +126,7 @@ export default function MemoryPage() {
   }, [params.rackId, currentUser])
 
   return (
-    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
       {/* Magical floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 20 }).map((_, i) => (
@@ -193,7 +193,7 @@ export default function MemoryPage() {
         </motion.div>
 
         <div className="grid grid-cols-1 gap-6">
-          <Card className="relative overflow-hidden bg-gradient-to-br from-[#800020]/90 via-[#4B0082]/90 to-[#800020]/90 border-2 border-amber-300/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6">
+          <Card className="relative overflow-hidden bg-gradient-to-br from-[#800020]/90 via-[#4B0082]/90 to-[#800020]/90 border-2 border-amber-300/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6 max-w-sm mx-auto">
             {/* Decorative corners */}
             <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-300"></div>
             <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-300"></div>
@@ -229,10 +229,12 @@ export default function MemoryPage() {
               </div>
 
               <div className="flex gap-4">
-                <label className="cursor-pointer">
-                  <div className="flex items-center justify-center gap-2 w-32 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-base">
-                    <Upload className="h-5 w-5" />
-                    <span>写真を選択</span>
+                <label className="cursor-pointer group relative">
+                  <div className="flex items-center justify-center gap-2 w-32 px-6 py-2.5 bg-gradient-to-r from-purple-600/90 to-indigo-600/90 hover:from-purple-500/90 hover:to-indigo-500/90 text-amber-200 rounded-lg transition-all duration-300 text-base border-2 border-amber-200/50 relative overflow-hidden transform hover:scale-105 active:scale-98">
+                    <div className="absolute inset-0 bg-[url('/magic-circle.png')] bg-repeat opacity-10"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400/0 via-purple-400/20 to-indigo-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+                    <Upload className="h-5 w-5 relative z-10" />
+                    <span className="relative z-10">写真を選択</span>
                   </div>
                   <input
                     type="file"
@@ -242,10 +244,12 @@ export default function MemoryPage() {
                   />
                 </label>
 
-                <label className="cursor-pointer">
-                  <div className="flex items-center justify-center gap-2 w-32 px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors text-base">
-                    <Camera className="h-5 w-5" />
-                    <span>{isUploading ? "登録中..." : "写真を登録"}</span>
+                <label className="cursor-pointer group relative">
+                  <div className="flex items-center justify-center gap-2 w-32 px-6 py-2.5 bg-gradient-to-r from-blue-600/90 to-cyan-600/90 hover:from-blue-500/90 hover:to-cyan-500/90 text-amber-200 rounded-lg transition-all duration-300 text-base border-2 border-amber-200/50 relative overflow-hidden transform hover:scale-105 active:scale-98">
+                    <div className="absolute inset-0 bg-[url('/magic-circle.png')] bg-repeat opacity-10"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-blue-400/20 to-cyan-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+                    <Camera className="h-5 w-5 relative z-10" />
+                    <span className="relative z-10">{isUploading ? "登録中..." : "写真を登録"}</span>
                   </div>
                   <input
                     type="button"

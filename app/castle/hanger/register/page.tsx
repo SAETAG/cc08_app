@@ -174,7 +174,7 @@ export default function HangerRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex justify-center items-start px-4 py-8 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex justify-center items-start px-4 py-8 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 20 }).map((_, i) => (
           <motion.div
@@ -230,7 +230,7 @@ export default function HangerRegisterPage() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <Card className="relative overflow-hidden bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6">
+          <Card className="relative overflow-hidden bg-gradient-to-b from-violet-800/90 to-violet-900/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6">
             <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500" />
             <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-500" />
             <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-amber-500" />
@@ -247,7 +247,7 @@ export default function HangerRegisterPage() {
                   onChange={(e) => setNewHangerName(e.target.value)}
                   required
                   placeholder="例：寝室クローゼットの左ハンガーラック"
-                  className="bg-blue-950/50 border-amber-500/30 text-amber-100 placeholder:text-amber-300/40 focus:border-amber-400 focus:ring-amber-400/20 text-lg py-6"
+                  className="bg-violet-950/50 border-amber-500/30 text-amber-100 placeholder:text-amber-300/40 focus:border-amber-400 focus:ring-amber-400/20 text-lg py-6"
                 />
               </div>
 
@@ -261,18 +261,18 @@ export default function HangerRegisterPage() {
                   className="hidden"
                 />
                 {previewImage ? (
-                  <div className="relative w-full h-64 border-2 border-dashed border-amber-500/30 rounded-md overflow-hidden bg-blue-950/30">
+                  <div className="relative w-full h-64 border-2 border-dashed border-amber-500/30 rounded-md overflow-hidden bg-violet-950/30">
                     <Image src={previewImage} alt="Preview" fill className="object-contain" />
                     <button
                       type="button"
                       onClick={() => setPreviewImage(null)}
-                      className="absolute top-2 right-2 bg-blue-950/70 text-amber-400 hover:text-amber-300 hover:bg-blue-900/80 p-2 rounded-full"
+                      className="absolute top-2 right-2 bg-violet-950/70 text-amber-400 hover:text-amber-300 hover:bg-violet-900/80 p-2 rounded-full"
                     >
                       <X className="h-5 w-5" />
                     </button>
                   </div>
                 ) : (
-                  <div className="w-full h-64 rounded-md border-2 border-dashed border-amber-500/30 flex flex-col items-center justify-center p-4 bg-blue-950/30">
+                  <div className="w-full h-64 rounded-md border-2 border-dashed border-amber-500/30 flex flex-col items-center justify-center p-4 bg-violet-950/30">
                     <Upload className="h-10 w-10 text-amber-400/60 mb-4" />
                     <p className="text-amber-300/80 text-center mb-6">
                       画像をアップロードするか、カメラで撮影してください
@@ -283,20 +283,28 @@ export default function HangerRegisterPage() {
                         onClick={() => fileInputRef.current?.click()}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.98 }}
-                        className="bg-blue-800/80 hover:bg-blue-700/80 text-amber-300 border border-amber-500/30 py-2 px-4 rounded-md flex items-center gap-2"
+                        className="relative group bg-gradient-to-r from-emerald-600/90 to-teal-600/90 hover:from-emerald-500/90 hover:to-teal-500/90 text-amber-200 text-base font-medium py-2 px-4 rounded-lg border-2 border-amber-200/50 transition-all duration-300 transform hover:scale-105 active:scale-98 overflow-hidden"
                       >
-                        <Upload className="h-4 w-4" />
-                        アップロード
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-400/0 via-teal-400/0 to-emerald-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 bg-[url('/magic-circle.png')] bg-repeat opacity-10"></div>
+                        <div className="relative z-10 flex items-center gap-2">
+                          <Upload className="h-4 w-4" />
+                          アップロード
+                        </div>
                       </motion.button>
                       <motion.button
                         type="button"
                         onClick={handleCameraCapture}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.98 }}
-                        className="bg-blue-800/80 hover:bg-blue-700/80 text-amber-300 border border-amber-500/30 py-2 px-4 rounded-md flex items-center gap-2"
+                        className="relative group bg-gradient-to-r from-blue-600/90 to-cyan-600/90 hover:from-blue-500/90 hover:to-cyan-500/90 text-amber-200 text-base font-medium py-2 px-4 rounded-lg border-2 border-amber-200/50 transition-all duration-300 transform hover:scale-105 active:scale-98 overflow-hidden"
                       >
-                        <Camera className="h-4 w-4" />
-                        カメラ
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-400/0 via-cyan-400/0 to-blue-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 bg-[url('/magic-circle.png')] bg-repeat opacity-10"></div>
+                        <div className="relative z-10 flex items-center gap-2">
+                          <Camera className="h-4 w-4" />
+                          カメラ
+                        </div>
                       </motion.button>
                     </div>
                   </div>
@@ -306,11 +314,15 @@ export default function HangerRegisterPage() {
               <motion.button
                 type="submit"
                 disabled={isLoading}
-                whileHover={{ scale: 1.02 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white py-3 px-4 rounded-md shadow-md border border-amber-400/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative group w-full bg-gradient-to-r from-purple-600/90 to-indigo-600/90 hover:from-purple-500/90 hover:to-indigo-500/90 text-amber-200 text-base font-medium py-3 px-4 rounded-lg border-2 border-amber-200/50 transition-all duration-300 transform hover:scale-105 active:scale-98 overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? "登録中..." : "登録する"}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-400/0 via-indigo-400/0 to-purple-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute inset-0 bg-[url('/magic-circle.png')] bg-repeat opacity-10"></div>
+                <div className="relative z-10 flex items-center justify-center gap-2">
+                  {isLoading ? "登録中..." : "登録する"}
+                </div>
               </motion.button>
             </form>
           </Card>

@@ -151,12 +151,12 @@ export default function StageClearPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-purple-900/90 before:to-[#5c1a33]/90">
+    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-purple-900/60 before:to-[#5c1a33]/60">
       {/* ナビゲーションリンク */}
       <div className="absolute top-8 left-8 z-20">
         <Link
           href={`/castle/hanger/${rackId}`}
-          className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors bg-blue-900/50 px-3 py-2 rounded-md"
+          className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors px-3 py-2 rounded-md"
         >
           <ArrowLeft className="mr-2 h-5 w-5" />
           <span>ダンジョンマップに戻る</span>
@@ -167,7 +167,7 @@ export default function StageClearPage() {
       <div className="absolute top-8 right-8 z-20">
         <Link
           href="/castle"
-          className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors bg-blue-900/50 px-3 py-2 rounded-md"
+          className="inline-flex items-center text-amber-400 hover:text-amber-300 transition-colors px-3 py-2 rounded-md"
         >
           <Home className="mr-2 h-5 w-5" />
           <span>クローゼット城に戻る</span>
@@ -321,7 +321,7 @@ export default function StageClearPage() {
                     className="mt-6 flex flex-col items-center"
                   >
                     <div className="relative w-24 h-24 mb-3">
-                      <div className="absolute inset-0 rounded-full bg-lime-400 transform scale-[1.08]" />
+                      <div className="absolute inset-0 rounded-full bg-amber-400 transform scale-[1.08]" />
                       <div className="absolute inset-0 overflow-hidden rounded-full">
                         <Image
                           src="/cow-fairy.webp"
@@ -335,9 +335,9 @@ export default function StageClearPage() {
                         className="absolute -inset-1"
                         animate={{
                           boxShadow: [
-                            "0 0 8px 2px rgba(132,204,22,0.4)",
-                            "0 0 12px 4px rgba(132,204,22,0.6)",
-                            "0 0 8px 2px rgba(132,204,22,0.4)",
+                            "0 0 8px 2px rgba(251,191,36,0.4)",
+                            "0 0 12px 4px rgba(251,191,36,0.6)",
+                            "0 0 8px 2px rgba(251,191,36,0.4)",
                           ],
                         }}
                         transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
@@ -384,12 +384,12 @@ export default function StageClearPage() {
                 onClick={getExperiencePoints}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white text-xl font-medium py-4 px-8 rounded-lg shadow-lg border border-amber-400/30 relative overflow-hidden group flex items-center justify-center w-full gap-3"
+                className="bg-gradient-to-r from-purple-600/90 to-indigo-600/90 hover:from-purple-500/90 hover:to-indigo-500/90 text-amber-200 text-lg font-medium py-4 px-8 rounded-lg shadow-lg border-2 border-amber-400/50 relative overflow-hidden group flex items-center justify-center w-full gap-3"
               >
-                <Star className="h-6 w-6" />
+                <Star className="h-5 w-5 text-amber-200" />
                 <span className="relative z-10">経験値をGET</span>
                 <motion.span
-                  className="absolute inset-0 bg-gradient-to-r from-amber-500/80 to-amber-400/80"
+                  className="absolute inset-0 bg-gradient-to-r from-purple-400/20 to-indigo-400/20"
                   initial={{ x: "-100%" }}
                   whileHover={{ x: "100%" }}
                   transition={{ duration: 1 }}
@@ -398,25 +398,26 @@ export default function StageClearPage() {
                   className="absolute -inset-1 opacity-0 group-hover:opacity-30"
                   animate={{
                     boxShadow: [
-                      "inset 0 0 10px 5px rgba(251,191,36,0.1)",
-                      "inset 0 0 20px 10px rgba(251,191,36,0.2)",
-                      "inset 0 0 10px 5px rgba(251,191,36,0.1)",
+                      "inset 0 0 10px 5px rgba(253,230,138,0.1)",
+                      "inset 0 0 20px 10px rgba(253,230,138,0.2)",
+                      "inset 0 0 10px 5px rgba(253,230,138,0.1)",
                     ],
                   }}
                   transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
                 />
+                <div className="absolute inset-0 bg-[url('/magic-pattern.png')] opacity-10" />
               </motion.button>
 
               <motion.button
                 onClick={goToNextStage}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white text-xl font-medium py-4 px-8 rounded-lg shadow-lg border border-blue-400/30 relative overflow-hidden group flex items-center justify-center w-full gap-3 mt-2"
+                className="bg-gradient-to-r from-blue-600/90 to-cyan-600/90 hover:from-blue-500/90 hover:to-cyan-500/90 text-amber-200 text-lg font-medium py-4 px-8 rounded-lg shadow-lg border-2 border-amber-400/50 relative overflow-hidden group flex items-center justify-center w-full gap-3 mt-2"
               >
                 <span className="relative z-10">最終章に進む</span>
-                <ChevronRight className="h-6 w-6" />
+                <ChevronRight className="h-5 w-5 text-amber-200" />
                 <motion.span
-                  className="absolute inset-0 bg-gradient-to-r from-blue-500/80 to-blue-400/80"
+                  className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-cyan-400/20"
                   initial={{ x: "-100%" }}
                   whileHover={{ x: "100%" }}
                   transition={{ duration: 1 }}
@@ -425,13 +426,14 @@ export default function StageClearPage() {
                   className="absolute -inset-1 opacity-0 group-hover:opacity-30"
                   animate={{
                     boxShadow: [
-                      "inset 0 0 10px 5px rgba(59,130,246,0.1)",
-                      "inset 0 0 20px 10px rgba(59,130,246,0.2)",
-                      "inset 0 0 10px 5px rgba(59,130,246,0.1)",
+                      "inset 0 0 10px 5px rgba(253,230,138,0.1)",
+                      "inset 0 0 20px 10px rgba(253,230,138,0.2)",
+                      "inset 0 0 10px 5px rgba(253,230,138,0.1)",
                     ],
                   }}
                   transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
                 />
+                <div className="absolute inset-0 bg-[url('/magic-pattern.png')] opacity-10" />
               </motion.button>
             </motion.div>
           )}

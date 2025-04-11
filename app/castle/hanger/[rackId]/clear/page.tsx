@@ -295,7 +295,7 @@ export default function DungeonClearPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
       {/* Elegant gold square outlines */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 15 }).map((_, i) => {
@@ -439,7 +439,7 @@ export default function DungeonClearPage() {
                       animate={{ y: 0, opacity: 1 }}
                       exit={{ y: -20, opacity: 0 }}
                       transition={{ duration: 0.5 }}
-                      className="bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] rounded-xl p-6 mt-8 w-full max-w-md"
+                      className="bg-gradient-to-b from-violet-900/90 to-violet-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] rounded-xl p-6 mt-8 w-full max-w-md"
                     >
                       <p className="text-amber-300 text-xl font-medium text-center leading-relaxed">
                         {dialogues[dialogueIndex]}
@@ -553,7 +553,7 @@ export default function DungeonClearPage() {
                 className="w-full max-w-4xl mx-auto"
               >
                 <motion.div
-                  className="relative bg-gradient-to-b from-blue-900/90 to-blue-950/90 p-8 rounded-xl shadow-[0_0_30px_rgba(251,191,36,0.3)] border-2 border-amber-500/50 overflow-hidden"
+                  className="relative bg-gradient-to-b from-violet-900/90 to-violet-950/90 p-8 rounded-xl shadow-[0_0_30px_rgba(251,191,36,0.3)] border-2 border-amber-500/50 overflow-hidden"
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.5, type: "spring" }}
@@ -720,10 +720,21 @@ export default function DungeonClearPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleEndAdventure}
-                className="mt-6 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white font-bold py-3 px-8 rounded-lg shadow-lg border border-amber-400/30 flex items-center gap-2"
+                className="relative overflow-hidden bg-gradient-to-r from-blue-600/90 to-cyan-600/90 text-amber-200 font-bold py-4 px-8 rounded-lg border-2 border-amber-200/50 transition-all duration-300 transform hover:scale-105 active:scale-98 group"
               >
-                <Sparkles className="h-5 w-5" />
-                <span>この冒険を終了する</span>
+                {/* 魔法陣パターンの背景 */}
+                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-400 to-cyan-400"></div>
+                
+                {/* ホバー時の光るエフェクト */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-cyan-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                
+                {/* 内側に光るシャドウアニメーション */}
+                <div className="absolute inset-0 rounded-lg shadow-[inset_0_0_15px_rgba(251,191,36,0.3)] group-hover:shadow-[inset_0_0_20px_rgba(251,191,36,0.5)] transition-all duration-300"></div>
+                
+                <span className="relative z-10 flex items-center">
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  この冒険を終了する
+                </span>
               </motion.button>
             )}
           </AnimatePresence>

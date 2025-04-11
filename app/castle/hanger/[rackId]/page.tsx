@@ -381,7 +381,7 @@ export default function HangerDungeonPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+      <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
         <div className="flex flex-col items-center gap-4">
           <motion.div
             className="text-2xl font-bold"
@@ -416,7 +416,7 @@ export default function HangerDungeonPage() {
 
   if (error || !rackData) {
     return (
-      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
         <p className="text-red-400">{error || "データの取得に失敗しました"}</p>
         <Button
           onClick={() => router.push("/home")}
@@ -431,7 +431,7 @@ export default function HangerDungeonPage() {
   const latestAdventure = rackData.adventures?.[0]
 
   return (
-    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
       {/* Magical floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 20 }).map((_, i) => (
@@ -514,7 +514,7 @@ export default function HangerDungeonPage() {
 
         <div className="grid grid-cols-1 gap-6 mb-8">
           {/* 写真と整理収納の方向性のカード */}
-          <Card className="relative overflow-hidden bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6">
+          <Card className="relative overflow-hidden bg-gradient-to-b from-violet-800/90 to-violet-900/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6">
             {/* Decorative corners */}
             <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500"></div>
             <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-500"></div>
@@ -585,7 +585,7 @@ export default function HangerDungeonPage() {
           </Card>
 
           {/* 整理収納ダンジョンカード */}
-          <Card className="relative overflow-hidden bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6">
+          <Card className="relative overflow-hidden bg-gradient-to-b from-violet-800/90 to-violet-900/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6">
             {/* Decorative corners */}
             <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500"></div>
             <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-500"></div>

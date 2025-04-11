@@ -86,16 +86,16 @@ export default function StepPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
-        <div className="animate-spin text-4xl">🌟</div>
-        <p className="mt-4">読み込み中...</p>
+      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
+        <div className="animate-spin text-4xl text-amber-400">🌟</div>
+        <p className="mt-4 text-amber-400">読み込み中...</p>
       </div>
     )
   }
 
   if (error || !stepInfo) {
     return (
-      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
         <p className="text-red-400">{error || "データの取得に失敗しました"}</p>
         <button
           onClick={() => router.push(`/castle/hanger/${params.rackId}`)}
@@ -108,7 +108,7 @@ export default function StepPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
       {/* Magical floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 20 }).map((_, i) => (
@@ -160,7 +160,7 @@ export default function StepPage() {
           className="space-y-6"
         >
           {/* ステージ情報 */}
-        <Card className="relative overflow-hidden bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6">
+        <Card className="relative overflow-hidden bg-gradient-to-b from-violet-800/90 to-violet-900/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6">
           {/* 背景アイコン */}
           <div className="absolute top-0 right-0 opacity-10">
             <span className="text-[300px]">{stepInfo.icon}</span>
@@ -211,7 +211,7 @@ export default function StepPage() {
                   className="rounded-full border-2 border-amber-500/50"
                 />
               </div>
-              <Card className="bg-gradient-to-r from-blue-900/90 to-blue-950/90 border-2 border-amber-500/30 p-6 pl-16">
+              <Card className="bg-gradient-to-r from-violet-800/90 to-violet-900/90 border-2 border-amber-500/30 p-6 pl-16">
                 <p className="text-amber-300/80 italic">{stepInfo.hint}</p>
               </Card>
             </div>
@@ -243,9 +243,21 @@ export default function StepPage() {
                     alert(error instanceof Error ? error.message : "エラーが発生しました")
                   }
                 }}
-                className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
+                className="relative overflow-hidden bg-gradient-to-r from-blue-600/90 to-cyan-600/90 text-amber-200 font-bold py-4 px-8 rounded-lg border-2 border-amber-200/50 transition-all duration-300 transform hover:scale-105 active:scale-98 group"
               >
-                ミッション完了！
+                {/* 魔法陣パターンの背景 */}
+                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-400 to-cyan-400"></div>
+                
+                {/* ホバー時の光るエフェクト */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-cyan-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                
+                {/* 内側に光るシャドウアニメーション */}
+                <div className="absolute inset-0 rounded-lg shadow-[inset_0_0_15px_rgba(251,191,36,0.3)] group-hover:shadow-[inset_0_0_20px_rgba(251,191,36,0.5)] transition-all duration-300"></div>
+                
+                <span className="relative z-10 flex items-center">
+                  <span className="mr-2">✨</span>
+                  ミッション完了！
+                </span>
               </button>
             </div>
           </div>

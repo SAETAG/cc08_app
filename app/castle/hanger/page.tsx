@@ -108,7 +108,7 @@ export default function HangerList() {
 
   if (loading) {
     return (
-      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
         <div className="flex flex-col items-center gap-4">
           <motion.div
             className="text-2xl font-bold"
@@ -134,7 +134,7 @@ export default function HangerList() {
               ease: "easeInOut",
             }}
           >
-            <span className="text-4xl">👣</span>
+            <span className="text-4xl text-amber-400">👣</span>
           </motion.div>
         </div>
       </div>
@@ -248,18 +248,26 @@ export default function HangerList() {
                     {rack.stepsGenerated ? (
                       <Link
                         href={`/castle/hanger/${rack.id}`}
-                        className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white text-base font-medium py-2 px-6 rounded-lg shadow-lg border border-purple-400/30 relative overflow-hidden group flex items-center gap-2"
+                        className="relative group bg-gradient-to-r from-blue-600/90 to-cyan-600/90 hover:from-blue-500/90 hover:to-cyan-500/90 text-amber-200 text-base font-medium py-2 px-6 rounded-lg border-2 border-amber-200/50 transition-all duration-300 transform hover:scale-105 active:scale-98 overflow-hidden"
                       >
-                        <Sparkles className="h-5 w-5" />
-                        <span className="relative z-10">冒険を再開する</span>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-400/0 via-cyan-400/0 to-blue-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 bg-[url('/magic-circle.png')] bg-repeat opacity-10"></div>
+                        <div className="relative z-10 flex items-center gap-2">
+                          <Sparkles className="h-5 w-5" />
+                          <span>冒険を再開する</span>
+                        </div>
                       </Link>
                     ) : (
                       <Link
                         href={`/castle/hanger/${rack.id}/generate`}
-                        className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white text-base font-medium py-2 px-6 rounded-lg shadow-lg border border-amber-400/30 relative overflow-hidden group flex items-center gap-2"
+                        className="relative group bg-gradient-to-r from-pink-600/90 to-orange-600/90 hover:from-pink-500/90 hover:to-orange-500/90 text-amber-200 text-base font-medium py-2 px-6 rounded-lg border-2 border-amber-200/50 transition-all duration-300 transform hover:scale-105 active:scale-98 overflow-hidden"
                       >
-                        <Sparkles className="h-5 w-5" />
-                        <span className="relative z-10">冒険ストーリーを生成する</span>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-400/0 via-orange-400/0 to-pink-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 bg-[url('/magic-circle.png')] bg-repeat opacity-10"></div>
+                        <div className="relative z-10 flex items-center gap-2">
+                          <Sparkles className="h-5 w-5" />
+                          <span>冒険ストーリーを生成する</span>
+                        </div>
                       </Link>
                     )}
                   </div>
