@@ -167,7 +167,7 @@ export default function HomePage() {
               >
                 <div className="relative">
                   <div className="w-16 h-16 bg-blue-800/90 rounded-full flex items-center justify-center shadow-lg border-4 border-[#f0c96b] drop-shadow-[0_0_5px_rgba(240,201,107,0.7)]">
-                    <BookOpen className="w-8 h-8 text-amber-300" />
+                    <BookOpen className="w-8 h-8 text-[#f0c96b] drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]" />
                   </div>
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-[#f0c96b]"></div>
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-blue-800/90 to-blue-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
@@ -183,7 +183,7 @@ export default function HomePage() {
               >
                 <div className="relative">
                   <div className="w-16 h-16 bg-amber-800/90 rounded-full flex items-center justify-center shadow-lg border-4 border-[#f0c96b] drop-shadow-[0_0_5px_rgba(240,201,107,0.7)]">
-                    <Mountain className="w-8 h-8 text-amber-300" />
+                    <Mountain className="w-8 h-8 text-[#f0c96b] drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]" />
                   </div>
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-[#f0c96b]"></div>
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-amber-800/90 to-amber-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
@@ -199,7 +199,7 @@ export default function HomePage() {
               >
                 <div className="relative">
                   <div className="w-32 h-32 bg-violet-800/90 rounded-full flex items-center justify-center shadow-lg border-4 border-[#f0c96b] drop-shadow-[0_0_5px_rgba(240,201,107,0.7)]">
-                    <Castle className="w-16 h-16 text-amber-300" />
+                    <Castle className="w-16 h-16 text-[#f0c96b] drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]" />
                   </div>
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[16px] border-r-[16px] border-t-[32px] border-l-transparent border-r-transparent border-t-[#f0c96b]"></div>
                   <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 w-40 bg-gradient-to-br from-violet-800/90 to-violet-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
@@ -215,7 +215,7 @@ export default function HomePage() {
               >
                 <div className="relative">
                   <div className="w-16 h-16 bg-cyan-800/90 rounded-full flex items-center justify-center shadow-lg border-4 border-[#f0c96b] drop-shadow-[0_0_5px_rgba(240,201,107,0.7)]">
-                    <Trees className="w-8 h-8 text-amber-300" />
+                    <Trees className="w-8 h-8 text-[#f0c96b] drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]" />
                   </div>
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-[#f0c96b]"></div>
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-cyan-800/90 to-cyan-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
@@ -231,7 +231,7 @@ export default function HomePage() {
               >
                 <div className="relative">
                   <div className="w-16 h-16 bg-fuchsia-800/90 rounded-full flex items-center justify-center shadow-lg border-4 border-[#f0c96b] drop-shadow-[0_0_5px_rgba(240,201,107,0.7)]">
-                    <Home className="w-8 h-8 text-amber-300" />
+                    <Home className="w-8 h-8 text-[#f0c96b] drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]" />
                   </div>
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-[#f0c96b]"></div>
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-fuchsia-800/90 to-fuchsia-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
