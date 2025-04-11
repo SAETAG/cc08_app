@@ -15,6 +15,7 @@ interface StepInfo {
   title: string
   description: string
   hint: string
+  icon: string
 }
 
 export default function StepPage() {
@@ -59,7 +60,8 @@ export default function StepPage() {
                 dungeonName: stepData.dungeonName,
                 title: stepData.title,
                 description: stepData.description,
-                hint: stepData.hint
+                hint: stepData.hint,
+                icon: stepData.icon
               })
             } else {
               throw new Error("指定されたステップが見つかりません")
@@ -158,76 +160,99 @@ export default function StepPage() {
           className="space-y-6"
         >
           {/* ステージ情報 */}
-          <Card className="relative overflow-hidden bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6">
-            {/* Decorative corners */}
-            <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500"></div>
-            <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-500"></div>
-            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-amber-500"></div>
-            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-amber-500"></div>
+        <Card className="relative overflow-hidden bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6">
+          {/* 背景アイコン */}
+          <div className="absolute top-0 right-0 opacity-10">
+            <span className="text-[300px]">{stepInfo.icon}</span>
+          </div>
 
-            <div className="mb-4">
-              <div className="text-sm text-amber-300/80 mb-1">STAGE {stepInfo.stepNumber}</div>
-              <h1 className="text-3xl font-bold text-amber-400">{stepInfo.dungeonName}</h1>
+          {/* 魔法城風の上部装飾 */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-2 bg-gradient-to-r from-amber-400 to-yellow-200 rounded-full shadow-lg animate-pulse z-20"></div>
+
+          {/* Decorative corners */}
+          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500"></div>
+          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-500"></div>
+          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-amber-500"></div>
+          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-amber-500"></div>
+
+          <div className="mb-4">
+            <div className="text-sm text-amber-300/80 mb-1">STAGE {stepInfo.stepNumber}</div>
+            <h1 className="text-3xl font-bold text-amber-400">{stepInfo.dungeonName}</h1>
+          </div>
+
+          <div className="space-y-4">
+            {/* タイトル＋アイコン */}
+            <div className="flex items-center text-xl font-semibold text-amber-300 mb-2 space-x-3">
+              <span className="text-4xl">{stepInfo.icon}</span>
+              <span>{stepInfo.title}</span>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <h2 className="text-xl font-semibold text-amber-300 mb-2">{stepInfo.title}</h2>
-                <p className="text-amber-300/80">{stepInfo.description}</p>
+            {/* チェックリスト形式の説明 */}
+            <ul className="list-disc list-inside text-amber-300/80 space-y-1">
+              {stepInfo.description
+                .split("✔️")
+                .filter((item) => item.trim() !== "")
+                .map((item, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="mr-2">✔️</span>
+                    <span>{item.trim().replace(/\/$/, '')}</span>
+                  </li>
+                ))}
+            </ul>
+
+            {/* ヒントエリア */}
+            <div className="relative">
+              <div className="absolute -bottom-4 -left-4 w-16 h-16">
+                <Image
+                  src="/cow-fairy.webp"
+                  alt="モーちゃん"
+                  width={64}
+                  height={64}
+                  className="rounded-full border-2 border-amber-500/50"
+                />
               </div>
+              <Card className="bg-gradient-to-r from-blue-900/90 to-blue-950/90 border-2 border-amber-500/30 p-6 pl-16">
+                <p className="text-amber-300/80 italic">{stepInfo.hint}</p>
+              </Card>
+            </div>
 
-              {/* ヒント */}
-              <div className="relative">
-                <div className="absolute -bottom-4 -left-4 w-16 h-16">
-                  <Image
-                    src="/cow-fairy.webp"
-                    alt="モーちゃん"
-                    width={64}
-                    height={64}
-                    className="rounded-full border-2 border-amber-500/50"
-                  />
-                </div>
-                <Card className="bg-gradient-to-r from-blue-900/90 to-blue-950/90 border-2 border-amber-500/30 p-6 pl-16">
-                  <p className="text-amber-300/80 italic">{stepInfo.hint}</p>
-                </Card>
-              </div>
+            {/* ミッション完了ボタン */}
+            <div className="mt-8 flex justify-center">
+              <button
+                onClick={async () => {
+                  try {
+                    const response = await fetch("/api/updateUserData", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        key: `rack_${params.rackId}_stage_${stepInfo.stepNumber}_status`,
+                        value: true
+                      }),
+                    })
 
-              {/* ミッション完了ボタン */}
-              <div className="mt-8 flex justify-center">
-                <button
-                  onClick={async () => {
-                    try {
-                      // PlayFabにデータを保存
-                      const response = await fetch("/api/updateUserData", {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                          key: `rack_${params.rackId}_stage_${stepInfo.stepNumber}_status`,
-                          value: true
-                        }),
-                      })
-
-                      if (!response.ok) {
-                        const error = await response.json()
-                        throw new Error(error.error || "データの更新に失敗しました")
-                      }
-
-                      // クリア画面に遷移
-                      router.push(`/castle/hanger/${params.rackId}/${params.stepId}/clear`)
-                    } catch (error) {
-                      console.error("Error completing mission:", error)
-                      alert(error instanceof Error ? error.message : "エラーが発生しました")
+                    if (!response.ok) {
+                      const error = await response.json()
+                      throw new Error(error.error || "データの更新に失敗しました")
                     }
-                  }}
-                  className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
-                >
-                  ミッション完了！
-                </button>
-              </div>
+
+                    router.push(`/castle/hanger/${params.rackId}/${params.stepId}/clear`)
+                  } catch (error) {
+                    console.error("Error completing mission:", error)
+                    alert(error instanceof Error ? error.message : "エラーが発生しました")
+                  }
+                }}
+                className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
+              >
+                ミッション完了！
+              </button>
             </div>
-          </Card>
+          </div>
+
+          {/* 魔法城風の下部装飾 */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-2 bg-gradient-to-r from-yellow-200 to-amber-400 rounded-full shadow-lg animate-pulse z-20"></div>
+        </Card>
         </motion.div>
       </div>
     </div>
