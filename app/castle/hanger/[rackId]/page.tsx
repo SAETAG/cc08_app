@@ -381,10 +381,10 @@ export default function HangerDungeonPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-green-950/80">
+      <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
         <div className="flex flex-col items-center gap-4">
           <motion.div
-            className="text-2xl font-bold text-amber-400"
+            className="text-2xl font-bold"
             animate={{
               opacity: [0.5, 1, 0.5],
             }}
@@ -410,11 +410,9 @@ export default function HangerDungeonPage() {
             <span className="text-4xl">👣</span>
           </motion.div>
         </div>
-
       </div>
-    </div>
-  )
-}
+    )
+  }
 
   if (error || !rackData) {
     return (

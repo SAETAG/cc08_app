@@ -17,10 +17,10 @@ export default function CastleLobbyPage() {
   }, [])
 
   return (
-    <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-green-950/80">
+    <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
       {/* ホームに戻るボタン */}
       <Link href="/home" className="absolute top-4 right-4 z-20">
-        <Button variant="outline" className="bg-green-900/80 border-amber-500/50 text-amber-300 hover:bg-green-800/90 hover:text-amber-200">
+        <Button variant="outline" className="bg-blue-900/80 border-amber-500/50 text-amber-300 hover:bg-blue-800/90 hover:text-amber-200">
           <Home className="w-4 h-4 mr-2" />
           ホームに戻る
         </Button>
