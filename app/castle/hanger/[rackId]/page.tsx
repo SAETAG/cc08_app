@@ -379,40 +379,28 @@ export default function HangerDungeonPage() {
     router.push(`/castle/hanger/${params.rackId}/step-${stepNumber}`)
   }
 
-  if (loading || isLoading) {
-    return (
-      <div className="min-h-screen w-full bg-[url('/hanger.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
-        <div className="flex flex-col items-center gap-4">
-          <motion.div
-            className="text-2xl font-bold"
-            animate={{
-              opacity: [0.5, 1, 0.5],
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            ストーリー読み込み中...
-          </motion.div>
-          <motion.div
-            className="flex gap-2"
-            animate={{
-              x: [0, 20, 0],
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            <span className="text-4xl">📚</span>
-          </motion.div>
-        </div>
+if (loading || isLoading) {
+  return (
+    <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-green-950/80">
+      <div className="flex flex-col items-center gap-4">
+        <motion.div
+          className="text-2xl font-bold text-amber-400"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        >
+          移動中...
+        </motion.div>
+        <motion.div
+          className="flex gap-2"
+          animate={{ x: [0, 20, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <span className="text-4xl">👣</span>
+        </motion.div>
       </div>
-    )
-  }
+    </div>
+  )
+}
 
   if (error || !rackData) {
     return (
