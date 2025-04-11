@@ -6,7 +6,8 @@ import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Package, Shirt, Layers, Sparkles } from "lucide-react"
+import { Crown, Package, Shirt, Layers, Sparkles, Home } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export default function CastleLobbyPage() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -16,7 +17,14 @@ export default function CastleLobbyPage() {
   }, [])
 
   return (
-    <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-blue-950/80">
+    <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-green-950/80">
+      {/* ホームに戻るボタン */}
+      <Link href="/home" className="absolute top-4 right-4 z-20">
+        <Button variant="outline" className="bg-green-900/80 border-amber-500/50 text-amber-300 hover:bg-green-800/90 hover:text-amber-200">
+          <Home className="w-4 h-4 mr-2" />
+          ホームに戻る
+        </Button>
+      </Link>
       {/* Magical floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 30 }).map((_, i) => (
