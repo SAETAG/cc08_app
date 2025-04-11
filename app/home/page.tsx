@@ -103,7 +103,7 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-yellow-500"></div>
         <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-yellow-500"></div>
 
-        <h1 className="text-lg sm:text-2xl font-bold text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.5)] px-2">
+        <h1 className="text-lg sm:text-2xl font-bold text-[#f0c96b] drop-shadow-[0_0_5px_rgba(240,201,107,0.7)] px-2">
           Closet Chronicle
         </h1>
         <div className="flex gap-1 sm:gap-2">
@@ -140,7 +140,7 @@ export default function HomePage() {
       <div className="bg-gradient-to-r from-teal-800 via-purple-800 to-teal-800 border-b-2 border-yellow-500 p-2 px-4 flex items-center justify-between shadow-md relative z-10">
         <div className="flex items-center space-x-2">
           <Scroll className="h-5 w-5 text-yellow-300" />
-          <span className="text-yellow-300 font-bold text-sm sm:text-base drop-shadow-[0_0_3px_rgba(250,204,21,0.5)]">
+          <span className="text-[#f0c96b] font-bold text-sm sm:text-base drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">
             {currentQuest}
           </span>
         </div>
@@ -166,12 +166,12 @@ export default function HomePage() {
                 className="absolute top-[20%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
                 <div className="relative">
-                  <div className="w-16 h-16 bg-purple-800/90 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-16 h-16 bg-blue-800/90 rounded-full flex items-center justify-center shadow-lg border-4 border-[#f0c96b] drop-shadow-[0_0_5px_rgba(240,201,107,0.7)]">
                     <BookOpen className="w-8 h-8 text-amber-300" />
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-purple-800/90"></div>
-                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-purple-900/90 to-purple-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
-                    <p className="text-amber-300 text-sm font-bold">収納の湖</p>
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-[#f0c96b]"></div>
+                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-blue-800/90 to-blue-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
+                    <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">収納の湖</p>
                   </div>
                 </div>
               </Link>
@@ -182,12 +182,12 @@ export default function HomePage() {
                 className="absolute top-[20%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
                 <div className="relative">
-                  <div className="w-16 h-16 bg-slate-800/90 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-16 h-16 bg-amber-800/90 rounded-full flex items-center justify-center shadow-lg border-4 border-[#f0c96b] drop-shadow-[0_0_5px_rgba(240,201,107,0.7)]">
                     <Mountain className="w-8 h-8 text-amber-300" />
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-slate-800/90"></div>
-                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-slate-900/90 to-slate-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
-                    <p className="text-amber-300 text-sm font-bold">パーティーの洞窟</p>
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-[#f0c96b]"></div>
+                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-amber-800/90 to-amber-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
+                    <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">パーティーの洞窟</p>
                   </div>
                 </div>
               </Link>
@@ -198,12 +198,12 @@ export default function HomePage() {
                 className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
                 <div className="relative">
-                  <div className="w-32 h-32 bg-blue-800/90 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-32 h-32 bg-violet-800/90 rounded-full flex items-center justify-center shadow-lg border-4 border-[#f0c96b] drop-shadow-[0_0_5px_rgba(240,201,107,0.7)]">
                     <Castle className="w-16 h-16 text-amber-300" />
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[16px] border-r-[16px] border-t-[32px] border-l-transparent border-r-transparent border-t-blue-800/90"></div>
-                  <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 w-40 bg-gradient-to-br from-blue-900/90 to-blue-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
-                    <p className="text-amber-300 text-base font-bold">クローゼット城</p>
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[16px] border-r-[16px] border-t-[32px] border-l-transparent border-r-transparent border-t-[#f0c96b]"></div>
+                  <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 w-40 bg-gradient-to-br from-violet-800/90 to-violet-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
+                    <p className="text-[#f0c96b] text-base font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">クローゼット城</p>
                   </div>
                 </div>
               </Link>
@@ -214,12 +214,12 @@ export default function HomePage() {
                 className="absolute top-[80%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
                 <div className="relative">
-                  <div className="w-16 h-16 bg-orange-700/90 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-16 h-16 bg-cyan-800/90 rounded-full flex items-center justify-center shadow-lg border-4 border-[#f0c96b] drop-shadow-[0_0_5px_rgba(240,201,107,0.7)]">
                     <Trees className="w-8 h-8 text-amber-300" />
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-orange-700/90"></div>
-                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-orange-800/90 to-orange-900/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
-                    <p className="text-amber-300 text-sm font-bold">断捨離の森</p>
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-[#f0c96b]"></div>
+                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-cyan-800/90 to-cyan-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
+                    <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">断捨離の森</p>
                   </div>
                 </div>
               </Link>
@@ -230,12 +230,12 @@ export default function HomePage() {
                 className="absolute top-[80%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
                 <div className="relative">
-                  <div className="w-16 h-16 bg-rose-800/90 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-16 h-16 bg-fuchsia-800/90 rounded-full flex items-center justify-center shadow-lg border-4 border-[#f0c96b] drop-shadow-[0_0_5px_rgba(240,201,107,0.7)]">
                     <Home className="w-8 h-8 text-amber-300" />
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-rose-800/90"></div>
-                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-rose-900/90 to-rose-950/90 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-500/50">
-                    <p className="text-amber-300 text-sm font-bold">勇者の休憩所</p>
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-[#f0c96b]"></div>
+                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-fuchsia-800/90 to-fuchsia-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
+                    <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">勇者の休憩所</p>
                   </div>
                 </div>
               </Link>
