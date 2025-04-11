@@ -1,9 +1,15 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+    // ユーザーごとのディレクトリへのアクセスを制御
+    match /users/{userId}/{allPaths=**} {
+      // 認証済みユーザーが自分のデータにアクセスできるようにする
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // その他のパスへのアクセスを拒否
     match /{allPaths=**} {
-      allow read, write: if request.auth != null;
-      allow options: if true;
+      allow read, write: if false;
     }
   }
 } 

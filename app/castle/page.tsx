@@ -11,54 +11,9 @@ import { Button } from "@/components/ui/button"
 
 export default function CastleLobbyPage() {
   const [isLoaded, setIsLoaded] = useState(false)
-  const [kingRoomUnlocked, setKingRoomUnlocked] = useState(false)
 
   useEffect(() => {
-    const fetchStorageStatus = async () => {
-      try {
-        const keys = [
-          "rack_cf3876ec-bba8-40dc-9cbf-b3b6fd67b68d_status",
-          "rack_2_status",
-          "drawer_1_status",
-          "drawer_2_status",
-          "shelf_1_status",
-          "shelf_2_status"
-        ]
-
-        console.log("Fetching storage status with keys:", keys)
-
-        const response = await fetch(`/api/getUserData`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            keys: keys
-          }),
-        })
-
-        if (!response.ok) {
-          throw new Error("データの取得に失敗しました")
-        }
-
-        const result = await response.json()
-        console.log("Received data:", result)
-
-        if (result.data) {
-          const isAnyStorageCompleted = Object.values(result.data).some(
-            (value) => value === true || value === "true"
-          )
-          console.log("Storage completion status:", isAnyStorageCompleted)
-          setKingRoomUnlocked(isAnyStorageCompleted)
-        }
-      } catch (error) {
-        console.error("Error fetching storage status:", error)
-      } finally {
-        setIsLoaded(true)
-      }
-    }
-
-    fetchStorageStatus()
+    setIsLoaded(true)
   }, [])
 
   return (
@@ -70,7 +25,6 @@ export default function CastleLobbyPage() {
           ホームに戻る
         </Button>
       </Link>
-
       {/* Magical floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 30 }).map((_, i) => (
@@ -226,30 +180,21 @@ export default function CastleLobbyPage() {
         <RoomCard
           title="棚収納の間"
           icon={<Package className="w-12 h-12" />}
-          isActive={true}
+          isActive={false}
           count={0}
-          href="/castle/shelves"
+          href="#"
           delay={0.8}
         />
 
         <RoomCard
           title="引き出し収納の間"
           icon={<Layers className="w-12 h-12" />}
-          isActive={true}
+          isActive={false}
           count={0}
-          href="/castle/drawers"
+          href="#"
           delay={1.0}
         />
       </div>
-
-      <motion.div
-        className="w-full max-w-5xl z-10"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.2 }}
-      >
-        <KingRoomCard isUnlocked={kingRoomUnlocked} href="/castle/king" />
-      </motion.div>
     </div>
   )
 }
@@ -276,7 +221,7 @@ function RoomCard({ title, icon, isActive, count, href, delay }: RoomCardProps) 
           className={`relative p-6 h-[280px] flex flex-col items-center justify-center text-center transition-all duration-300 overflow-hidden
           ${
             isActive
-              ? "bg-gradient-to-b from-green-900/90 to-green-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
+              ? "bg-gradient-to-b from-blue-900/90 to-blue-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
               : "bg-gradient-to-b from-slate-800/80 to-slate-900/80 border-2 border-slate-700/50 opacity-70"
           }`}
         >
@@ -339,118 +284,12 @@ function RoomCard({ title, icon, isActive, count, href, delay }: RoomCardProps) 
           <h3 className={`text-xl font-bold mb-3 tracking-wide ${isActive ? "text-amber-400" : "text-slate-400"}`}>
             {title}
           </h3>
+          {!isActive && (
+            <div className="text-slate-400 text-sm mt-2">準備中</div>
+          )}
         </Card>
       </Link>
     </motion.div>
-  )
-}
-
-interface KingRoomCardProps {
-  isUnlocked: boolean
-  href: string
-}
-
-function KingRoomCard({ isUnlocked, href }: KingRoomCardProps) {
-  return (
-    <Link href={isUnlocked ? href : "#"} className="block">
-      <Card
-        className={`relative p-8 h-[280px] flex flex-col items-center justify-center text-center transition-all duration-500 overflow-hidden
-        ${
-          isUnlocked
-            ? "bg-gradient-to-b from-green-900/90 to-green-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
-            : "bg-gradient-to-b from-slate-800/80 to-slate-900/90 border-2 border-slate-700/50 opacity-80"
-        }`}
-      >
-        {/* Decorative corners */}
-        <div
-          className={`absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 ${isUnlocked ? "border-amber-500" : "border-slate-600"}`}
-        ></div>
-        <div
-          className={`absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 ${isUnlocked ? "border-amber-500" : "border-slate-600"}`}
-        ></div>
-        <div
-          className={`absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 ${isUnlocked ? "border-amber-500" : "border-slate-600"}`}
-        ></div>
-        <div
-          className={`absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 ${isUnlocked ? "border-amber-500" : "border-slate-600"}`}
-        ></div>
-
-        {/* Subtle overlay effects */}
-        {isUnlocked && (
-          <>
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-t from-amber-500/5 to-transparent"
-              animate={{ opacity: [0.3, 0.1, 0.3] }}
-              transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
-            />
-
-            {/* Subtle border pulse */}
-            <motion.div
-              className="absolute -inset-[1px] rounded-lg border-2 border-amber-500/0"
-              animate={{
-                borderColor: ["rgba(251,191,36,0)", "rgba(251,191,36,0.4)", "rgba(251,191,36,0)"],
-              }}
-              transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
-            />
-          </>
-        )}
-
-        <div className="relative mb-4">
-          <motion.div
-            className={`relative z-10 ${isUnlocked ? "text-amber-400" : "text-slate-400"}`}
-            animate={
-              isUnlocked
-                ? {
-                    filter: [
-                      "drop-shadow(0 0 3px rgba(251,191,36,0.5))",
-                      "drop-shadow(0 0 6px rgba(251,191,36,0.6))",
-                      "drop-shadow(0 0 3px rgba(251,191,36,0.5))",
-                    ],
-                  }
-                : {}
-            }
-            transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
-          >
-            <Crown className="w-16 h-16" />
-          </motion.div>
-          {isUnlocked && (
-            <motion.div
-              className="absolute inset-0 rounded-full z-0"
-              animate={{
-                boxShadow: [
-                  "0 0 10px 5px rgba(251,191,36,0.2)",
-                  "0 0 20px 10px rgba(251,191,36,0.3)",
-                  "0 0 10px 5px rgba(251,191,36,0.2)",
-                ],
-              }}
-              transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
-              style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}
-            />
-          )}
-        </div>
-
-        <h3 className="text-3xl font-bold mb-3 tracking-wider relative z-10">
-          <span className={`relative ${isUnlocked ? "text-amber-300" : "text-slate-400"}`}>
-            王の間
-            {isUnlocked && (
-              <motion.span
-                className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent"
-                animate={{ opacity: [0.5, 1, 0.5], width: ["80%", "100%", "80%"] }}
-                transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
-                style={{ left: "50%", transform: "translateX(-50%)" }}
-              />
-            )}
-          </span>
-        </h3>
-
-        {!isUnlocked && (
-          <div className="mt-3 flex flex-col items-center text-slate-400 relative z-10">
-            <span className="mb-1 text-2xl">🔒</span>
-            <span>ダンジョンを１つ以上クリアしたら解放</span>
-          </div>
-        )}
-      </Card>
-    </Link>
   )
 }
 

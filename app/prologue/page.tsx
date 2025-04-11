@@ -5,20 +5,34 @@ import { Button } from "@/components/ui/button"
 import { Volume2, VolumeX, FastForward } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { motion, AnimatePresence } from "framer-motion"
 
 // Base component structure without any dynamic content
 const StaticPrologueBase = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden bg-teal-950">
-    <div className="max-w-md w-full bg-opacity-90 p-6 sm:p-8 rounded-xl shadow-lg border-2 border-teal-700 z-10 relative">
+  <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <Image
+      src="/map.png"
+      alt="Background"
+      fill
+      className="object-cover"
+      priority
+    />
+    <div className="absolute inset-0 bg-green-900/80" />
+    <div className="max-w-md w-full bg-gradient-to-b from-green-900/90 to-green-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6 sm:p-8 rounded-xl relative">
+      {/* Decorative corners */}
+      <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500"></div>
+      <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-500"></div>
+      <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-amber-500"></div>
+      <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-amber-500"></div>
       <div className="text-center space-y-6">
-        <h1 className="text-3xl sm:text-4xl font-bold text-yellow-300 tracking-tight drop-shadow-[0_0_8px_rgba(250,204,21,0.7)]">
+        <h1 className="text-3xl sm:text-4xl font-bold text-amber-300 tracking-tight drop-shadow-[0_0_8px_rggba(251,191,36,0.7)]">
           乱れしクローゼット王国
         </h1>
-        <p className="text-white text-sm sm:text-base">物語を始めるには以下のボタンをクリックしてください</p>
-        <div className="w-full sm:w-auto bg-teal-800 text-yellow-300 font-medium py-2 px-4 rounded-lg border border-teal-600">
+        <p className="text-amber-300/80 text-sm sm:text-base">物語を始めるには以下のボタンをクリックしてください</p>
+        <div className="w-full sm:w-auto bg-green-800 text-amber-300 font-medium py-2 px-4 rounded-lg border border-green-600">
           物語を始める
         </div>
-        <p className="text-xs text-teal-300 mt-4">※以降、効果音が鳴ります（音楽：魔王魂）</p>
+        <p className="text-xs text-amber-300/60 mt-4">※以降、効果音が鳴ります（音楽：魔王魂）</p>
       </div>
     </div>
   </div>
@@ -41,8 +55,8 @@ const DynamicPrologue = () => {
     "",
     "かつて、クローゼット王国は調和と美しさに満ちた世界でした。\nすべての衣装や小物は、まるで魔法のようにその居場所を知り、王国は輝いていたのです。",
     "しかし、ある日、突如として現れた『混沌の呪い』が王国に暗い影を落としました。\n棚は乱れ、衣装は迷宮のごとく入り組み、かつての秩序は音を立てて崩れ去っていったのです。",
-    "勇者よ、あなたにのみ託された使命がある。\n散らかり果てた王国に再び秩序をもたらし、失われた美しさを取り戻すのです。\n『片方見つからないソックスライム』、そして『リバウンドラゴン』…彼らを打ち倒し、再び平和と輝きに満ちたクローゼットを取り戻すのです！",
-    "冒険の始まり：\n\nここからあなたは、勇者として、各エリアに潜む混沌を一掃するための旅に出ます。\n初めは小さなクエストから始まり、ひとつひとつの達成があなたを強くします。\nそしてクローゼット王国が再び輝きを取り戻すまさにその時、あなたは国を統治する偉大な王になるのです。\n\nさぁ選ばれし勇者よ、行ってらっしゃい！",
+    "勇者よ、あなたにのみ託された使命がある。\n散らかり果てた王国に再び秩序をもたらし、失われた美しさを取り戻すのです。",
+    "ここからあなたは、勇者として、各エリアに潜む混沌を一掃するための旅に出ます。\n初めは小さなクエストから始まり、ひとつひとつの達成があなたを強くします。\nそしてクローゼット王国が再び輝きを取り戻すまさにその時、あなたは国を統治する偉大な王になるのです。\n\nさぁ選ばれし勇者よ、行ってらっしゃい！",
     "",
   ]
 
@@ -62,12 +76,12 @@ const DynamicPrologue = () => {
 
   // Background colors for each stage
   const bgColors = [
-    "bg-teal-950", // Initial
-    "bg-gradient-to-br from-orange-400 to-red-500", // Stage 1
+    "bg-green-950", // Initial
+    "bg-gradient-to-br from-green-400 to-green-500", // Stage 1
     "bg-gray-800", // Stage 2
-    "bg-teal-900", // Stage 3
-    "bg-teal-800", // Stage 4
-    "bg-teal-700", // Final
+    "bg-green-900", // Stage 3
+    "bg-green-800", // Stage 4
+    "bg-green-700", // Final
   ]
 
   // Handle smooth stage transitions
@@ -239,33 +253,56 @@ const DynamicPrologue = () => {
         // Split the paragraph to isolate the target text
         const parts = paragraph.split("さぁ選ばれし勇者よ、行ってらっしゃい！")
         return (
-          <p key={index}>
+          <motion.p
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.5 }}
+            className="animate-magical-appear"
+          >
             {parts[0]}
-            <span className="text-xl font-bold text-lime-400 animate-pulse drop-shadow-[0_0_8px_rgba(163,230,53,0.8)]">
+            <motion.span
+              className="text-xl font-bold text-[#f0c96b] drop-shadow-[0_0_8px_rgba(240,201,107,0.8)]"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.5 + 0.3,
+                repeat: Infinity,
+                repeatType: "reverse",
+              }}
+            >
               さぁ選ばれし勇者よ、行ってらっしゃい！
-            </span>
+            </motion.span>
             {parts[1]}
-          </p>
+          </motion.p>
         )
       }
-      // Regular paragraph
-      return <p key={index}>{paragraph}</p>
+
+      return (
+        <motion.p
+          key={index}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: index * 0.5 }}
+          className="text-amber-300/80 animate-magical-appear"
+        >
+          {paragraph}
+        </motion.p>
+      )
     })
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background layers for smooth transitions */}
-      <div
-        className={`absolute inset-0 ${bgColors[prevStage]} transition-opacity duration-1000 ease-in-out z-0`}
-        style={{ opacity: isTransitioning ? 0 : 1 }}
+    <div className={`min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden transition-colors duration-1000 ${bgColors[stage]}`}>
+      <Image
+        src="/map.png"
+        alt="Background"
+        fill
+        className="object-cover"
+        priority
       />
-
-      <div
-        className={`absolute inset-0 ${bgColors[stage]} transition-opacity duration-1000 ease-in-out z-0`}
-        style={{ opacity: isTransitioning ? 1 : 0 }}
-      />
-
+      <div className="absolute inset-0 bg-green-900/80" />
       {/* Background particles - previous stage */}
       {prevStage > 0 && (
         <div
@@ -304,7 +341,7 @@ const DynamicPrologue = () => {
             <Button
               variant="outline"
               size="icon"
-              className="bg-teal-800 border-teal-600 text-white hover:bg-teal-700"
+              className="bg-green-800 border-green-600 text-white hover:bg-green-700"
               onClick={toggleMute}
             >
               {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
@@ -313,7 +350,7 @@ const DynamicPrologue = () => {
             <Button
               variant="outline"
               size="icon"
-              className="bg-teal-800 border-teal-600 text-white hover:bg-teal-700"
+              className="bg-green-800 border-green-600 text-white hover:bg-green-700"
               onClick={skipAnimation}
             >
               <FastForward className="h-5 w-5" />
@@ -322,21 +359,26 @@ const DynamicPrologue = () => {
         )}
 
         {/* Content container */}
-        <div className="max-w-md w-full bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 bg-opacity-90 p-6 sm:p-8 rounded-xl shadow-lg border-2 border-indigo-400 z-10 relative">
+        <div className="max-w-md w-full bg-gradient-to-b from-green-900/90 to-green-950/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6 sm:p-8 rounded-xl relative">
+          {/* Decorative corners */}
+          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500"></div>
+          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-500"></div>
+          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-amber-500"></div>
+          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-amber-500"></div>
           {/* Stage 0: Initial screen */}
           {stage === 0 && (
             <div className="text-center space-y-6">
-              <h1 className="text-3xl sm:text-4xl font-bold text-yellow-300 tracking-tight drop-shadow-[0_0_8px_rgba(250,204,21,0.7)]">
+              <h1 className="text-3xl sm:text-4xl font-bold text-amber-300 tracking-tight drop-shadow-[0_0_8px_rgba(251,191,36,0.7)]">
                 クローゼット王国
               </h1>
-              <p className="text-white text-sm sm:text-base">ボタンを押して物語を始めよう</p>
+              <p className="text-amber-300/80 text-sm sm:text-base">ボタンを押して物語を始めよう</p>
               <Button
-                className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-orange-500 text-lg sm:text-xl"
+                className="w-full sm:w-auto bg-[#f0c96b] hover:bg-[#e0b95b] text-green-900 drop-shadow-[0_0_5px_rgba(240,201,107,0.7)] font-medium py-4 px-8 rounded-lg border border-[#d8b85a] text-lg sm:text-xl"
                 onClick={startPrologue}
               >
                 物語を始める
               </Button>
-              <p className="text-s text-teal-300 mt-4">※以降、効果音が鳴ります（音楽：魔王魂）</p>
+              <p className="text-s text-amber-300/60 mt-4">※以降、効果音が鳴ります（音楽：魔王魂）</p>
             </div>
           )}
 
@@ -344,29 +386,42 @@ const DynamicPrologue = () => {
           {stage > 0 && stage < 5 && (
             <div className="text-center space-y-4">
               {stage === 1 && (
-                <h2 className="text-2xl sm:text-3xl font-bold text-yellow-300 drop-shadow-[0_0_8px_rgba(250,204,21,0.7)] mb-6 animate-magical-appear">
-                  乱れしクローゼット王国
+                <h2 className="text-2xl sm:text-3xl font-bold text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.7)] mb-6 animate-magical-appear">
+                  美しいクローゼット王国
+                </h2>
+              )}
+
+              {stage === 2 && (
+                <h2 className="text-2xl sm:text-3xl font-bold text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.7)] mb-6 animate-magical-appear">
+                  突然訪れた混沌の呪い
+                </h2>
+              )}
+
+              {stage === 4 && (
+                <h2 className="text-2xl sm:text-3xl font-bold text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.7)] mb-6 animate-magical-appear">
+                  冒険の始まり
                 </h2>
               )}
 
               {stage === 3 && (
                 <div className="flex justify-center mb-4 animate-magical-appear">
-                  <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.7)]">
+                  <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-amber-500 shadow-[0_0_10px_rgba(251,191,36,0.7)]">
                     <Image src="/cow-fairy.webp" alt="片付けの妖精モーちゃん" fill className="object-cover" />
                   </div>
                 </div>
               )}
 
               {stage === 3 && (
-                <h3 className="text-xl font-bold text-yellow-200 mb-2 animate-magical-appear">
+                <h3 className="text-xl font-bold text-amber-300 mb-2 animate-magical-appear">
                   片付けの妖精モーちゃん
                 </h3>
               )}
 
               <div className="bg-black bg-opacity-50 p-4 rounded-lg">
-                <div className="text-white text-sm sm:text-base whitespace-pre-line text-left space-y-2">
-                  {/* Use the new renderParagraphs function instead of directly mapping */}
-                  {renderParagraphs(currentParagraphs)}
+                <div className="text-amber-300/80 text-sm sm:text-base whitespace-pre-line text-left space-y-2">
+                  <AnimatePresence mode="wait">
+                    {renderParagraphs(currentParagraphs)}
+                  </AnimatePresence>
                 </div>
               </div>
             </div>
@@ -375,11 +430,11 @@ const DynamicPrologue = () => {
           {/* Stage 5: Final screen */}
           {stage === 5 && (
             <div className="text-center space-y-6">
-              <h2 className="text-2xl sm:text-3xl font-bold text-yellow-300 drop-shadow-[0_0_8px_rgba(250,204,21,0.7)] animate-magical-appear">
+              <h2 className="text-2xl sm:text-3xl font-bold text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.7)] animate-magical-appear">
                 さぁ、冒険を始めよう！
               </h2>
               <Link href="/createname" className="block animate-magical-appear" style={{ animationDelay: "0.5s" }}>
-                <Button className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-yellow-300 drop-shadow-[0_0_5px_rgba(250,204,21,0.7)] font-medium py-4 px-8 rounded-lg border border-orange-500 text-lg sm:text-xl transition-colors duration-200">
+                <Button className="w-full sm:w-auto bg-[#f0c96b] hover:bg-[#e0b95b] text-green-900 drop-shadow-[0_0_5px_rgba(240,201,107,0.7)] font-medium py-4 px-8 rounded-lg border border-[#d8b85a] text-lg sm:text-xl transition-colors duration-200">
                   冒険の準備を始める
                 </Button>
               </Link>
