@@ -277,7 +277,10 @@ export default function LakePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-950 to-indigo-900 text-white relative overflow-hidden">
+    <div className="min-h-screen bg-[url('/lake.png')] bg-cover bg-center relative overflow-hidden">
+      {/* Background overlay */}
+      <div className="absolute inset-0 bg-blue-800/60 z-0"></div>
+
       {/* Water ripple effect background */}
       <WaterRipple />
 

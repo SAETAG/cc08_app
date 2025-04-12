@@ -226,7 +226,7 @@ export default function HomePage() {
 
               {/* 勇者の家 - 画面右下 */}
               <Link
-                href="/shop"
+                href="/base"
                 className="absolute top-[80%] left-[80%] transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-200 z-10 group"
               >
                 <div className="relative">

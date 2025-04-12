@@ -117,8 +117,9 @@ export default function ForestChallenge() {
       </div>
 
       {/* Forest background elements */}
-      <div className="absolute inset-0 z-0 opacity-10">
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('/placeholder.svg?height=200&width=200')] bg-repeat" />
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('/forest.png')] bg-cover bg-center" />
+        <div className="absolute top-0 left-0 w-full h-full bg-cyan-800 opacity-60" />
       </div>
       <FallingLeaves />
 
