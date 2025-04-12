@@ -6,6 +6,9 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     container: {
@@ -90,6 +93,9 @@ module.exports = {
         "confetti": "confetti 5s ease-in-out forwards",
         "bounce-slow": "bounce 2s infinite",
         "magical-appear": "magical-appear 0.8s ease-out forwards",
+      },
+      fontFamily: {
+        magic: ['var(--font-magic)'],
       },
     },
   },
