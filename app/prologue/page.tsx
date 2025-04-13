@@ -374,7 +374,7 @@ const DynamicPrologue = () => {
               )}
 
               <div className="bg-black bg-opacity-50 p-4 rounded-lg">
-                <div className="text-white text-sm sm:text-base whitespace-pre-line text-left space-y-2">
+                <div className="text-white text-xs sm:text-sm whitespace-pre-line text-left space-y-2">
                   <AnimatePresence mode="wait">
                     {displayedText.map((text, index) => (
                       <motion.p
@@ -382,7 +382,7 @@ const DynamicPrologue = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
-                        className="text-white text-xl font-medium text-center leading-relaxed"
+                        className="text-white text-sm sm:text-base font-medium text-center leading-relaxed font-subtitle tracking-wider drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
                       >
                         {text}
                         <span className="animate-pulse">|</span>

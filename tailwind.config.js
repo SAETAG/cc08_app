@@ -96,6 +96,7 @@ module.exports = {
       },
       fontFamily: {
         magic: ['var(--font-magic)'],
+        subtitle: ['"Yu Gothic"', '"Hiragino Sans"', '"Source Han Sans"', 'sans-serif'],
       },
     },
   },
