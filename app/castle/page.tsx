@@ -18,6 +18,9 @@ export default function CastleLobbyPage() {
 
   return (
     <div className="min-h-screen w-full bg-[url('/castle.png')] bg-cover bg-center text-amber-300 flex flex-col items-center justify-center p-4 relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-violet-800/60">
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+      `}</style>
       {/* ホームに戻るボタン */}
       <Link href="/home" className="absolute top-4 right-4 z-20">
         <Button variant="outline" className="bg-gradient-to-b from-violet-800/90 to-violet-900/90 border-amber-500/50 text-amber-300 hover:bg-violet-700/90 hover:text-amber-200">
@@ -150,9 +153,12 @@ export default function CastleLobbyPage() {
                 ],
               }}
               transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse" }}
-              style={{ backgroundSize: "200% auto" }}
+              style={{ 
+                backgroundSize: "200% auto",
+                fontFamily: 'MedievalSharp, cursive'
+              }}
             >
-              クローゼット城
+              Closet Castle
               <motion.span
                 className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent"
                 animate={{ opacity: [0.5, 1, 0.5], width: ["80%", "100%", "80%"] }}
@@ -163,7 +169,7 @@ export default function CastleLobbyPage() {
           </h1>
         </div>
         <p className="text-xl text-amber-300/80 mt-4 font-medium tracking-wide">
-          「収納の間」を選び、古代の魔法を解き放て
+          ⚔️「収納の間」を選び、冒険を始めよう🦄
         </p>
       </motion.div>
 
@@ -180,18 +186,18 @@ export default function CastleLobbyPage() {
         <RoomCard
           title="棚収納の間"
           icon={<Package className="w-12 h-12" />}
-          isActive={false}
+          isActive={true}
           count={0}
-          href="#"
+          href="/castle/shelf"
           delay={0.8}
         />
 
         <RoomCard
           title="引き出し収納の間"
           icon={<Layers className="w-12 h-12" />}
-          isActive={false}
+          isActive={true}
           count={0}
-          href="#"
+          href="/castle/drawer"
           delay={1.0}
         />
       </div>
@@ -218,38 +224,51 @@ function RoomCard({ title, icon, isActive, count, href, delay }: RoomCardProps) 
     >
       <Link href={isActive ? href : "#"} className="block">
         <Card
-          className={`relative p-6 h-[280px] flex flex-col items-center justify-center text-center transition-all duration-300 overflow-hidden
+          className={`p-6 h-[280px] flex flex-col items-center justify-center text-center transition-all duration-300 overflow-hidden group relative
           ${
             isActive
-              ? "bg-gradient-to-b from-violet-800/90 to-violet-900/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
+              ? "bg-gradient-to-b from-violet-800/90 to-violet-900/90 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] hover:from-violet-700/90 hover:to-violet-800/90 hover:shadow-[0_0_25px_rgba(251,191,36,0.4)] hover:border-amber-400/70"
               : "bg-gradient-to-b from-slate-800/80 to-slate-900/80 border-2 border-slate-700/50 opacity-70"
           }`}
         >
           {/* Decorative corners */}
           <div
-            className={`absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 ${isActive ? "border-amber-500" : "border-slate-600"}`}
+            className={`absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 transition-colors duration-300 ${
+              isActive ? "border-amber-500 group-hover:border-amber-400" : "border-slate-600"
+            }`}
           ></div>
           <div
-            className={`absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 ${isActive ? "border-amber-500" : "border-slate-600"}`}
+            className={`absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 transition-colors duration-300 ${
+              isActive ? "border-amber-500 group-hover:border-amber-400" : "border-slate-600"
+            }`}
           ></div>
           <div
-            className={`absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 ${isActive ? "border-amber-500" : "border-slate-600"}`}
+            className={`absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 transition-colors duration-300 ${
+              isActive ? "border-amber-500 group-hover:border-amber-400" : "border-slate-600"
+            }`}
           ></div>
           <div
-            className={`absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 ${isActive ? "border-amber-500" : "border-slate-600"}`}
+            className={`absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 transition-colors duration-300 ${
+              isActive ? "border-amber-500 group-hover:border-amber-400" : "border-slate-600"
+            }`}
           ></div>
 
           {isActive && (
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-t from-amber-500/5 to-transparent"
-              animate={{ opacity: [0.3, 0.1, 0.3] }}
-              transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
-            />
+            <>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-t from-amber-500/5 to-transparent"
+                animate={{ opacity: [0.3, 0.1, 0.3] }}
+                transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
+              />
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-t from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              />
+            </>
           )}
 
           <div className="mb-4 relative">
             <motion.div
-              className={`relative z-10 ${isActive ? "text-amber-400" : "text-slate-400"}`}
+              className={`relative z-10 ${isActive ? "text-amber-400 group-hover:text-amber-300" : "text-slate-400"}`}
               animate={
                 isActive
                   ? {
@@ -267,7 +286,7 @@ function RoomCard({ title, icon, isActive, count, href, delay }: RoomCardProps) 
             </motion.div>
             {isActive && (
               <motion.div
-                className="absolute inset-0 rounded-full z-0"
+                className="absolute inset-0 rounded-full z-0 group-hover:scale-110 transition-transform duration-300"
                 animate={{
                   boxShadow: [
                     "0 0 5px 2px rgba(251,191,36,0.2)",
@@ -281,7 +300,9 @@ function RoomCard({ title, icon, isActive, count, href, delay }: RoomCardProps) 
             )}
           </div>
 
-          <h3 className={`text-xl font-bold mb-3 tracking-wide ${isActive ? "text-amber-400" : "text-slate-400"}`}>
+          <h3 className={`text-xl font-bold mb-3 tracking-wide transition-colors duration-300 ${
+            isActive ? "text-amber-400 group-hover:text-amber-300" : "text-slate-400"
+          }`}>
             {title}
           </h3>
           {!isActive && (
