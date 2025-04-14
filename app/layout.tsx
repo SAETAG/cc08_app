@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn(inter.className, medievalSharp.variable)}>
+    <html lang="ja" className={`${inter.className} ${medievalSharp.variable}`}>
       <head>
         {/* Add this script to clean up vsc-initialized class before React hydrates */}
         <script

@@ -398,7 +398,7 @@ const DynamicPrologue = () => {
           {stage === 5 && (
             <div className="text-center space-y-6">
               <div className="mb-8">
-                <h2 className="text-6xl sm:text-7xl font-bold text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.7)] font-magic tracking-wider">
+                <h2 className="text-6xl sm:text-7xl font-bold text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.7)] font-['MedievalSharp'] tracking-wider">
                   {"Closet".split("").map((char, index) => (
                     <motion.span
                       key={index}
@@ -417,7 +417,7 @@ const DynamicPrologue = () => {
                   ))}
                 </h2>
                 <motion.h2 
-                  className="text-6xl sm:text-7xl font-bold text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.7)] font-magic tracking-wider mt-4"
+                  className="text-6xl sm:text-7xl font-bold text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.7)] font-['MedievalSharp'] tracking-wider mt-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.5 }}
