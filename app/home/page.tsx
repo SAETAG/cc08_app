@@ -153,14 +153,14 @@ export default function HomePage() {
           </span>
         </div>
         <div className="flex items-center">
-          <Link href="/mountain">
+          <Link href="/dailymission">
             <div className="relative group">
               <Button
                 className="bg-[#f0c96b] hover:bg-[#d0a54b] text-green-900 drop-shadow-[0_0_5px_rgba(240,201,107,0.7)] font-medium py-2 px-4 rounded-lg border border-[#d8b85a] text-sm shadow-lg transform hover:scale-105 transition-transform duration-200 flex items-center gap-2"
               >
                 ミッションに挑戦！
               </Button>
-              <div className="absolute right-full top-1/2 transform -translate-y-1/2 mr-2 w-64 bg-gradient-to-tr from-green-800/90 via-blue-800/90 to-purple-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+              <div className="absolute right-full top-1/2 transform -translate-y-1/2 mr-2 w-64 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                 <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">
                   １日５分で終わるデイリーミッションに挑戦してみよう！
                 </p>
@@ -191,7 +191,7 @@ export default function HomePage() {
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-blue-800/90 to-blue-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
                     <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">収納の湖</p>
                   </div>
-                  <div className="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 w-64 bg-gradient-to-tr from-green-800/90 via-blue-800/90 to-purple-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  <div className="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 w-64 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                     <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">
                       収納に困ったら、収納の湖へ！他の勇者たちの収納Tipsを見れるよ✨
                     </p>
@@ -213,7 +213,7 @@ export default function HomePage() {
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-amber-800/90 to-amber-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
                     <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">戦友達の洞窟</p>
                   </div>
-                  <div className="absolute right-full top-1/2 transform -translate-y-1/2 mr-2 w-64 bg-gradient-to-tr from-green-800/90 via-blue-800/90 to-purple-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  <div className="absolute right-full top-1/2 transform -translate-y-1/2 mr-2 w-64 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                     <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">
                       友達と、家族と、勇者仲間と。片付けの大冒険に出かけよう！
                     </p>
@@ -235,7 +235,7 @@ export default function HomePage() {
                   <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 w-40 bg-gradient-to-br from-violet-800/90 to-violet-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
                     <p className="text-[#f0c96b] text-base font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">クローゼット城</p>
                   </div>
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gradient-to-tr from-green-800/90 via-blue-800/90 to-purple-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                     <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">
                       クローゼットの片づけを始めよう！
                     </p>
@@ -257,7 +257,7 @@ export default function HomePage() {
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-green-800/90 to-green-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
                     <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">断捨離の森</p>
                   </div>
-                  <div className="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 w-64 bg-gradient-to-tr from-green-800/90 via-blue-800/90 to-purple-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  <div className="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 w-64 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                     <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">
                       片づけはまず断捨離から！断捨離のコツを知りたい時や、他の勇者に背中を押してもらいたい時は、断捨離の森へ！
                     </p>
@@ -278,7 +278,7 @@ export default function HomePage() {
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-fuchsia-800/90 to-fuchsia-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
                     <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">勇者の休憩所</p>
                   </div>
-                  <div className="absolute right-full top-1/2 transform -translate-y-1/2 mr-2 w-64 bg-gradient-to-tr from-green-800/90 via-blue-800/90 to-purple-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  <div className="absolute right-full top-1/2 transform -translate-y-1/2 mr-2 w-64 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                     <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">
                       疲れたら、休憩所で一服しよう✨これまでの冒険の軌跡や、今のステイタスが見れるよ！
                     </p>

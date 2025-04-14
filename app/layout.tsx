@@ -6,13 +6,12 @@ import { AuthProvider } from "./contexts/AuthContext"
 import { MedievalSharp } from "next/font/google"
 import { cn } from "@/lib/utils"
 
-const medievalSharp = MedievalSharp({
+const inter = Inter({ subsets: ["latin"] })
+const medievalSharp = MedievalSharp({ 
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-magic",
+  variable: "--font-medieval"
 })
-
-const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Closet Chronicle",
