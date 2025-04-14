@@ -20,94 +20,112 @@ interface Treasure {
   id: string
   name: string
   description: string
-  icon: string
-  source: "quest" | "daily"
+  image: string
+  source: "quest" | "daily" | "new"
   acquiredDate: string
-  isNew: boolean
-  rarity: "common" | "rare" | "epic" | "legendary"
+  author: {
+    name: string
+    icon: string
+  }
 }
 
 // サンプルデータ
 const treasures: Treasure[] = [
   {
     id: "1",
-    name: "整理の水晶",
-    description: "クローゼット整理の達成感を象徴する水晶。持ち主に整頓の力を与えると言われている。",
-    icon: "crystal",
-    source: "daily",
+    name: "毎朝ラクするゾーン分け収納",
+    description: "ハンガーラック内を「使用頻度」でゾーニングしましょう。中心に最もよく使うトップスやジャケット、右側には週1～2回着るセミフォーマル、左側には季節外アイテムなどを分類して掛けるのがポイントです。朝の身支度が劇的に時短になり、迷う時間も削減！服の見逃しも防げます。カラー順に並べれば見た目も美しくなり、選ぶ楽しみも倍増します。",
+    image: "/moc/tip/hanger1.png",
+    source: "quest",
     acquiredDate: "2025-03-15",
-    isNew: true,
-    rarity: "rare",
+    author: {
+      name: "Tsunodashi",
+      icon: "/moc/user/tsunodashi.webp"
+    }
   },
   {
     id: "2",
-    name: "収納の魔法箱",
-    description: "限られたスペースに無限のアイテムを収納できる不思議な箱。空間を最適化する力を秘めている。",
-    icon: "box",
-    source: "daily",
+    name: "ハンガーは統一が正義",
+    description: "異なる種類のハンガーを使っていると、服が傾いたり間隔が無駄に空いてしまって収納効率が悪化します。木製でもプラスチックでも構いませんが、「厚み」と「形」を揃えるだけで収納力は格段にアップ。滑り止め付きのハンガーならキャミソールやニットも安定して掛けられます。また、「1 in 1 out」ルールを設けて、1着増やしたら1着処分、を習慣化するとハンガー数と衣類数を常に最適に保てます。",
+    image: "/moc/tip/hanger2.png",
+    source: "quest",
     acquiredDate: "2025-03-14",
-    isNew: false,
-    rarity: "common",
+    author: {
+      name: "manta",
+      icon: "/moc/user/manta.webp"
+    }
   },
   {
     id: "3",
     name: "ペアの護符",
     description: "バラバラになったものを元に戻す力を持つお守り。靴下のペアを見つける時に特に効果を発揮する。",
-    icon: "amulet",
-    source: "daily",
+    image: "/storage-tips/3.jpg",
+    source: "new",
     acquiredDate: "2025-03-13",
-    isNew: false,
-    rarity: "common",
+    author: {
+      name: "整理王子",
+      icon: "/user-icons/3.jpg"
+    }
   },
   {
     id: "4",
     name: "整頓の葉",
     description: "自然の秩序を象徴する神秘的な葉。この葉を持つ者は物事を自然に整理整頓できるようになる。",
-    icon: "leaf",
+    image: "/storage-tips/4.jpg",
     source: "daily",
     acquiredDate: "2025-03-12",
-    isNew: false,
-    rarity: "rare",
+    author: {
+      name: "整頓マスター",
+      icon: "/user-icons/4.jpg"
+    }
   },
   {
     id: "5",
     name: "宝石の小箱",
     description: "小さなアクセサリーを美しく保管するための宝石箱。中に入れたアイテムは常に輝きを失わない。",
-    icon: "gem",
+    image: "/storage-tips/5.jpg",
     source: "quest",
     acquiredDate: "2025-03-10",
-    isNew: false,
-    rarity: "epic",
+    author: {
+      name: "宝石の魔術師",
+      icon: "/user-icons/5.jpg"
+    }
   },
   {
     id: "6",
     name: "清浄の水晶",
     description: "周囲の空間を浄化する力を持つ水晶。この水晶があるところにはホコリが寄り付かない。",
-    icon: "crystal",
+    image: "/storage-tips/6.jpg",
     source: "quest",
     acquiredDate: "2025-03-08",
-    isNew: false,
-    rarity: "legendary",
+    author: {
+      name: "清掃の達人",
+      icon: "/user-icons/6.jpg"
+    }
   },
   {
     id: "7",
     name: "時の砂時計",
     description: "時間を効率的に使う力を与える砂時計。持ち主は常に時間を意識して行動できるようになる。",
-    icon: "gem",
-    source: "quest",
+    image: "/storage-tips/7.jpg",
+    source: "new",
     acquiredDate: "2025-03-05",
-    isNew: false,
-    rarity: "epic",
+    author: {
+      name: "時間の魔術師",
+      icon: "/user-icons/7.jpg"
+    }
   },
   {
     id: "8",
     name: "記憶の羽根",
     description: "大切なことを忘れないようにする羽根。持ち主は必要なときに必要な記憶を呼び起こせる。",
-    icon: "feather",
+    image: "/storage-tips/8.jpg",
     source: "daily",
     acquiredDate: "2025-03-01",
-    isNew: false,
-    rarity: "rare",
+    author: {
+      name: "記憶の守護者",
+      icon: "/user-icons/8.jpg"
+    }
   },
 ]
 
@@ -175,7 +193,7 @@ export default function LakePage() {
     } else if (currentFilter === "daily") {
       setFilteredTreasures(treasures.filter((treasure) => treasure.source === "daily"))
     } else if (currentFilter === "new") {
-      setFilteredTreasures(treasures.filter((treasure) => treasure.isNew))
+      setFilteredTreasures(treasures.filter((treasure) => treasure.source === "new"))
     }
   }, [currentFilter])
 
@@ -197,83 +215,16 @@ export default function LakePage() {
   }
 
   // Get icon component based on treasure icon type
-  const getTreasureIcon = (iconType: string) => {
-    switch (iconType) {
-      case "crystal":
-        return (
-          <div className="w-full h-full rounded-lg bg-cyan-500/30 flex items-center justify-center">
-            <div className="text-6xl animate-float-animation">💎</div>
-          </div>
-        )
-      case "box":
-        return (
-          <div className="w-full h-full rounded-lg bg-amber-500/30 flex items-center justify-center">
-            <div className="text-6xl animate-float-animation">📦</div>
-          </div>
-        )
-      case "amulet":
-        return (
-          <div className="w-full h-full rounded-lg bg-purple-500/30 flex items-center justify-center">
-            <div className="text-6xl animate-float-animation">🔮</div>
-          </div>
-        )
-      case "leaf":
-        return (
-          <div className="w-full h-full rounded-lg bg-green-500/30 flex items-center justify-center">
-            <div className="text-6xl animate-float-animation">🍃</div>
-          </div>
-        )
-      case "gem":
-        return (
-          <div className="w-full h-full rounded-lg bg-pink-500/30 flex items-center justify-center">
-            <div className="text-6xl animate-float-animation">💠</div>
-          </div>
-        )
-      case "feather":
-        return (
-          <div className="w-full h-full rounded-lg bg-blue-500/30 flex items-center justify-center">
-            <div className="text-6xl animate-float-animation">🪶</div>
-          </div>
-        )
-      default:
-        return (
-          <div className="w-full h-full rounded-lg bg-blue-500/30 flex items-center justify-center">
-            <div className="text-6xl animate-float-animation">✨</div>
-          </div>
-        )
-    }
-  }
-
-  // Get rarity class for treasure item
-  const getRarityClass = (rarity: string) => {
-    switch (rarity) {
-      case "common":
-        return "border-blue-400/50 shadow-blue-400/20"
-      case "rare":
-        return "border-purple-400/50 shadow-purple-400/30"
-      case "epic":
-        return "border-pink-400/50 shadow-pink-400/30"
-      case "legendary":
-        return "border-amber-400/50 shadow-amber-400/40"
-      default:
-        return "border-blue-400/50 shadow-blue-400/20"
-    }
-  }
-
-  // Get rarity text color
-  const getRarityTextColor = (rarity: string) => {
-    switch (rarity) {
-      case "common":
-        return "text-blue-300"
-      case "rare":
-        return "text-purple-300"
-      case "epic":
-        return "text-pink-300"
-      case "legendary":
-        return "text-amber-300"
-      default:
-        return "text-blue-300"
-    }
+  const getTreasureIcon = (imagePath: string) => {
+    return (
+      <div className="w-full h-full rounded-lg bg-cyan-500/30 flex items-center justify-center overflow-hidden">
+        <img 
+          src={imagePath} 
+          alt="収納チップス" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+    )
   }
 
   return (
@@ -347,11 +298,10 @@ export default function LakePage() {
         {/* Header with title */}
         <div className="w-full mb-8 text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-200 to-cyan-300 drop-shadow-[0_2px_8px_rgba(0,255,255,0.5)]">
-            秘宝の湖
+            収納の湖
           </h1>
-          <p className="text-sm text-cyan-300/80 mb-4">※MOCのみ（バックエンド未実装）</p>
           <p className="text-cyan-200/80 max-w-2xl mx-auto">
-            神秘的な湖面に浮かぶ秘宝たち。あなたの冒険の証が、ここに集まります。
+            「収納」に困ったら、他の勇者たちの知恵のしずくを眺めてみよう。
           </p>
         </div>
 
@@ -360,16 +310,16 @@ export default function LakePage() {
           <Tabs defaultValue="all" className="w-full" onValueChange={setCurrentFilter}>
             <TabsList className="grid grid-cols-4 w-full max-w-md mx-auto bg-blue-900/50 border border-cyan-500/30">
               <TabsTrigger value="all" className="data-[state=active]:bg-cyan-800/50">
-                すべての秘宝
+                すべての収納
               </TabsTrigger>
               <TabsTrigger value="quest" className="data-[state=active]:bg-cyan-800/50">
-                クエスト秘宝
+                ハンガーラック
               </TabsTrigger>
               <TabsTrigger value="daily" className="data-[state=active]:bg-cyan-800/50">
-                日替わり秘宝
+                棚
               </TabsTrigger>
               <TabsTrigger value="new" className="data-[state=active]:bg-cyan-800/50">
-                新着秘宝
+                引き出し
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -380,47 +330,33 @@ export default function LakePage() {
           {filteredTreasures.map((treasure) => (
             <div
               key={treasure.id}
-              className={`relative p-4 rounded-lg backdrop-blur-sm bg-blue-900/30 border-2 ${getRarityClass(treasure.rarity)} shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1`}
+              className="relative p-4 rounded-lg backdrop-blur-sm bg-blue-900/30 border-2 border-cyan-500/50 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
               onClick={() => handleTreasureClick(treasure)}
             >
               {/* Treasure icon */}
-              <div className="w-full aspect-square mb-3">{getTreasureIcon(treasure.icon)}</div>
+              <div className="w-full aspect-square mb-3">{getTreasureIcon(treasure.image)}</div>
 
               {/* Treasure name */}
               <h3 className="text-center font-medium text-cyan-100 mb-1 truncate">{treasure.name}</h3>
-
-              {/* Rarity label */}
-              <div className={`text-xs text-center ${getRarityTextColor(treasure.rarity)}`}>
-                {treasure.rarity === "common" && "一般"}
-                {treasure.rarity === "rare" && "レア"}
-                {treasure.rarity === "epic" && "エピック"}
-                {treasure.rarity === "legendary" && "伝説"}
-              </div>
 
               {/* Source badge */}
               <div className="absolute top-2 right-2">
                 <div
                   className={`text-xs px-2 py-1 rounded-full ${
-                    treasure.source === "quest" ? "bg-indigo-800/70 text-indigo-200" : "bg-teal-800/70 text-teal-200"
+                    treasure.source === "quest" 
+                      ? "bg-indigo-800/70 text-indigo-200" 
+                      : treasure.source === "daily"
+                        ? "bg-teal-800/70 text-teal-200"
+                        : "bg-pink-800/70 text-pink-200"
                   }`}
                 >
-                  {treasure.source === "quest" ? "クエスト" : "デイリー"}
+                  {treasure.source === "quest" 
+                    ? "ハンガーラック" 
+                    : treasure.source === "daily"
+                      ? "棚"
+                      : "引き出し"}
                 </div>
               </div>
-
-              {/* New item badge */}
-              {treasure.isNew && (
-                <div className="absolute -top-2 -left-2 bg-pink-600 text-white text-xs px-2 py-1 rounded-full animate-pulse">
-                  新着！
-                </div>
-              )}
-
-              {/* Shine effect for new items */}
-              {treasure.isNew && (
-                <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
-                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/0 via-white/30 to-white/0 animate-shine"></div>
-                </div>
-              )}
             </div>
           ))}
         </div>
@@ -441,51 +377,88 @@ export default function LakePage() {
 
       {/* Treasure detail dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-blue-950/95 border-cyan-500/50 text-cyan-50 max-w-md">
+        <DialogContent className="bg-blue-950/95 border-cyan-500/50 text-cyan-50 max-w-4xl">
           {selectedTreasure && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-xl text-center text-cyan-200">{selectedTreasure.name}</DialogTitle>
-                <DialogDescription className="text-center text-cyan-300/80">
-                  {selectedTreasure.source === "quest" ? "クエスト秘宝" : "デイリーミッション秘宝"}
-                </DialogDescription>
+                <DialogTitle className="sr-only">{selectedTreasure.name}</DialogTitle>
               </DialogHeader>
-
-              <div className="flex flex-col items-center py-4">
-                {/* Treasure icon (larger) */}
-                <div className="w-32 h-32 mb-6">{getTreasureIcon(selectedTreasure.icon)}</div>
-
-                {/* Rarity */}
-                <div
-                  className={`mb-4 px-3 py-1 rounded-full ${
-                    selectedTreasure.rarity === "common"
-                      ? "bg-blue-800/50 text-blue-200"
-                      : selectedTreasure.rarity === "rare"
-                        ? "bg-purple-800/50 text-purple-200"
-                        : selectedTreasure.rarity === "epic"
-                          ? "bg-pink-800/50 text-pink-200"
-                          : "bg-amber-800/50 text-amber-200"
-                  }`}
-                >
-                  {selectedTreasure.rarity === "common" && "一般レアリティ"}
-                  {selectedTreasure.rarity === "rare" && "レアレアリティ"}
-                  {selectedTreasure.rarity === "epic" && "エピックレアリティ"}
-                  {selectedTreasure.rarity === "legendary" && "伝説のレアリティ"}
+              <div className="grid grid-cols-2 gap-6">
+                {/* Left side - Image */}
+                <div className="relative aspect-square">
+                  <img 
+                    src={selectedTreasure.image} 
+                    alt={selectedTreasure.name}
+                    className="w-full h-full object-cover rounded-lg"
+                  />
                 </div>
 
-                {/* Description */}
-                <p className="text-center text-cyan-100 mb-4">{selectedTreasure.description}</p>
+                {/* Right side - Content */}
+                <div className="flex flex-col">
+                  {/* Title and date */}
+                  <div className="mb-6">
+                    <h2 className="text-2xl font-bold text-cyan-200 mb-2">{selectedTreasure.name}</h2>
+                    <p className="text-sm text-cyan-300/70">
+                      投稿日: {new Date(selectedTreasure.acquiredDate).toLocaleDateString("ja-JP")}
+                    </p>
+                  </div>
 
-                {/* Acquisition date */}
-                <div className="text-sm text-cyan-300/70">
-                  獲得日: {new Date(selectedTreasure.acquiredDate).toLocaleDateString("ja-JP")}
+                  {/* Description */}
+                  <div className="mb-6">
+                    <p className="text-cyan-100">{selectedTreasure.description}</p>
+                  </div>
+
+                  {/* Tag */}
+                  <div className="mb-6">
+                    <div
+                      className={`inline-block text-sm px-3 py-1 rounded-full ${
+                        selectedTreasure.source === "quest" 
+                          ? "bg-indigo-800/70 text-indigo-200" 
+                          : selectedTreasure.source === "daily"
+                            ? "bg-teal-800/70 text-teal-200"
+                            : "bg-pink-800/70 text-pink-200"
+                      }`}
+                    >
+                      {selectedTreasure.source === "quest" 
+                        ? "ハンガーラック" 
+                        : selectedTreasure.source === "daily"
+                          ? "棚"
+                          : "引き出し"}
+                    </div>
+                  </div>
+
+                  {/* Author */}
+                  <div className="mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full overflow-hidden">
+                        <img 
+                          src={selectedTreasure.author.icon} 
+                          alt={selectedTreasure.author.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <span className="text-cyan-100">{selectedTreasure.author.name}</span>
+                    </div>
+                  </div>
+
+                  {/* Action buttons */}
+                  <div className="flex gap-4 mt-auto">
+                    <Button className="flex-1 bg-cyan-700 hover:bg-cyan-600 text-white">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                        <polyline points="16 6 12 2 8 6"></polyline>
+                        <line x1="12" y1="2" x2="12" y2="15"></line>
+                      </svg>
+                      共有する
+                    </Button>
+                    <Button className="flex-1 bg-cyan-700 hover:bg-cyan-600 text-white">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                      </svg>
+                      保存する
+                    </Button>
+                  </div>
                 </div>
-              </div>
-
-              <div className="flex justify-center">
-                <DialogClose asChild>
-                  <Button className="bg-cyan-700 hover:bg-cyan-600 text-white">閉じる</Button>
-                </DialogClose>
               </div>
             </>
           )}
@@ -494,4 +467,6 @@ export default function LakePage() {
     </div>
   )
 }
+
+
 
