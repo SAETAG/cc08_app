@@ -21,7 +21,7 @@ interface Treasure {
   name: string
   description: string
   image: string
-  source: "quest" | "daily" | "new"
+  source: "hanger" | "drawer" | "shelf"
   acquiredDate: string
   author: {
     name: string
@@ -36,7 +36,7 @@ const treasures: Treasure[] = [
     name: "毎朝ラクするゾーン分け収納",
     description: "ハンガーラック内を「使用頻度」でゾーニングしましょう。中心に最もよく使うトップスやジャケット、右側には週1～2回着るセミフォーマル、左側には季節外アイテムなどを分類して掛けるのがポイントです。朝の身支度が劇的に時短になり、迷う時間も削減！服の見逃しも防げます。カラー順に並べれば見た目も美しくなり、選ぶ楽しみも倍増します。",
     image: "/moc/tip/hanger1.png",
-    source: "quest",
+    source: "hanger",
     acquiredDate: "2025-03-15",
     author: {
       name: "Tsunodashi",
@@ -48,7 +48,7 @@ const treasures: Treasure[] = [
     name: "ハンガーは統一が正義",
     description: "異なる種類のハンガーを使っていると、服が傾いたり間隔が無駄に空いてしまって収納効率が悪化します。木製でもプラスチックでも構いませんが、「厚み」と「形」を揃えるだけで収納力は格段にアップ。滑り止め付きのハンガーならキャミソールやニットも安定して掛けられます。また、「1 in 1 out」ルールを設けて、1着増やしたら1着処分、を習慣化するとハンガー数と衣類数を常に最適に保てます。",
     image: "/moc/tip/hanger2.png",
-    source: "quest",
+    source: "hanger",
     acquiredDate: "2025-03-14",
     author: {
       name: "manta",
@@ -57,74 +57,74 @@ const treasures: Treasure[] = [
   },
   {
     id: "3",
-    name: "ペアの護符",
-    description: "バラバラになったものを元に戻す力を持つお守り。靴下のペアを見つける時に特に効果を発揮する。",
-    image: "/storage-tips/3.jpg",
-    source: "new",
+    name: "バッグの掛け場所を作る",
+    description: "洋服を掛けるハンガーラックのサイドやフック部分に、バッグの定位置を作ると、出かける準備が一気にスムーズになります。S字フックや専用ベルトを活用すれば、型崩れしないように持ち手を整えて掛けられます。使用頻度の高いバッグ3〜4個を厳選し、その他は別保管に。視認性と管理性のバランスが重要です。",
+    image: "/moc/tip/hanger3.jpg",
+    source: "hanger",
     acquiredDate: "2025-03-13",
     author: {
-      name: "整理王子",
-      icon: "/user-icons/3.jpg"
+      name: "nijihagi",
+      icon: "/moc/user/nijihagi.webp"
     }
   },
   {
     id: "4",
-    name: "整頓の葉",
-    description: "自然の秩序を象徴する神秘的な葉。この葉を持つ者は物事を自然に整理整頓できるようになる。",
-    image: "/storage-tips/4.jpg",
-    source: "daily",
+    name: "ズボンは重ねない吊るし収納が快適",
+    description: "ズボン・スラックス・ジーンズは畳んで積むより、専用のパンツハンガーに1本ずつ掛けると型崩れも防げ、何があるか一目瞭然に。クロスバー付きハンガーや段違いハンガーなら、省スペースで見やすさも確保できます。特に仕事用・普段着・季節ものを分けて収納すると、出番の偏りも防げます。",
+    image: "/moc/tip/hanger4.jpg",
+    source: "hanger",
     acquiredDate: "2025-03-12",
     author: {
-      name: "整頓マスター",
-      icon: "/user-icons/4.jpg"
+      name: "tatejimakinchakudai",
+      icon: "/moc/user/tatekin.webp"
     }
   },
   {
     id: "5",
-    name: "宝石の小箱",
-    description: "小さなアクセサリーを美しく保管するための宝石箱。中に入れたアイテムは常に輝きを失わない。",
-    image: "/storage-tips/5.jpg",
-    source: "quest",
+    name: "季節オフはボックス＋ラベル管理",
+    description: "クローゼットの上棚は手が届きにくいため、「季節外れ」のアイテムや「ストック品」を入れるのがベストです。中が見えないボックスを使う場合は、中身を記載したラベルがマスト。例えば「冬ニット（2025春まで）」など期間付きで記すと、見直しタイミングも分かりやすく、入れっぱなしを防げます。",
+    image: "/moc/tip/shelf1.jpg",
+    source: "shelf",
     acquiredDate: "2025-03-10",
     author: {
-      name: "宝石の魔術師",
-      icon: "/user-icons/5.jpg"
+      name: "gomamongara",
+      icon: "/moc/user/goma.webp"
     }
   },
   {
     id: "6",
-    name: "清浄の水晶",
-    description: "周囲の空間を浄化する力を持つ水晶。この水晶があるところにはホコリが寄り付かない。",
-    image: "/storage-tips/6.jpg",
-    source: "quest",
+    name: "冠婚葬祭・旅行グッズは使用シーン別に一括収納",
+    description: "使用頻度が低いけれど重要なもの、たとえば冠婚葬祭用バッグ、礼服、サブバッグ、旅行ポーチなどは、シーン別にまとめて上棚へ。一つのボックスに「フォーマル一式」などと名前をつけておけば、急に必要になった時も慌てず取り出せます。バッグの中にメモやタイツ、アクセサリーを入れておくとさらに便利です。",
+    image: "/moc/tip/shelf2.jpg",
+    source: "shelf",
     acquiredDate: "2025-03-08",
     author: {
-      name: "清掃の達人",
-      icon: "/user-icons/6.jpg"
+      name: "yagara",
+      icon: "/moc/user/yagara.webp"
     }
   },
   {
     id: "7",
-    name: "時の砂時計",
-    description: "時間を効率的に使う力を与える砂時計。持ち主は常に時間を意識して行動できるようになる。",
-    image: "/storage-tips/7.jpg",
-    source: "new",
+    name: "Tシャツは立てて＋分類で一発管理",
+    description: "Tシャツや薄手トップスは立てる収納が基本。さらに「無地・プリント・仕事用」などで分類すると、取り出す時間が減るだけでなく、洗濯後に戻すのも楽になります。引き出し内でのズレを防ぐため、100均などで仕切りをつけて、隙間なく収まるよう調整しましょう。見た目もスッキリ、時短効果も抜群です。",
+    image: "/moc/tip/drawer1.jpeg",
+    source: "drawer",
     acquiredDate: "2025-03-05",
     author: {
-      name: "時間の魔術師",
-      icon: "/user-icons/7.jpg"
+      name: "kaeruankou",
+      icon: "/moc/user/kaeru.webp"
     }
   },
   {
     id: "8",
-    name: "記憶の羽根",
-    description: "大切なことを忘れないようにする羽根。持ち主は必要なときに必要な記憶を呼び起こせる。",
-    image: "/storage-tips/8.jpg",
-    source: "daily",
+    name: "厚手衣類は重ね3枚までルールで快適",
+    description: "厚手のニットやトレーナーなどは、重ねすぎると下が見えなくなり、着なくなる服を生みがち。引き出し内にしまう場合は「1仕切りにつき3枚まで」と決めて、圧縮しすぎない工夫を。使用頻度が低いアイテムは、圧縮袋やオフシーズンボックスへ移して、毎日の動線に余白を作ることも重要です。",
+    image: "/moc/tip/drawer2.webp",
+    source: "drawer",
     acquiredDate: "2025-03-01",
     author: {
-      name: "記憶の守護者",
-      icon: "/user-icons/8.jpg"
+      name: "minamihakofugu",
+      icon: "/moc/user/minami.webp"
     }
   },
 ]
@@ -188,12 +188,12 @@ export default function LakePage() {
   useEffect(() => {
     if (currentFilter === "all") {
       setFilteredTreasures(treasures)
-    } else if (currentFilter === "quest") {
-      setFilteredTreasures(treasures.filter((treasure) => treasure.source === "quest"))
-    } else if (currentFilter === "daily") {
-      setFilteredTreasures(treasures.filter((treasure) => treasure.source === "daily"))
-    } else if (currentFilter === "new") {
-      setFilteredTreasures(treasures.filter((treasure) => treasure.source === "new"))
+    } else if (currentFilter === "hanger") {
+      setFilteredTreasures(treasures.filter((treasure) => treasure.source === "hanger"))
+    } else if (currentFilter === "drawer") {
+      setFilteredTreasures(treasures.filter((treasure) => treasure.source === "drawer"))
+    } else if (currentFilter === "shelf") {
+      setFilteredTreasures(treasures.filter((treasure) => treasure.source === "shelf"))
     }
   }, [currentFilter])
 
@@ -312,14 +312,14 @@ export default function LakePage() {
               <TabsTrigger value="all" className="data-[state=active]:bg-cyan-800/50">
                 すべての収納
               </TabsTrigger>
-              <TabsTrigger value="quest" className="data-[state=active]:bg-cyan-800/50">
+              <TabsTrigger value="hanger" className="data-[state=active]:bg-cyan-800/50">
                 ハンガーラック
               </TabsTrigger>
-              <TabsTrigger value="daily" className="data-[state=active]:bg-cyan-800/50">
-                棚
-              </TabsTrigger>
-              <TabsTrigger value="new" className="data-[state=active]:bg-cyan-800/50">
+              <TabsTrigger value="drawer" className="data-[state=active]:bg-cyan-800/50">
                 引き出し
+              </TabsTrigger>
+              <TabsTrigger value="shelf" className="data-[state=active]:bg-cyan-800/50">
+                棚
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -330,31 +330,45 @@ export default function LakePage() {
           {filteredTreasures.map((treasure) => (
             <div
               key={treasure.id}
-              className="relative p-4 rounded-lg backdrop-blur-sm bg-blue-900/30 border-2 border-cyan-500/50 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+              className="relative aspect-square rounded-lg overflow-hidden cursor-pointer transform hover:-translate-y-1 transition-all duration-300"
               onClick={() => handleTreasureClick(treasure)}
             >
-              {/* Treasure icon */}
-              <div className="w-full aspect-square mb-3">{getTreasureIcon(treasure.image)}</div>
+              {/* Treasure image */}
+              <div className="absolute inset-0">
+                <img 
+                  src={treasure.image} 
+                  alt={treasure.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
 
-              {/* Treasure name */}
-              <h3 className="text-center font-medium text-cyan-100 mb-1 truncate">{treasure.name}</h3>
+              {/* Overlay with title */}
+              <div className={`absolute bottom-0 left-0 right-0 p-2 backdrop-blur-sm ${
+                treasure.source === "hanger" 
+                  ? "bg-indigo-900/80" 
+                  : treasure.source === "drawer"
+                    ? "bg-teal-900/80"
+                    : "bg-pink-900/80"
+              }`}>
+                <h3 className="text-center text-sm font-medium text-amber-300 truncate drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">{treasure.name}</h3>
+              </div>
 
               {/* Source badge */}
               <div className="absolute top-2 right-2">
                 <div
                   className={`text-xs px-2 py-1 rounded-full ${
-                    treasure.source === "quest" 
+                    treasure.source === "hanger" 
                       ? "bg-indigo-800/70 text-indigo-200" 
-                      : treasure.source === "daily"
+                      : treasure.source === "drawer"
                         ? "bg-teal-800/70 text-teal-200"
                         : "bg-pink-800/70 text-pink-200"
                   }`}
                 >
-                  {treasure.source === "quest" 
+                  {treasure.source === "hanger" 
                     ? "ハンガーラック" 
-                    : treasure.source === "daily"
-                      ? "棚"
-                      : "引き出し"}
+                    : treasure.source === "drawer"
+                      ? "引き出し"
+                      : "棚"}
                 </div>
               </div>
             </div>
@@ -377,7 +391,12 @@ export default function LakePage() {
 
       {/* Treasure detail dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-blue-950/95 border-cyan-500/50 text-cyan-50 max-w-4xl">
+        <DialogContent className={`${selectedTreasure?.source === "hanger" 
+          ? "bg-indigo-950/95 border-indigo-500/50" 
+          : selectedTreasure?.source === "drawer"
+            ? "bg-teal-950/95 border-teal-500/50"
+            : "bg-pink-950/95 border-pink-500/50"
+        } text-cyan-50 max-w-4xl`}>
           {selectedTreasure && (
             <>
               <DialogHeader>
@@ -397,33 +416,33 @@ export default function LakePage() {
                 <div className="flex flex-col">
                   {/* Title and date */}
                   <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-cyan-200 mb-2">{selectedTreasure.name}</h2>
-                    <p className="text-sm text-cyan-300/70">
+                    <h2 className="text-2xl font-bold text-amber-300 mb-2">{selectedTreasure.name}</h2>
+                    <p className="text-sm text-amber-300/70">
                       投稿日: {new Date(selectedTreasure.acquiredDate).toLocaleDateString("ja-JP")}
                     </p>
                   </div>
 
                   {/* Description */}
                   <div className="mb-6">
-                    <p className="text-cyan-100">{selectedTreasure.description}</p>
+                    <p className="text-amber-100">{selectedTreasure.description}</p>
                   </div>
 
                   {/* Tag */}
                   <div className="mb-6">
                     <div
                       className={`inline-block text-sm px-3 py-1 rounded-full ${
-                        selectedTreasure.source === "quest" 
+                        selectedTreasure.source === "hanger" 
                           ? "bg-indigo-800/70 text-indigo-200" 
-                          : selectedTreasure.source === "daily"
+                          : selectedTreasure.source === "drawer"
                             ? "bg-teal-800/70 text-teal-200"
                             : "bg-pink-800/70 text-pink-200"
                       }`}
                     >
-                      {selectedTreasure.source === "quest" 
+                      {selectedTreasure.source === "hanger" 
                         ? "ハンガーラック" 
-                        : selectedTreasure.source === "daily"
-                          ? "棚"
-                          : "引き出し"}
+                        : selectedTreasure.source === "drawer"
+                          ? "引き出し"
+                          : "棚"}
                     </div>
                   </div>
 
@@ -437,13 +456,19 @@ export default function LakePage() {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <span className="text-cyan-100">{selectedTreasure.author.name}</span>
+                      <span className="text-amber-100">{selectedTreasure.author.name}</span>
                     </div>
                   </div>
 
                   {/* Action buttons */}
                   <div className="flex gap-4 mt-auto">
-                    <Button className="flex-1 bg-cyan-700 hover:bg-cyan-600 text-white">
+                    <Button className={`flex-1 ${
+                      selectedTreasure.source === "hanger" 
+                        ? "bg-indigo-700 hover:bg-indigo-600" 
+                        : selectedTreasure.source === "drawer"
+                          ? "bg-teal-700 hover:bg-teal-600"
+                          : "bg-pink-700 hover:bg-pink-600"
+                    } text-white`}>
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                         <polyline points="16 6 12 2 8 6"></polyline>
@@ -451,7 +476,13 @@ export default function LakePage() {
                       </svg>
                       共有する
                     </Button>
-                    <Button className="flex-1 bg-cyan-700 hover:bg-cyan-600 text-white">
+                    <Button className={`flex-1 ${
+                      selectedTreasure.source === "hanger" 
+                        ? "bg-indigo-700 hover:bg-indigo-600" 
+                        : selectedTreasure.source === "drawer"
+                          ? "bg-teal-700 hover:bg-teal-600"
+                          : "bg-pink-700 hover:bg-pink-600"
+                    } text-white`}>
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                       </svg>
