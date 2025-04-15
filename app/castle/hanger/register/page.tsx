@@ -261,7 +261,7 @@ export default function HangerRegisterPage() {
                   className="hidden"
                 />
                 {previewImage ? (
-                  <div className="relative w-full h-64 border-2 border-dashed border-amber-500/30 rounded-md overflow-hidden bg-violet-950/30">
+                  <div className="relative w-full h-48 border-2 border-dashed border-amber-500/30 rounded-md overflow-hidden bg-violet-950/30">
                     <Image src={previewImage} alt="Preview" fill className="object-contain" />
                     <button
                       type="button"
@@ -272,9 +272,9 @@ export default function HangerRegisterPage() {
                     </button>
                   </div>
                 ) : (
-                  <div className="w-full h-64 rounded-md border-2 border-dashed border-amber-500/30 flex flex-col items-center justify-center p-4 bg-violet-950/30">
-                    <Upload className="h-10 w-10 text-amber-400/60 mb-4" />
-                    <p className="text-amber-300/80 text-center mb-6">
+                  <div className="w-full h-48 rounded-md border-2 border-dashed border-amber-500/30 flex flex-col items-center justify-center p-4 bg-violet-950/30">
+                    <Upload className="h-8 w-8 text-amber-400/60 mb-2" />
+                    <p className="text-amber-300/80 text-center mb-4">
                       画像をアップロードするか、カメラで撮影してください
                     </p>
                     <div className="flex gap-4">
