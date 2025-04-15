@@ -84,6 +84,10 @@ module.exports = {
           "0%": { opacity: 0, transform: "translateY(20px)" },
           "100%": { opacity: 1, transform: "translateY(0)" },
         },
+        "falling": {
+          "0%": { transform: "translateY(-100px) rotate(0deg)" },
+          "100%": { transform: "translateY(100vh) rotate(360deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -93,6 +97,7 @@ module.exports = {
         "confetti": "confetti 5s ease-in-out forwards",
         "bounce-slow": "bounce 2s infinite",
         "magical-appear": "magical-appear 0.8s ease-out forwards",
+        "falling": "falling var(--duration) linear infinite",
       },
       fontFamily: {
         magic: ['var(--font-magic)'],
