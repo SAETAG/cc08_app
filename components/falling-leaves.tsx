@@ -1,102 +1,109 @@
 "use client"
 
-import type React from "react"
-
-import { useEffect, useState } from "react"
+import { useEffect, useRef } from "react"
 
 interface Leaf {
-  id: number
-  left: number
+  x: number
+  y: number
   size: number
-  delay: number
-  duration: number
+  speed: number
   rotation: number
-  type: "leaf1" | "leaf2" | "leaf3"
+  rotationSpeed: number
+  color: string
 }
 
 export function FallingLeaves() {
-  const [leaves, setLeaves] = useState<Leaf[]>([])
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const leavesRef = useRef<Leaf[]>([])
+  const animationRef = useRef<number>()
 
   useEffect(() => {
-    // Create 15 leaves with random properties
-    const newLeaves = Array.from({ length: 15 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100, // random horizontal position (%)
-      size: Math.random() * 20 + 10, // random size between 10-30px
-      delay: Math.random() * 15, // random delay before animation starts
-      duration: Math.random() * 10 + 10, // random duration between 10-20s
-      rotation: Math.random() * 360, // random initial rotation
-      type: ["leaf1", "leaf2", "leaf3"][Math.floor(Math.random() * 3)] as "leaf1" | "leaf2" | "leaf3",
-    }))
+    const canvas = canvasRef.current
+    if (!canvas) return
 
-    setLeaves(newLeaves)
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
 
-    // Regenerate leaves every 20 seconds to keep the animation going
-    const interval = setInterval(() => {
-      setLeaves((prev) => {
-        return prev.map((leaf) => ({
-          ...leaf,
-          left: Math.random() * 100,
-          delay: Math.random() * 5,
-          duration: Math.random() * 10 + 10,
-          rotation: Math.random() * 360,
-        }))
+    // Set canvas size
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+
+    resizeCanvas()
+    window.addEventListener("resize", resizeCanvas)
+
+    // Create leaves
+    const createLeaves = () => {
+      const leaves: Leaf[] = []
+      const leafColors = ["#e9c46a", "#f4a261", "#e76f51", "#d62828"]
+
+      for (let i = 0; i < 30; i++) {
+        leaves.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          size: Math.random() * 15 + 5,
+          speed: Math.random() * 1 + 0.5,
+          rotation: Math.random() * Math.PI * 2,
+          rotationSpeed: (Math.random() - 0.5) * 0.01,
+          color: leafColors[Math.floor(Math.random() * leafColors.length)],
+        })
+      }
+
+      leavesRef.current = leaves
+    }
+
+    createLeaves()
+
+    // Draw a leaf
+    const drawLeaf = (leaf: Leaf) => {
+      if (!ctx) return
+
+      ctx.save()
+      ctx.translate(leaf.x, leaf.y)
+      ctx.rotate(leaf.rotation)
+
+      ctx.beginPath()
+      ctx.moveTo(0, -leaf.size / 2)
+      ctx.bezierCurveTo(leaf.size / 2, -leaf.size / 4, leaf.size / 2, leaf.size / 4, 0, leaf.size / 2)
+      ctx.bezierCurveTo(-leaf.size / 2, leaf.size / 4, -leaf.size / 2, -leaf.size / 4, 0, -leaf.size / 2)
+
+      ctx.fillStyle = leaf.color
+      ctx.fill()
+      ctx.restore()
+    }
+
+    // Animation loop
+    const animate = () => {
+      if (!ctx || !canvas) return
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      leavesRef.current.forEach((leaf) => {
+        leaf.y += leaf.speed
+        leaf.rotation += leaf.rotationSpeed
+
+        // Reset leaf position when it goes off screen
+        if (leaf.y > canvas.height + leaf.size) {
+          leaf.y = -leaf.size
+          leaf.x = Math.random() * canvas.width
+        }
+
+        drawLeaf(leaf)
       })
-    }, 20000)
 
-    return () => clearInterval(interval)
+      animationRef.current = requestAnimationFrame(animate)
+    }
+
+    animate()
+
+    return () => {
+      window.removeEventListener("resize", resizeCanvas)
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
   }, [])
 
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {leaves.map((leaf) => (
-        <div
-          key={leaf.id}
-          className="absolute top-0 opacity-70 animate-falling"
-          style={
-            {
-              left: `${leaf.left}%`,
-              width: `${leaf.size}px`,
-              height: `${leaf.size}px`,
-              "--delay": `${leaf.delay}s`,
-              "--duration": `${leaf.duration}s`,
-              transform: `rotate(${leaf.rotation}deg)`,
-            } as React.CSSProperties
-          }
-        >
-          {leaf.type === "leaf1" && (
-            <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-green-500">
-              <path
-                d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z"
-                fill="currentColor"
-              />
-              <path
-                d="M12 6c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 10c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"
-                fill="currentColor"
-              />
-            </svg>
-          )}
-          {leaf.type === "leaf2" && (
-            <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-green-600">
-              <path
-                d="M17 8C8 10 5.9 16.17 5.9 16.17A6.5 6.5 0 0 1 12 21.5a6.5 6.5 0 0 1 6.5-6.5 6.5 6.5 0 0 1-1.5-7z"
-                fill="currentColor"
-              />
-              <path
-                d="M12 2.5a9.5 9.5 0 0 1 9.5 9.5 9.5 9.5 0 0 1-9.5 9.5A9.5 9.5 0 0 1 2.5 12 9.5 9.5 0 0 1 12 2.5z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-            </svg>
-          )}
-          {leaf.type === "leaf3" && (
-            <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-green-700">
-              <path d="M12 2L4 12l8 10 8-10-8-10z" fill="currentColor" />
-            </svg>
-          )}
-        </div>
-      ))}
-    </div>
-  )
+  return <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none" />
 }
-

@@ -43,7 +43,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body suppressHydrationWarning>
+      <body suppressHydrationWarning className="overflow-x-hidden relative min-h-screen">
         <AuthProvider>
           {children}
         </AuthProvider>

@@ -211,11 +211,11 @@ export default function HomePage() {
                   </div>
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[16px] border-l-transparent border-r-transparent border-t-[#f0c96b]"></div>
                   <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-28 bg-gradient-to-br from-amber-800/90 to-amber-900/90 backdrop-blur-sm rounded-lg p-2 text-center border-2 border-[#f0c96b]">
-                    <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">戦友達の洞窟</p>
+                    <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">覇者の山</p>
                   </div>
                   <div className="absolute right-full top-1/2 transform -translate-y-1/2 mr-2 w-64 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 text-center border-2 border-[#f0c96b] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                     <p className="text-[#f0c96b] text-sm font-bold drop-shadow-[0_0_3px_rgba(240,201,107,0.7)]">
-                      友達と、家族と、勇者仲間と。片付けの大冒険に出かけよう！
+                      他の勇者の頑張りを見て自分を奮い立たせよう！
                     </p>
                     <div className="absolute top-1/2 left-full transform -translate-y-1/2 w-0 h-0 border-t-[8px] border-b-[8px] border-l-[16px] border-t-transparent border-b-transparent border-l-[#f0c96b]"></div>
                   </div>
