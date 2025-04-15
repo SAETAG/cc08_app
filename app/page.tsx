@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Sparkles } from "lucide-react"
@@ -108,7 +109,7 @@ export default function Home() {
 
       <div className="max-w-md w-full text-center space-y-6 sm:space-y-8 bg-gradient-to-br from-purple-950/95 via-blue-950/95 to-green-950/95 border-4 border-amber-500/70 shadow-[0_0_20px_rgba(251,191,36,0.4)] p-6 sm:p-8 rounded-xl relative">
         <div className="space-y-6">
-          <h1 className="text-6xl sm:text-7xl font-bold text-amber-300 tracking-tight drop-shadow-[0_0_8px_rgba(251,191,36,0.7)] font-magic">
+          <h1 className="text-6xl sm:text-7xl font-bold text-amber-300 tracking-tight drop-shadow-[0_0_8px_rgba(251,191,36,0.7)] font-['MedievalSharp']">
             Closet Chronicle
           </h1>
           <div className="space-y-1">
