@@ -187,7 +187,7 @@ export default function CreateNamePage() {
       </div>
 
       <div className="flex flex-col items-center justify-center min-h-screen p-4 relative z-10">
-        <div className="max-w-md w-full bg-gradient-to-br from-purple-950/95 via-blue-950/95 to-green-950/95 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6 sm:p-8 rounded-xl relative">
+        <div className="max-w-lg w-full bg-gradient-to-br from-purple-950/95 via-blue-950/95 to-green-950/95 border-2 border-amber-500/50 shadow-[0_0_15px_rgba(251,191,36,0.2)] p-6 sm:p-8 rounded-xl relative">
           {/* Decorative corners */}
           <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500"></div>
           <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-500"></div>
@@ -196,7 +196,8 @@ export default function CreateNamePage() {
 
           <div className="text-center space-y-6">
             <h1 className="text-3xl sm:text-4xl font-bold text-amber-300 tracking-tight drop-shadow-[0_0_8px_rgba(251,191,36,0.7)]">
-              まずはあなたの名前を教えてね！
+              新たな冒険者よ…<br />
+              そなたの名前は？
             </h1>
 
             <form onSubmit={handleSubmit} className="space-y-4">

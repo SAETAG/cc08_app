@@ -102,7 +102,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen w-full bg-[url('/map.png')] bg-cover bg-center text-amber-300 flex flex-col relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/80 via-blue-900/80 to-green-900/80" />
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/50 via-blue-900/50 to-green-900/50" />
       {/* Header */}
       <header className="bg-gradient-to-r from-purple-900 via-teal-900 to-purple-900 p-3 flex justify-between items-center border-b-2 border-yellow-500 shadow-md relative">
         {/* Decorative corners */}
