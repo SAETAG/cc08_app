@@ -215,7 +215,12 @@ const isGoalUnlocked = async (stepStatus: { [key: number]: boolean }, totalSteps
 export default function HangerDungeonPage() {
   const params = useParams()
   const router = useRouter()
-  const rackId = params.rackId as string
+  const rackId = params?.rackId as string
+  if (!rackId) {
+    router.push('/castle/hanger')
+    return null
+  }
+
   const { currentUser } = useAuth()
   const [rackData, setRackData] = useState<RackData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -228,9 +233,11 @@ export default function HangerDungeonPage() {
 
   useEffect(() => {
     const fetchStepStatus = async () => {
+      if (!rackData?.adventures || !rackId) return
+
       try {
-        const keys = Array.from({ length: rackData?.adventures.length || 0 }, (_, i) => 
-          `rack_${params.rackId}_stage_${i + 1}_status`
+        const keys = Array.from({ length: rackData.adventures.length || 0 }, (_, i) => 
+          `rack_${rackId}_stage_${i + 1}_status`
         )
         
         console.log("Fetching status for keys:", keys)
@@ -263,7 +270,7 @@ export default function HangerDungeonPage() {
                 if (value === true || value === "true") {
                   initialStatus[stepNumber] = true
                   // 次のステージを解放（falseで設定）
-                  if (stepNumber < rackData.adventures.length) {
+                  if (rackData && stepNumber < rackData.adventures.length) {
                     initialStatus[stepNumber + 1] = false
                   }
                 } else {
@@ -283,7 +290,9 @@ export default function HangerDungeonPage() {
           setStepStatus(initialStatus)
 
           // ゴール解放状態を更新
-          setIsGoalAvailable(await isGoalUnlocked(initialStatus, rackData.adventures.length, params.rackId as string))
+          if (rackData) {
+            setIsGoalAvailable(await isGoalUnlocked(initialStatus, rackData.adventures.length, rackId))
+          }
         }
       } catch (error) {
         console.error("Error fetching step status:", error)
@@ -295,7 +304,7 @@ export default function HangerDungeonPage() {
     if (rackData?.adventures) {
       fetchStepStatus()
     }
-  }, [rackData, params.rackId])
+  }, [rackData, rackId])
 
   useEffect(() => {
     const fetchRackData = async () => {
@@ -376,7 +385,7 @@ export default function HangerDungeonPage() {
       return
     }
 
-    router.push(`/castle/hanger/${params.rackId}/step-${stepNumber}`)
+    router.push(`/castle/hanger/${rackId}/step-${stepNumber}`)
   }
 
   if (loading) {
@@ -523,12 +532,14 @@ export default function HangerDungeonPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* 写真 */}
-              <div className="relative h-64 rounded-lg overflow-hidden">
+              <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden">
                 <Image
                   src={rackData.imageUrl}
                   alt={rackData.name}
                   fill
-                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
+                  className="object-contain bg-black/20"
                 />
               </div>
 
@@ -730,7 +741,7 @@ export default function HangerDungeonPage() {
                 className={stepStatus[rackData.adventures?.length || 0] ? "cursor-pointer" : "cursor-not-allowed"}
                 onClick={() => {
                   if (stepStatus[rackData.adventures?.length || 0]) {
-                    router.push(`/castle/hanger/${params.rackId}/memory`)
+                    router.push(`/castle/hanger/${rackId}/memory`)
                   }
                 }}
               >
@@ -835,14 +846,13 @@ export default function HangerDungeonPage() {
                 onClick={async () => {
                   if (isGoalAvailable) {
                     try {
-                      // PlayFabにデータを保存
                       const response = await fetch("/api/updateUserData", {
                         method: "POST",
                         headers: {
                           "Content-Type": "application/json",
                         },
                         body: JSON.stringify({
-                          key: `rack_${params.rackId}_status`,
+                          key: `rack_${rackId}_status`,
                           value: true
                         }),
                       })
@@ -852,7 +862,7 @@ export default function HangerDungeonPage() {
                         throw new Error(error.error || "データの更新に失敗しました")
                       }
 
-                      router.push(`/castle/hanger/${params.rackId}/clear`)
+                      router.push(`/castle/hanger/${rackId}/clear`)
                     } catch (error) {
                       console.error("Error updating rack status:", error)
                       alert(error instanceof Error ? error.message : "エラーが発生しました")
