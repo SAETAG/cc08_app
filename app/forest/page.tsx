@@ -15,9 +15,9 @@ const discardPosts = [
   {
     id: 1,
     image: "/moc/forest/1.jpg",
-    name: "賢者の詠書",
-    description: "大学生活の4年間、試験のたびに共に夜を越えた参考書たち。コーヒーの染み、落書き、付箋だらけのページ……まるで冒険の地図のようだった。君がいなければ、私は「経済学入門」に敗れていた。ありがとう、賢者の書よ。君の知恵は、次の冒険者へ受け継がれる。",
-    itemType: "参考書",
+    name: "おばあちゃんの手編みセーター",
+    description: "おばあちゃんが編んでくれた手編みのセーター。少しチクチクするけど、愛情が詰まってて冬はいつもこれを着てた。サイズが合わなくなっちゃったけど、温かい思い出はそのまま。ありがとう、おばあちゃん。",
+    itemType: "セーター",
     usedYears: "5年",
     user: { name: "Tsunodashi", avatar: "/moc/user/tsunodashi.webp" },
     likes: 24,
@@ -26,10 +26,10 @@ const discardPosts = [
   {
     id: 2,
     image: "/moc/forest/2.jpg",
-    name: "想いの封書",
-    description: "この日記帳には、10代の怒り、恋、失敗、そして希望がぎゅっと詰まっている。中二病炸裂の詩も、初めての恋に泣いた夜も、全部ここにある。今読むと顔から火が出そう。でも、あの頃の自分がいたから、今の自分がいる。そっと封を閉じて、新しい誰かに託します。",
-    itemType: "日記帳",
-    usedYears: "10年",
+    name: "初めてのデート服",
+    description: "高校生の時、勇気を出して買ったワンピース。初めてのデートで着て、ドキドキしたのを覚えてる。少し色褪せちゃったけど、甘酸っぱい思い出がいっぱい。ありがとう、あの日の私。",
+    itemType: "ワンピース",
+    usedYears: "7年",
     user: { name: "Manta", avatar: "/moc/user/manta.webp" },
     likes: 18,
     date: "1週間前",
@@ -48,9 +48,9 @@ const discardPosts = [
   {
     id: 4,
     image: "/moc/forest/4.jpg",
-    name: "音紡の竪琴",
-    description: "弾き語りデビューは、このギターとともに。Fコードが押さえられなくて泣いた日、学園祭で告白ソングを披露した日、深夜の弾き語りで近所に怒られた日……全部、いい思い出。次の奏者よ、どうかこの音を受け継いでくれ。たまに変な音出るけど、それも味だよ。",
-    itemType: "ギター",
+    name: "穴あきロック魂ジーンズ",
+    description: "ライブハウスで暴れすぎて膝に穴が開いたジーンズ。何度も洗濯して色落ちしたけど、それが味になってる。これを履くと無敵な気分になれた。ありがとう、相棒。次のロッカーへ。",
+    itemType: "ジーンズ",
     usedYears: "15年",
     user: { name: "Tatekin", avatar: "/moc/user/tatekin.webp" },
     likes: 45,
@@ -59,9 +59,9 @@ const discardPosts = [
   {
     id: 5,
     image: "/moc/forest/5.jpg",
-    name: "夢綴ノ書",
-    description: "このノートは、夢と妄想の倉庫。起業アイデア、小説の構想、未来の家の間取り図……ときには「ラーメン自販機チェーンで一攫千金」みたいなネタも。ページをめくるたびに、あの頃の情熱がよみがえる。ありがとう、夢綴ノ書。君のおかげで、現実をちょっとだけ好きになれた。",
-    itemType: "ノート",
+    name: "夢見るモコモコパジャマ",
+    description: "寒い冬の夜、このモコモコパジャマに何度救われたことか。暖かくて、着るだけで幸せな気分になれた。少し毛玉が目立ってきたけど、たくさんの良い夢を見せてくれてありがとう。",
+    itemType: "パジャマ",
     usedYears: "3年",
     user: { name: "Goma", avatar: "/moc/user/goma.webp" },
     likes: 29,
@@ -70,9 +70,9 @@ const discardPosts = [
   {
     id: 6,
     image: "/moc/forest/6.jpg",
-    name: "光背の石板",
-    description: "大学1年の冬、バイト代をためて買った初めてのPC。あのときのワクワクは今でも忘れられない。レポート作成から恋のメッセージ、YouTubeでの徹夜鑑賞まで、全部この石板でやった。最近は動きが遅くて冷蔵庫よりもうるさいけど、本当にありがとう。君と過ごした時間は、まるで魔法のようだった。",
-    itemType: "PC",
+    name: "就活無双コート",
+    description: "初めてのボーナスで買った、ちょっと背伸びしたコート。これを着て臨んだ面接はなぜか上手くいった気がする。社会人の第一歩を支えてくれた相棒。少し形が古くなったかな。ありがとう。",
+    itemType: "コート",
     usedYears: "8年",
     user: { name: "Yagara", avatar: "/moc/user/yagara.webp" },
     likes: 21,
@@ -92,9 +92,9 @@ const discardPosts = [
   {
     id: 8,
     image: "/moc/forest/8.jpg",
-    name: "灯影の杖",
-    description: "一人暮らしを始めた日、初めて部屋に灯ったのがこの照明だった。夜中に怖くてつけっぱなしにしたことも、恋人とロマンチックな夜を演出したこともあったなあ（今はいないけど）。部屋を温かく照らしてくれてありがとう。次の場所でも、優しい光を灯してね。",
-    itemType: "照明",
+    name: "風になびいた思い出スカート",
+    description: "お気に入りでよく履いていた花柄のスカート。これを履いて出かけると、いつも良いことがあった気がする。裾が少しほつれてしまったけど、たくさんの素敵な場所に連れて行ってくれてありがとう。",
+    itemType: "スカート",
     usedYears: "6年",
     user: { name: "Minami", avatar: "/moc/user/minami.webp" },
     likes: 33,
@@ -103,9 +103,9 @@ const discardPosts = [
   {
     id: 9,
     image: "/moc/forest/9.jpg",
-    name: "語り部の頁",
-    description: "20年分の物語がこの本棚に詰まってる。ファンタジーからミステリー、時には料理本。登場人物たちと共に笑い、泣き、成長してきた。もうページが黄ばんでいるけど、その古さが愛しい。ありがとう、本たち。君たちの物語は、私の人生の一部だったよ。",
-    itemType: "本",
+    name: "一張羅のレザージャケット",
+    description: "一目惚れして買ったレザージャケット。これを羽織るだけで、ちょっと強くなれた気がした。擦り傷も、雨のシミも、全部が自分だけの歴史。だいぶ身体に馴染んだけど、次の世代に託します。ありがとう。",
+    itemType: "ジャケット",
     usedYears: "20年",
     user: { name: "Tsunodashi", avatar: "/moc/user/tsunodashi.webp" },
     likes: 51,
@@ -114,13 +114,68 @@ const discardPosts = [
   {
     id: 10,
     image: "/moc/forest/10.jpg",
-    name: "炎舞の釜",
-    description: "この鍋で作った料理は数知れず。最強の無水鍋！こげつきがひどいから、新しいのを買おう。今までありがとう！",
-    itemType: "鍋",
+    name: "部屋着のエースパーカー",
+    description: "気づけばいつも着ていた、くたくたのパーカー。リラックスタイムの必需品だった。袖口が擦り切れて、フードの紐もなくなったけど、最高の着心地をありがとう。お疲れ様。",
+    itemType: "パーカー",
     usedYears: "10年",
     user: { name: "Nijihagi", avatar: "/moc/user/nijihagi.webp" },
     likes: 12,
     date: "1時間前",
+  },
+  {
+    id: 11,
+    image: "/moc/forest/11.jpg",
+    name: "青春のバンT",
+    description: "高校時代のライブで買った思い出のバンドTシャツ。汗と涙と、たぶんケチャップのシミ付き。首元ヨレヨレ、穴も空いてるけど、これが青春の証。ありがとう、ロックンロール。次のロッカーに魂を受け継ぐぜ。",
+    itemType: "Tシャツ",
+    usedYears: "10年",
+    user: { name: "Tatekin", avatar: "/moc/user/tatekin.webp" },
+    likes: 25,
+    date: "6時間前",
+  },
+  {
+    id: 12,
+    image: "/moc/forest/12.jpg",
+    name: "戦いのガラス靴",
+    description: "就職活動で履き潰した、勝負パンプス。足は痛かったけど、これを履くと背筋が伸びた。何度も面接に落ちて泣いた夜も、内定をもらって飛び跳ねた日も一緒だったね。ありがとう。次のシンデレラへ。",
+    itemType: "パンプス",
+    usedYears: "4年",
+    user: { name: "Goma", avatar: "/moc/user/goma.webp" },
+    likes: 19,
+    date: "昨日",
+  },
+  {
+    id: 13,
+    image: "/moc/forest/13.jpg",
+    name: "手編みの温もり",
+    description: "元カノが編んでくれたマフラー。正直、色合いは微妙だったけど、めちゃくちゃ暖かかった。寒い冬の帰り道、君のおかげで凍えずに済んだよ。ありがとう、不器用な優しさ。誰か、この温もりを引き継いでくれ。",
+    itemType: "マフラー",
+    usedYears: "5年",
+    user: { name: "Nijihagi", avatar: "/moc/user/nijihagi.webp" },
+    likes: 30,
+    date: "3日前",
+  },
+  {
+    id: 14,
+    image: "/moc/forest/14.jpg",
+    name: "被らなかった旅人の帽子",
+    description: "「いつかこれで旅に出るんだ」と意気込んで買った帽子。結局、一度も被らずクローゼットの奥で眠っていた。似合わなかったのか、勇気がなかったのか。ありがとう、叶わなかった夢の象徴。君に似合う、本当の旅人が現れますように。",
+    itemType: "帽子",
+    usedYears: "7年",
+    user: { name: "Kaeru", avatar: "/moc/user/kaeru.webp" },
+    likes: 15,
+    date: "1週間前",
+  },
+  {
+    id: 15,
+    image: "/moc/forest/15.jpg",
+    name: "体型変化のバックル",
+    description: "学生時代から使っている革のベルト。穴の位置が少しずつ外側に移動していったのは、成長の証……ということにしておこう。バックルも傷だらけ。長い間、ズボンがずり落ちないように支えてくれてありがとう。お疲れ様。",
+    itemType: "ベルト",
+    usedYears: "13年",
+    user: { name: "Tsunodashi", avatar: "/moc/user/tsunodashi.webp" },
+    likes: 22,
+    date: "今日",
   },
 ]
 
@@ -144,12 +199,12 @@ export function PostList() {
   }, [selectedPost, isCreateModalOpen])
 
   // Sort posts based on selected criteria
-  const sortedPosts = [...discardPosts]
-  if (sortBy === "popular") {
-    sortedPosts.sort((a, b) => b.likes - a.likes)
-  } else {
-    sortedPosts.sort((a, b) => b.id - a.id)
-  }
+  const sortedPosts = [...discardPosts].sort((a, b) => {
+    if (sortBy === "popular") {
+      return (b.likes ?? 0) - (a.likes ?? 0)
+    }
+    return b.id - a.id
+  })
 
   const handleSort = (type: string) => {
     setSortBy(type)
