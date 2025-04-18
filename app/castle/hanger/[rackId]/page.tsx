@@ -345,6 +345,9 @@ export default function HangerDungeonPage() {
         const data = await response.json();
         console.log('fetchRackData: Received data:', data);
 
+        router.refresh();
+        console.log('Data fetched, refreshing server data...');
+
         if (data) {
           setRackData(data);
 
