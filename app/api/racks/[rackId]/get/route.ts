@@ -18,7 +18,7 @@ export async function GET(
       return new NextResponse('Unauthorized', { status: 401 })
     }
 
-    const rackId = params.rackId
+    const { rackId } = await params;
     console.log('Rack ID:', rackId);
 
     try {

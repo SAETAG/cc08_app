@@ -23,7 +23,6 @@ export default function GenerateDungeonPage() {
   const router = useRouter()
   const { currentUser } = useAuth()
   
-  // paramsがnullの場合のエラーハンドリング
   if (!params?.rackId) {
     router.push('/castle/hanger')
     return null
@@ -32,34 +31,33 @@ export default function GenerateDungeonPage() {
   const rackId = params.rackId as string
   
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0)
-  const [progress, setProgress] = useState(0)
   const [isGenerating, setIsGenerating] = useState(true)
   const [showCompletionMessage, setShowCompletionMessage] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [hasGenerated, setHasGenerated] = useState(false)
-  const [isInitialMount, setIsInitialMount] = useState(true)  // 初回マウントフラグを追加
+  const [isInitialMount, setIsInitialMount] = useState(true)
 
-  // 初回マウント時のみ実行
   useEffect(() => {
     setIsInitialMount(false);
   }, []);
 
-  // OpenAI APIを呼び出してダンジョンを生成
   useEffect(() => {
     let isSubscribed = true;
 
     const generateDungeon = async () => {
-      // 初回マウント時または既に生成済みの場合は処理をスキップ
-      if (isInitialMount || !currentUser || !rackId || hasGenerated) {
+      if (isInitialMount || !currentUser || !rackId) {
         if (!currentUser) setError("ユーザーが認証されていません");
         if (!rackId) setError("ハンガーラックIDが指定されていません");
+        setIsGenerating(false);
         return;
       }
 
+      setIsGenerating(true);
+      setError(null);
+
       try {
         const token = await currentUser.getIdToken();
-        console.log('Starting generation with token:', token ? 'exists' : 'missing');
-        
+        console.log('Starting generation...');
+
         const response = await fetch('/api/openai', {
           method: 'POST',
           headers: {
@@ -84,151 +82,60 @@ export default function GenerateDungeonPage() {
           throw new Error(`APIエラー: ${response.status} ${errorText}`);
         }
 
-        // レスポンスのテキストを取得
         const responseText = await response.text();
         console.log('Raw OpenAI API response:', responseText);
-
-        // JSONとしてパース
         let data;
         try {
           data = JSON.parse(responseText);
           console.log('Parsed OpenAI API response:', data);
-
-          // レスポンスの構造を検証
-          if (!data.result) {
-            throw new Error('OpenAI APIのレスポンスに"result"フィールドがありません');
-          }
-
-          // resultフィールドの中身を検証
+          if (!data.result) throw new Error('Invalid response: missing "result"');
           const parsedResult = JSON.parse(data.result);
           if (!parsedResult.organizationDirection || !Array.isArray(parsedResult.steps)) {
-            throw new Error('OpenAI APIのレスポンスの形式が不正です');
+            throw new Error('Invalid response structure');
           }
-
-          console.log('Validated response structure:', parsedResult);
+          console.log('Validated response structure');
         } catch (parseError) {
           console.error('Error parsing OpenAI response:', parseError);
-          throw new Error('OpenAI APIからの応答の解析に失敗しました');
+          throw new Error('API応答の解析に失敗');
         }
-        
+
         if (!isSubscribed) return;
-        
-        // ハンガーラックのstepsGeneratedをtrueに更新
-        try {
-          console.log('Updating stepsGenerated to true for rackId:', rackId);
-          
-          const updateUrl = `/api/racks/${rackId}`;
-          console.log('Making POST request to:', updateUrl);
-          
-          // リトライメカニズムの追加
-          const maxRetries = 3;
-          let retryCount = 0;
-          let updateSuccess = false;
 
-          while (retryCount < maxRetries && !updateSuccess) {
-            try {
-              const updateResponse = await fetch(updateUrl, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                  stepsGenerated: true
-                })
-              });
+        console.log('Generation successful. Preparing redirect...');
+        setShowCompletionMessage(true);
+        setIsGenerating(false);
 
-              console.log('Update response status:', updateResponse.status);
-              const responseText = await updateResponse.text();
-              console.log('Update response text:', responseText);
-
-              if (!updateResponse.ok) {
-                throw new Error(`ハンガーラックの更新に失敗しました: ${responseText}`);
-              }
-
-              // 更新が成功したことを確認
-              const updateData = JSON.parse(responseText);
-              if (updateData?.stepsGenerated === true) {
-                updateSuccess = true;
-                console.log('Update successful:', updateData);
-              } else {
-                throw new Error('更新後のステータスが期待通りではありません');
-              }
-            } catch (retryError) {
-              console.error(`Retry ${retryCount + 1} failed:`, retryError);
-              retryCount++;
-              if (retryCount < maxRetries) {
-                // 指数バックオフで待機
-                await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
-              }
-            }
+        // 5秒待ってからページ遷移（バックエンドの処理が完了するのを待つ）
+        const redirectTimer = setTimeout(() => {
+          if (isSubscribed) {
+            router.push(`/castle/hanger/${rackId}`);
           }
+        }, 5000);
 
-          if (!updateSuccess) {
-            throw new Error('最大リトライ回数を超えました');
-          }
-          
-          // 全ての処理が成功した後にhasGeneratedをtrueに設定
-          setHasGenerated(true);
-          setProgress(100);
-          
-        } catch (updateError) {
-          console.error('Error updating rack:', updateError);
-          throw new Error('ハンガーラックの更新中にエラーが発生しました');
-        }
-        
+        return () => clearTimeout(redirectTimer);
+
       } catch (err) {
         if (!isSubscribed) return;
         console.error("Error in generation process:", err);
         setError(err instanceof Error ? err.message : "エラーが発生しました");
         setIsGenerating(false);
-        // エラーが発生した場合はhasGeneratedをfalseに戻す
-        setHasGenerated(false);
       }
     };
 
     generateDungeon();
+
     return () => {
       isSubscribed = false;
     };
-  }, [currentUser, rackId, hasGenerated, isInitialMount]);  // isInitialMountを依存配列に追加
+  }, [currentUser, rackId, isInitialMount, router]);
 
-  // アニメーション関連のuseEffectをまとめる
   useEffect(() => {
-    if (!isGenerating || progress >= 100) return;
-
-    // メッセージ切り替え用のインターバル
+    if (!isGenerating) return;
     const messageInterval = setInterval(() => {
       setCurrentMessageIndex((prev) => (prev + 1) % generationMessages.length);
     }, 3000);
-
-    // プログレスバー更新用のインターバル
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => {
-        const newProgress = prev + Math.random() * 5;
-        return newProgress > 100 ? 100 : newProgress;
-      });
-    }, 800);
-
-    return () => {
-      clearInterval(messageInterval);
-      clearInterval(progressInterval);
-    };
-  }, [isGenerating, progress]);
-
-  // 生成完了時の処理
-  useEffect(() => {
-    if (progress >= 100) {
-      setIsGenerating(false);
-      setShowCompletionMessage(true);
-      
-      const redirectTimer = setTimeout(() => {
-        router.push(`/castle/hanger/${rackId}`);
-      }, 2000);
-      
-      return () => clearTimeout(redirectTimer);
-    }
-  }, [progress, rackId, router]);
+    return () => clearInterval(messageInterval);
+  }, [isGenerating]);
 
   if (error) {
     return (
@@ -399,7 +306,7 @@ export default function GenerateDungeonPage() {
         {/* 進行状況メッセージ */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentMessageIndex}
+            key={showCompletionMessage ? "complete" : currentMessageIndex}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -412,25 +319,20 @@ export default function GenerateDungeonPage() {
               </h2>
             ) : (
               <h2 className="text-2xl font-bold text-amber-400">
-                {generationMessages[currentMessageIndex]}
+                {isGenerating ? generationMessages[currentMessageIndex] : ""}
               </h2>
             )}
           </motion.div>
         </AnimatePresence>
 
-        {/* プログレスバー */}
-        <div className="w-full max-w-md h-3 bg-blue-900/50 rounded-full overflow-hidden mb-4 border border-amber-500/30">
-          <motion.div
-            className="h-full bg-gradient-to-r from-amber-500 to-amber-400"
-            initial={{ width: "0%" }}
-            animate={{ width: `${progress}%` }}
-            transition={{ type: "spring", bounce: 0.2 }}
-          />
-        </div>
-        
-        <p className="text-amber-300/80 text-sm">
-          {Math.round(progress)}% 完了
-        </p>
+        {isGenerating && (
+          <div className="flex justify-center items-center">
+            <Loader2 className="h-8 w-8 animate-spin text-amber-400" />
+          </div>
+        )}
+        {!isGenerating && !showCompletionMessage && !error && (
+          <p>生成を開始します...</p>
+        )}
       </div>
 
       {/* 魔法の光線エフェクト */}

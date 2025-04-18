@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
+import { revalidatePath } from 'next/cache';
 import { dbAdmin, verifyTokenOrThrow } from "@/app/lib/firebaseAdmin";
 import * as admin from "firebase-admin";
 import { SYSTEM_PROMPT, MODE_SPECIFIC_INSTRUCTIONS, StorageMode } from "./prompts";
@@ -211,6 +212,16 @@ export async function POST(request: Request) {
             updatedAt: admin.firestore.FieldValue.serverTimestamp()
           });
         console.log("Successfully updated stepsGenerated to true");
+
+        // キャッシュの無効化
+        try {
+          const targetPagePath = `/castle/hanger/${rackId}`;
+          revalidatePath(targetPagePath, 'page');
+          console.log(`Revalidated page path: ${targetPagePath}`);
+        } catch (revalidateError) {
+          console.error('Error during revalidation:', revalidateError);
+        }
+
       } catch (firebaseError) {
         console.error("Firebase save error:", firebaseError);
         return NextResponse.json({ error: "Firebaseへの保存に失敗しました" }, { status: 500 });
