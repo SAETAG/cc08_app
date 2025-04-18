@@ -22,6 +22,13 @@ export default function GenerateDungeonPage() {
   const params = useParams()
   const router = useRouter()
   const { currentUser } = useAuth()
+  
+  // paramsがnullの場合のエラーハンドリング
+  if (!params?.rackId) {
+    router.push('/castle/hanger')
+    return null
+  }
+  
   const rackId = params.rackId as string
   
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0)
@@ -216,8 +223,7 @@ export default function GenerateDungeonPage() {
       setShowCompletionMessage(true);
       
       const redirectTimer = setTimeout(() => {
-        // データを再取得するために、クエリパラメータを追加
-        router.push(`/castle/hanger/${rackId}?refresh=true`);
+        router.push(`/castle/hanger/${rackId}`);
       }, 2000);
       
       return () => clearTimeout(redirectTimer);

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { dbAdmin, verifyTokenOrThrow } from "@/app/lib/firebaseAdmin"
+import { revalidatePath } from 'next/cache'
 
 export async function GET(
   req: NextRequest,
@@ -98,16 +99,24 @@ export async function POST(
       // 更新後のデータを取得して返す
       const updatedRack = await rackRef.get()
       const rackData = updatedRack.data()
-      console.log('Updated rack data:', rackData);
-      console.log('New stepsGenerated value:', rackData?.stepsGenerated);
-      
-      return NextResponse.json(rackData)
-    } catch (dbError) {
-      console.error('Database operation failed:', dbError);
-      return new NextResponse('Database operation failed', { status: 500 })
+
+      // キャッシュを再検証
+      const path = `/castle/hanger/${rackId}`;
+      revalidatePath(path);
+      console.log(`Revalidated path: ${path}`);
+
+      return NextResponse.json({
+        rack: {
+          id: updatedRack.id,
+          ...rackData,
+        }
+      })
+    } catch (error) {
+      console.error('Error updating rack:', error);
+      return new NextResponse('Error updating rack', { status: 500 });
     }
   } catch (error) {
-    console.error('[RACK_UPDATE] Unexpected error:', error);
-    return new NextResponse('Internal Error', { status: 500 })
+    console.error('Error in POST handler:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 } 
