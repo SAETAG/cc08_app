@@ -16,7 +16,7 @@ export async function GET(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const rackId = params.rackId;
+    const { rackId } = await params;
     console.log('Fetching adventures for rack:', rackId);
 
     // アドベンチャー情報を取得
